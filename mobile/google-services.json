@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "163544254171",
+    "firebase_url": "https://appbelchior-df.firebaseio.com",
+    "project_id": "appbelchior-df",
+    "storage_bucket": "appbelchior-df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163544254171:android:b00c449602f6b182",
+        "android_client_info": {
+          "package_name": "com.digitalflow.belchior.app_belchior"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "163544254171-srq3e16iccs61m3gk7ruelji0cvq4j84.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.digitalflow.belchior.app_belchior",
+            "certificate_hash": "c5249da908c6ea455a01fcb10072032b9ca01c18"
+          }
+        },
+        {
+          "client_id": "163544254171-857rlp47nn21jra7sir4o6kq0e5ha2le.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJMtudW_B5RHTuKfKnx80yxz78vmBqhVs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "163544254171-857rlp47nn21jra7sir4o6kq0e5ha2le.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
