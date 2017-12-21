@@ -4,7 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.digitalflow.belchior.app_belchior.CadastroActivity">
+    android:orientation="vertical"
+    android:layout_marginTop="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="16dp"
+    tools:context="com.digitalflow.belchior.app_belchior.Activity.CadastroActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -56,7 +61,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/rgSexo"
-            android:orientation="horizontal"
             android:gravity="center">
 
             <RadioButton

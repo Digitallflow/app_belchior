@@ -1,4 +1,4 @@
-package com.digitalflow.belchior.app_belchior;
+package com.digitalflow.belchior.app_belchior.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.digitalflow.belchior.app_belchior.Entidades.Usuarios;
+import com.digitalflow.belchior.app_belchior.R;
 
 public class CadastroActivity extends AppCompatActivity {
 
@@ -45,18 +46,18 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(edtCadSenha.getText().toString().equals(edtCadConfirmarSenha.getText().toString())){
-                    usuarios = new Usuarios();
-                    usuarios.setNome(edtCadNome.getText().toString());
-                    usuarios.setEmail(edtCadEmail.getText().toString());
-                    usuarios.setSobrenome(edtCadSobrenome.getText().toString());
-                    usuarios.setSenha(edtCadSenha.getText().toString());
-                    usuarios.setNasc(edtCadNasc.getText().toString());
-
-                    if(rbFeminino.isChecked()){
-                        usuarios.setSexo("Feminino");
-                    }else{
-                        usuarios.setSexo("Masculino");
-                    }
+//                    usuarios = new Usuarios();
+//                    usuarios.setNome(edtCadNome.getText().toString());
+//                    usuarios.setEmail(edtCadEmail.getText().toString());
+//                    usuarios.setSobrenome(edtCadSobrenome.getText().toString());
+//                    usuarios.setSenha(edtCadSenha.getText().toString());
+//                    usuarios.setNasc(edtCadNasc.getText().toString());
+//
+//                    if(rbFeminino.isChecked()){
+//                        usuarios.setSexo("Feminino");
+//                    }else{
+//                        usuarios.setSexo("Masculino");
+//                    }
                 }
                 else{
                     Toast.makeText(CadastroActivity.this, "As senhas não são correspondentes", Toast.LENGTH_LONG).show();
