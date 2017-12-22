@@ -6,17 +6,17 @@ import android.content.Context;
  * Created by RUTH on 19/12/2017.
  */
 
-public class preferencias {
+public class Preferencias {
     private Context context;
     private SharedPreferences preferences;
-    private String NOME_ARQUIVO = "app_belchior.preferencias";
+    private String NOME_ARQUIVO = "app_belchior.Preferencias";
     private int MODE = 0;
     private SharedPreferences.Editor editor;
 
     private final String CHAVE_IDENTIFICADOR = "identificarUsuarioLogado";
     private final String CHAVE_NOME = "nomeUsuarioLogado";
 
-    public preferencias(Context context){
+    public Preferencias(Context context){
         this.context = context;
         preferences = context.getSharedPreferences(NOME_ARQUIVO, MODE);
 

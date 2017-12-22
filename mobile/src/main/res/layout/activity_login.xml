@@ -31,4 +31,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnLogar"
         android:text="Login"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvAbreCadastro"
+        android:text="Não possui Login? Cadastre-se"
+        android:gravity="center"
+        android:textSize="15dp"/>
 </LinearLayout>

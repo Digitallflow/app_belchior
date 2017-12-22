@@ -1,5 +1,12 @@
 package com.digitalflow.belchior.app_belchior.Entidades;
 
+import com.digitalflow.belchior.app_belchior.DAO.ConfiguracaoFirebase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by RUTH on 19/12/2017.
  */
@@ -16,6 +23,28 @@ public class Usuarios {
     public Usuarios(){
 
     }
+
+    public void salvar(){
+        DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
+        referenciaFirebase.child("usuario").child(String.valueOf(getId())).setValue(this);
+    }
+
+    @Exclude
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> hashMapUsuario = new HashMap<>();
+
+        hashMapUsuario.put("id", getId());
+        hashMapUsuario.put("email", getEmail());
+        hashMapUsuario.put("senha", getSenha());
+        hashMapUsuario.put("nome", getNome());
+        hashMapUsuario.put("sobrenome", getSobrenome());
+        hashMapUsuario.put("nascimento", getNascimento());
+        hashMapUsuario.put("sexo", getSexo());
+
+        return hashMapUsuario;
+
+    }
+
     public String getId() {
 
         return id;
