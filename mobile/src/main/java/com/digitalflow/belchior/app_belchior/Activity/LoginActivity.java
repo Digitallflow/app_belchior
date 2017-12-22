@@ -18,6 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
+
     private EditText edtEmail;
     private EditText edtSenha;
     private Button btnLogar;
@@ -36,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
         btnLogar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
 
                     usuarios = new Usuarios();
@@ -44,9 +44,8 @@ public class LoginActivity extends AppCompatActivity {
                     usuarios.setSenha(edtSenha.getText().toString());
 
                     validarLogin();
-
-                } else{
-                    Toast.makeText(LoginActivity.this, "Preencha os campos de e-mail e senha", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Preencha os campos de e-mail e senha!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
