@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background_app_belchior"
+    tools:context="com.digitalflow.belchior.app_belchior.Activity.MainActivity">
+
+    <ImageView
+        android:id="@+id/iconImg"
+        android:layout_width="match_parent"
+        android:layout_height="1000dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="150dp"
+        android:src="@drawable/icon_belchior" />
+
+    <TextView
+        android:id="@+id/myImageViewText"
+        android:layout_width="250sp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/iconImg"
+        android:layout_alignEnd="@+id/btnConectar"
+        android:layout_alignRight="@+id/btnConectar"
+        android:layout_marginBottom="59dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:text="Suas músicas estão grafitadas nas paredes. Encontre e ouça."
+        android:textColor="#fff" />
+
+    <Button
+        android:id="@+id/btnConectar"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/myImageViewText"
+        android:layout_marginLeft="65dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/botao_conectar"
+        android:text="Conectar"
+        android:textColor="#fff" />
+
+
+</RelativeLayout>

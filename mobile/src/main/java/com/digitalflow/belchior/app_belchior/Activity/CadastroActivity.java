@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
+import android.view.WindowManager;
+
 
 import com.digitalflow.belchior.app_belchior.DAO.ConfiguracaoFirebase;
 import com.digitalflow.belchior.app_belchior.Entidades.Usuarios;
@@ -43,6 +45,8 @@ public class CadastroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_cadastro);
 
 

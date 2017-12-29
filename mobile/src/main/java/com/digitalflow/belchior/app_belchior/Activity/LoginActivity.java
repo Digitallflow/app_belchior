@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.WindowManager;
+
 
 import com.digitalflow.belchior.app_belchior.DAO.ConfiguracaoFirebase;
 import com.digitalflow.belchior.app_belchior.Entidades.Usuarios;
@@ -23,21 +25,23 @@ public class LoginActivity extends AppCompatActivity {
     private EditText edtEmail;
     private EditText edtSenha;
     private TextView tvAbreCadastro;
-    private Button btnLogar;
+    private Button AbrirbtnLogar;
     private FirebaseAuth autenticacao;
     private Usuarios usuarios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
 
         edtEmail = (EditText) findViewById(R.id.edtEmail);
         edtSenha = (EditText) findViewById(R.id.edtSenha);
         tvAbreCadastro = (TextView) findViewById(R.id.tvAbreCadastro);
-        btnLogar = (Button) findViewById(R.id.btnLogar);
+        AbrirbtnLogar = (Button) findViewById(R.id.btnLogar);
 
-        btnLogar.setOnClickListener(new View.OnClickListener() {
+        AbrirbtnLogar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
