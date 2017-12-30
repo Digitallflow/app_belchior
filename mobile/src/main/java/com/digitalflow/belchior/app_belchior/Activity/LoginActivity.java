@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth autenticacao;
     private Usuarios usuarios;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         edtSenha = (EditText) findViewById(R.id.edtSenha);
         tvAbreCadastro = (TextView) findViewById(R.id.tvAbreCadastro);
         AbrirbtnLogar = (Button) findViewById(R.id.btnLogar);
+
 
         AbrirbtnLogar.setOnClickListener(new View.OnClickListener() {
             @Override
