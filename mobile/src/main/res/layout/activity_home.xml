@@ -2,13 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:orientation="vertical"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background_app_belchior"
     tools:context="com.digitalflow.belchior.app_belchior.Activity.HomeActivity">
 
-    <TextView
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_weight="9"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tela Principal"
-        android:textSize="25dp"/>
+        android:layout_height="fill_parent" />
+
+    <ImageButton
+        android:id="@+id/btnCamera"
+        android:layout_width="110dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:background="@drawable/botao_camera"/>
+    <!--<Button-->
+        <!--android:id="@+id/btnCamera"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:background="@android:color/holo_red_dark"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:text="Camera"-->
+        <!--/>-->
 </LinearLayout>
+
