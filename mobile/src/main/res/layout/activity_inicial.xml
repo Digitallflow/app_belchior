@@ -1,66 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/background_app_belchior"
-    tools:context="com.digitalflow.belchior.app_belchior.Activity.Inicial">
+    android:orientation="vertical"
+    tools:context="com.digitalflow.belchior.app_belchior.Activity.Inicial"
+    android:id="@+id/linearLayout2">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="Conectar"
+        tools:layout_conversion_absoluteHeight="56dp"
+        tools:layout_conversion_absoluteWidth="411dp" />
 
     <Button
         android:id="@+id/btnLogar"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_alignParentLeft="true"
+        android:layout_width="268dp"
+        android:layout_height="71dp"
 
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="65dp"
-        android:layout_marginStart="65dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="44dp"
         android:background="@drawable/botao_conectar"
         android:text="Fazer login"
-        android:textColor="#fff" />
+        android:textColor="#fff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:layout_conversion_absoluteHeight="60dp"
+        tools:layout_conversion_absoluteWidth="250dp" />
 
     <Button
         android:id="@+id/btnCadastrar"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="65dp"
-        android:layout_marginStart="65dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="269dp"
+        android:layout_height="66dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/botao_conectar"
         android:text="Cadastrar"
-        android:textColor="#fff" />
+        android:textColor="#fff"
+        app:layout_constraintBottom_toTopOf="@+id/btnLoginFacebook"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogar"
+        app:layout_constraintVertical_bias="0.129"
+        tools:layout_conversion_absoluteHeight="60dp"
+        tools:layout_conversion_absoluteWidth="250dp" />
 
     <Button
-        android:layout_width="251dp"
-        android:layout_height="55dp"
-        android:layout_marginLeft="65dp"
-        android:layout_marginStart="65dp"
         android:id="@+id/btnLoginGoogle"
-        android:background="@drawable/btngoogle" />
+        android:layout_width="318dp"
+        android:layout_height="69dp"
+        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/btngoogle"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogoutGoogle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_conversion_absoluteHeight="55dp"
+        tools:layout_conversion_absoluteWidth="251dp" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/btnLoginFacebook"
         login_text="Login Facebook"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="266dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/btnfacebook"
+        app:layout_constraintBottom_toTopOf="@+id/btnLoginGoogle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_conversion_absoluteHeight="26dp"
+        tools:layout_conversion_absoluteWidth="411dp" />
     <!--<Button-->
-        <!--android:layout_width="251dp"-->
-        <!--android:layout_height="45dp"-->
-        <!--android:layout_marginLeft="65dp"-->
-        <!--android:layout_marginStart="65dp"-->
-        <!--android:id="@+id/btnLoginFacebook"-->
-        <!--android:background="@drawable/btnfacebook" />-->
+    <!--android:layout_width="251dp"-->
+    <!--android:layout_height="45dp"-->
+    <!--android:layout_marginLeft="65dp"-->
+    <!--android:layout_marginStart="65dp"-->
+    <!--android:id="@+id/btnLoginFacebook"-->
+    <!--android:background="@drawable/btnfacebook" />-->
 
 
     <Button
         android:id="@+id/btnLogoutGoogle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logout Google" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Logout Google"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_conversion_absoluteHeight="48dp"
+        tools:layout_conversion_absoluteWidth="411dp" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

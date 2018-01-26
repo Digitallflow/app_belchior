@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.view.WindowManager;
 
 
 import com.digitalflow.belchior.app_belchior.DAO.ConfiguracaoFirebase;
+import com.digitalflow.belchior.app_belchior.Helper.HelperAux;
 import com.digitalflow.belchior.app_belchior.R;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -18,6 +21,7 @@ import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.firebase.auth.FirebaseAuth;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 
 import com.facebook.AccessToken;
@@ -44,7 +48,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 
-public class Inicial extends AppCompatActivity {
+public class Inicial extends HelperAux {
     //implements GoogleApiClient.OnConnectionFailedListener
     private Button btnAbrirTelaLogin;
     private Button btnAbrirTelaCadastro;
@@ -59,9 +63,23 @@ public class Inicial extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+              //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_inicial);
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+//
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
@@ -193,4 +211,6 @@ public class Inicial extends AppCompatActivity {
                     }
                 });
     }
+
+
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">app_belchior</string>
+    <string name="facebook_app_id">140553099914903</string>
+    <string name="textoTelaInicial">" Your songs are graffiti on the walls. Find and listen."</string>
+    <string name="btnConect">Connect</string>
+</resources>
