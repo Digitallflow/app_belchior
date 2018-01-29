@@ -19,6 +19,8 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
+
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -45,9 +47,9 @@ public class Inicial extends HelperAux {
     private Button btnAbrirLoginGoogle;
     private LoginButton btbnAbrirLoginFacebook;
     private Button btnCustomFB;
-
+    private TextView textViewTermsOfUse;
+    private  TextView textViewPoliticPrivacity;
     private CallbackManager mCallbackManager;
-
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth autenticacao;
 
@@ -80,6 +82,8 @@ public class Inicial extends HelperAux {
         mCallbackManager = CallbackManager.Factory.create();
         btbnAbrirLoginFacebook = (LoginButton)findViewById(R.id.btnLoginFacebook);
         btnCustomFB = (Button)findViewById(R.id.btnCustomFb);
+        textViewPoliticPrivacity = (TextView)findViewById(R.id.textViewPoliticPrivacity);
+        textViewTermsOfUse = (TextView)findViewById(R.id.textViewTermsOfUse);
 
         btbnAbrirLoginFacebook.setReadPermissions("email","public_profile");
 
@@ -139,6 +143,22 @@ public class Inicial extends HelperAux {
                 startActivity(intentAbrirTelaCadastro);
             }
         });
+
+        textViewPoliticPrivacity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //intent para politica de privacidade
+            }
+        });
+
+        textViewTermsOfUse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //intent para termos de uso
+            }
+        });
+
+
 
 //        btnAbrirLoginGoogle.setOnClickListener(new View.OnClickListener() {
 //            @Override
