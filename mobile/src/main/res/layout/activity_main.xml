@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.digitalflow.belchior.app_belchior.Activity.MainActivity"
+    tools:context=".Activity.MainActivity"
     tools:layout_editor_absoluteY="25dp">
 
     <RelativeLayout
@@ -56,7 +56,7 @@
     <Button
         android:id="@+id/btnConectar"
         android:layout_width="303dp"
-        android:layout_height="70dp"
+        android:layout_height="65dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
@@ -64,7 +64,7 @@
         android:layout_marginStart="16dp"
         android:background="@drawable/botao_conectar"
         android:text="@string/btnConect"
-        android:textColor="#fff"
+        android:textColor="@color/patternWhite"
         app:layout_constraintBottom_toBottomOf="@+id/relativeLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
@@ -79,7 +79,7 @@
         android:layout_marginBottom="16dp"
         android:gravity="center"
         android:text="@string/textoTelaInicial"
-        android:textColor="#fff"
+        android:textColor="@color/patternWhite"
         app:layout_constraintBottom_toTopOf="@+id/btnConectar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

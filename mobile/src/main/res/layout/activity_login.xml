@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="@drawable/background_app_belchior"
     android:gravity="center"
-    tools:context="com.digitalflow.belchior.app_belchior.Activity.LoginActivity">
+    tools:context=".Activity.LoginActivity">
 
     <EditText
         android:layout_width="match_parent"

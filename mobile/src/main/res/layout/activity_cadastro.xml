@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background_app_belchior"
-    tools:context="com.digitalflow.belchior.app_belchior.Activity.CadastroActivity">
+    tools:context=".Activity.CadastroActivity">
 
     <ScrollView
         android:layout_width="match_parent"

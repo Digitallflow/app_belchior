@@ -1,7 +1,14 @@
 <resources>
-    <string name="app_name">app_belchior</string>
+    <string name="app_name">AppBelchior</string>
     <string name="facebook_app_id">140553099914903</string>
     <string name="textoTelaInicial">Suas músicas estão grafitadas nas paredes. Encontre e ouça.</string>
     <string name="btnConect">Conectar</string>
-    <string name="title_activity_main3">Main3Activity</string>
+    <string name="ao_clicar_login_voce_concorda_com_os_nossos">Ao fazer login, você concorda com os nossos</string>
+    <string name="e">e a nossa </string>
+    <string name="termos_de_servico">termos de serviço</string>
+    <string name="politica_de_privacidade">política de privacidade</string>
+    <string name="entrar_com_email">Entrar com Email</string>
+    <string name="criar_conta">Criar Conta</string>
+    <string name="entrar_com_google">Entrar com google</string>
+    <string name="entrar_com_facebook">entrar com facebook</string>
 </resources>
