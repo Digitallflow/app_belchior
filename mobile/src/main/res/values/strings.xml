@@ -11,4 +11,20 @@
     <string name="criar_conta">Criar Conta</string>
     <string name="entrar_com_google">Entrar com google</string>
     <string name="entrar_com_facebook">entrar com facebook</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="sucesso">Sucesso! %1$s</string>
+    <string name="ok">OK</string>
+    <string name="info">Informação: %1$s</string>
+    <string name="error">Erro! %1$s</string>
+    <string name="yes">OK</string>
+    <string name="no">Cancelar</string>
+    <string name="warning">Atenção! %1$s</string>
+    <string name="question">Informação: %1$s</string>
+    <string name="nao_possui_login">Não possui login?</string>
+    <string name="cadastre_se">Cadastre-se.</string>
+    <string name="login">Login</string>
+    <string name="entre_para_fazer_login">Entre com os seus dados para fazer login</string>
+    <string name="autentication">Autenticação</string>
+    <string name="email">Email</string>
+    <string name="senha">Senha</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.digitalflow.belchior.appbelchior.Activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.Button;
 
 
 import com.digitalflow.belchior.appbelchior.DAO.ConfiguracaoFirebase;
+import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
 import com.digitalflow.belchior.appbelchior.Helper.HelperAux;
 import com.digitalflow.belchior.appbelchior.R;
 import com.facebook.FacebookCallback;
@@ -20,6 +22,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +55,12 @@ public class Inicial extends HelperAux {
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth autenticacao;
+    public AlertDialog dialog;
+    private EditText edtEmail;
+    private EditText edtSenha;
+    private TextView textViewCadastro;
+    private Button btnLogin;
+    private Usuarios usuarios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +85,7 @@ public class Inicial extends HelperAux {
 
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
-        btnAbrirTelaLogin = (Button)findViewById(R.id.btnLogar);
+        btnAbrirTelaLogin = (Button)findViewById(R.id.btnLogin);
         btnAbrirTelaCadastro = (Button)findViewById(R.id.btnCadastrar);
         btnAbrirLoginGoogle = (Button)findViewById(R.id.btnLoginGoogle);
         mCallbackManager = CallbackManager.Factory.create();
@@ -132,8 +141,42 @@ public class Inicial extends HelperAux {
 
         btnAbrirTelaLogin.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                Intent intentAbrirTelaLogin = new Intent(Inicial.this, LoginActivity.class);
-                startActivity(intentAbrirTelaLogin);
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(Inicial.this);
+                View mView = getLayoutInflater().inflate(R.layout.activity_login, null);
+
+                edtEmail = (EditText) mView.findViewById(R.id.edtEmail);
+                edtSenha = (EditText)  mView.findViewById(R.id.edtSenha);
+                textViewCadastro = (TextView)  mView.findViewById(R.id.textViewCadastro);
+                btnLogin = (Button)  mView.findViewById(R.id.btnLogin);
+
+                mBuilder.setView(mView);
+                dialog = mBuilder.create();
+
+
+                dialog.show();
+                btnLogin.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
+
+                            usuarios = new Usuarios();
+                            usuarios.setEmail(edtEmail.getText().toString());
+                            usuarios.setSenha(edtSenha.getText().toString());
+
+                            validarLogin();
+                        } else {
+                            Toast.makeText(Inicial.this, "Preencha os campos de email e senha!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                textViewCadastro.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        abreCadastroUsuario();
+                    }
+                });
+//                Intent intentAbrirTelaLogin = new Intent(Inicial.this, LoginActivity.class);
+//                startActivity(intentAbrirTelaLogin);
             }
         });
 
@@ -148,6 +191,7 @@ public class Inicial extends HelperAux {
             @Override
             public void onClick(View v) {
                 //intent para politica de privacidade
+                MyCustomAlertDialog(Inicial.this, getString(R.string.politica_de_privacidade), "LKASHDLKSAHDLKH", Message.popUpMsg, false);
             }
         });
 
@@ -155,6 +199,7 @@ public class Inicial extends HelperAux {
             @Override
             public void onClick(View v) {
                 //intent para termos de uso
+                MyCustomAlertDialog(Inicial.this, getString(R.string.termos_de_servico), "LKASHDLsssKSAHDLKH", Message.msgDone, false);
             }
         });
 
@@ -269,6 +314,34 @@ public class Inicial extends HelperAux {
 
     }
 
+    private void validarLogin() {
 
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        autenticacao.signInWithEmailAndPassword(usuarios.getEmail(), usuarios.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if (task.isSuccessful()){
+
+                    abrirTelaPrincipal();
+                    Toast.makeText(Inicial.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(Inicial.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void abrirTelaPrincipal(){
+        Intent intentAbrirTelaPrincipal = new Intent(Inicial.this, HomeActivity.class);
+        startActivity(intentAbrirTelaPrincipal);
+        dialog.dismiss();
+    }
+
+    public void abreCadastroUsuario(){
+        Intent intent = new Intent(Inicial.this, CadastroActivity.class);
+        startActivity(intent);
+        dialog.dismiss();
+    }
 
 }

@@ -2,7 +2,6 @@ package com.digitalflow.belchior.appbelchior.Activity;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,12 +19,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Inicial {
 
     private EditText edtEmail;
     private EditText edtSenha;
-    private TextView tvAbreCadastro;
-    private Button AbrirbtnLogar;
+    private TextView textViewCadastro;
+    private Button btnLogin;
     private FirebaseAuth autenticacao;
     private Usuarios usuarios;
 
@@ -39,11 +38,11 @@ public class LoginActivity extends AppCompatActivity {
 
         edtEmail = (EditText) findViewById(R.id.edtEmail);
         edtSenha = (EditText) findViewById(R.id.edtSenha);
-        tvAbreCadastro = (TextView) findViewById(R.id.tvAbreCadastro);
-        AbrirbtnLogar = (Button) findViewById(R.id.btnLogar);
+        textViewCadastro = (TextView) findViewById(R.id.textViewCadastro);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
 
 
-        AbrirbtnLogar.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
@@ -58,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-        tvAbreCadastro.setOnClickListener(new View.OnClickListener() {
+        textViewCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 abreCadastroUsuario();
@@ -86,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
     public void abrirTelaPrincipal(){
         Intent intentAbrirTelaPrincipal = new Intent(LoginActivity.this, HomeActivity.class);
         startActivity(intentAbrirTelaPrincipal);
+        dialog.dismiss();
     }
 
     public void abreCadastroUsuario(){
