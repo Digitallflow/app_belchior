@@ -70,11 +70,19 @@ public class Inicial extends HelperAux {
         setContentView(R.layout.activity_inicial);
 
 
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        btnAbrirTelaLogin = (Button)findViewById(R.id.btnLogin);
+        btnAbrirTelaCadastro = (Button)findViewById(R.id.btnCadastrar);
+        btnAbrirLoginGoogle = (Button)findViewById(R.id.btnLoginGoogle);
+        mCallbackManager = CallbackManager.Factory.create();
+//        btbnAbrirLoginFacebook = (LoginButton)findViewById(R.id.btnLoginFacebook);
+        btnCustomFB = (Button)findViewById(R.id.btnCustomFb);
+        textViewPoliticPrivacity = (TextView)findViewById(R.id.textViewPoliticPrivacity);
+        textViewTermsOfUse = (TextView)findViewById(R.id.textViewTermsOfUse);
+
+        //Define back button
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,42 +91,29 @@ public class Inicial extends HelperAux {
             }
         });
 
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-
-        btnAbrirTelaLogin = (Button)findViewById(R.id.btnLogin);
-        btnAbrirTelaCadastro = (Button)findViewById(R.id.btnCadastrar);
-        btnAbrirLoginGoogle = (Button)findViewById(R.id.btnLoginGoogle);
-        mCallbackManager = CallbackManager.Factory.create();
-        btbnAbrirLoginFacebook = (LoginButton)findViewById(R.id.btnLoginFacebook);
-        btnCustomFB = (Button)findViewById(R.id.btnCustomFb);
-        textViewPoliticPrivacity = (TextView)findViewById(R.id.textViewPoliticPrivacity);
-        textViewTermsOfUse = (TextView)findViewById(R.id.textViewTermsOfUse);
-
-        btbnAbrirLoginFacebook.setReadPermissions("email","public_profile");
-
-        btbnAbrirLoginFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                firebaseLogin(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-
-            }
-        });
+//        btbnAbrirLoginFacebook.setReadPermissions("email","public_profile");
+//
+//        btbnAbrirLoginFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                firebaseLogin(loginResult.getAccessToken());
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//
+//            }
+//
+//            @Override
+//            public void onError(FacebookException error) {
+//
+//            }
+//        });
 
         LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 graphRequest(loginResult.getAccessToken());
-
-
             }
 
             @Override
@@ -191,7 +186,7 @@ public class Inicial extends HelperAux {
             @Override
             public void onClick(View v) {
                 //intent para politica de privacidade
-                MyCustomAlertDialog(Inicial.this, getString(R.string.politica_de_privacidade), "LKASHDLKSAHDLKH", Message.popUpMsg, false);
+                MyCustomAlertDialog(Inicial.this, getString(R.string.politica_de_privacidade), getString(R.string.politica_de_privacidade_texto), Message.popUpMsg, false);
             }
         });
 
@@ -199,7 +194,7 @@ public class Inicial extends HelperAux {
             @Override
             public void onClick(View v) {
                 //intent para termos de uso
-                MyCustomAlertDialog(Inicial.this, getString(R.string.termos_de_servico), "LKASHDLsssKSAHDLKH", Message.msgDone, false);
+                MyCustomAlertDialog(Inicial.this, getString(R.string.termos_de_servico), getString(R.string.termos_de_uso_texto), Message.popUpMsg, false);
             }
         });
 
