@@ -149,7 +149,9 @@ public class Inicial extends HelperAux {
                                         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                Usuarios user = documentSnapshot.toObject(Usuarios.class);
+                                                Usuarios user = Usuarios.getInstance();
+                                                Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+//                                                user = documentSnapshot.toObject(Usuarios.class);
                                                 Log.w("laksd", "+++++++++++++++++++++++++++++ adding document++++++++++++++++++++++++++++++++++++++++++");
                                                 //fazer thread de carregamento
                                             }

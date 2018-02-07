@@ -28,7 +28,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class Usuarios {
     private String id, email, pass, firstName, lastName, birth, sex;
 
-    private static Usuarios instance;
+    private volatile static Usuarios instance = new Usuarios();
 
     private Usuarios() {
 
@@ -55,11 +55,15 @@ public class Usuarios {
 //        this.sex = sex;
 //    }
 
-    public static synchronized Usuarios getInstance() {
-        if (instance == null) {
-            instance = new Usuarios();
-        }
+    public static Usuarios getInstance() {
+//        if (instance == null) {
+//            instance = new Usuarios();
+//        }
         return instance;
+    }
+
+    public static void setInstance(Usuarios user){
+        instance = user;
     }
     public void salvar() {
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
