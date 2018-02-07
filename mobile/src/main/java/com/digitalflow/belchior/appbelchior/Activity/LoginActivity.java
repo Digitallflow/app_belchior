@@ -49,7 +49,7 @@ public class LoginActivity extends Inicial {
 
                     usuarios = new Usuarios();
                     usuarios.setEmail(edtEmail.getText().toString());
-                    usuarios.setSenha(edtSenha.getText().toString());
+                    usuarios.setPass(edtSenha.getText().toString());
 
                     validarLogin();
                 } else {
@@ -60,14 +60,15 @@ public class LoginActivity extends Inicial {
         textViewCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 abreCadastroUsuario();
             }
         });
     }
     private void validarLogin() {
 
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        autenticacao.signInWithEmailAndPassword(usuarios.getEmail(), usuarios.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        autenticacao = ConfiguracaoFirebase.getFirebaseAuth();
+        autenticacao.signInWithEmailAndPassword(usuarios.getEmail(), usuarios.getPass()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 

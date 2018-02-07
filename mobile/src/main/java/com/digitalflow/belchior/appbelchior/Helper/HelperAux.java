@@ -2,12 +2,15 @@ package com.digitalflow.belchior.appbelchior.Helper;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.digitalflow.belchior.appbelchior.Activity.HomeActivity;
+import com.digitalflow.belchior.appbelchior.Activity.Inicial;
 import com.digitalflow.belchior.appbelchior.R;
 
 /**
@@ -33,13 +36,16 @@ public class HelperAux  extends AppCompatActivity {
        }
    }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if(item.getItemId() == android.R.id.home)
-//            finish();
-//        return super.onOptionsItemSelected(item);
-//    }
-    
+   public void openActivity(Class<?> cls, AlertDialog dialog) {
+       Intent intent = new Intent(getApplicationContext(), cls);
+       startActivity(intent);
+       dialog.dismiss();
+   }
+
+    public void openActivity(Class<?> cls) {
+        Intent intent = new Intent(getApplicationContext(), cls);
+        startActivity(intent);
+    }
 
     public boolean MyCustomAlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo){
         final boolean[] bool = new boolean[1];

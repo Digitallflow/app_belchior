@@ -15,9 +15,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.VideoView;
 
+import com.digitalflow.belchior.appbelchior.Helper.HelperAux;
 import com.digitalflow.belchior.appbelchior.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends HelperAux {
     private Button AbrirTelaInicial;
     private AudioManager audioManager;
 
@@ -34,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnConectar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentAbrirTelaInicial = new Intent(MainActivity.this, Inicial.class);
-                startActivity(intentAbrirTelaInicial);
+                openActivity(Inicial.class);
+//                Intent intentAbrirTelaInicial = new Intent(MainActivity.this, Inicial.class);
+//                startActivity(intentAbrirTelaInicial);
             }
         });
 

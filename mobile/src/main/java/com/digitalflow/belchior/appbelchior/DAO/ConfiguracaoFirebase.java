@@ -20,7 +20,7 @@ public class ConfiguracaoFirebase {
         }
             return referenciaFirebase;
     }
-    public static FirebaseAuth getFirebaseAutenticacao(){
+    public static FirebaseAuth getFirebaseAuth(){
         if(autenticacao == null){
             autenticacao = FirebaseAuth.getInstance();
         }

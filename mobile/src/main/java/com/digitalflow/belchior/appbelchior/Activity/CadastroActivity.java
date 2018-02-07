@@ -65,16 +65,16 @@ public class CadastroActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(edtCadSenha.getText().toString().equals(edtCadConfirmarSenha.getText().toString())){
                     usuarios = new Usuarios();
-                    usuarios.setNome(edtCadNome.getText().toString());
+                    usuarios.setFirstName(edtCadNome.getText().toString());
                     usuarios.setEmail(edtCadEmail.getText().toString());
-                    usuarios.setSobrenome(edtCadSobrenome.getText().toString());
-                    usuarios.setSenha(edtCadSenha.getText().toString());
-                    usuarios.setNascimento(edtCadNasc.getText().toString());
+                    usuarios.setLastName(edtCadSobrenome.getText().toString());
+                    usuarios.setPass(edtCadSenha.getText().toString());
+                    usuarios.setBirth(edtCadNasc.getText().toString());
 
                     if(rbFeminino.isChecked()){
-                        usuarios.setSexo("Feminino");
+                        usuarios.setSex("Feminino");
                     }else{
-                        usuarios.setSexo("Masculino");
+                        usuarios.setSex("Masculino");
                     }
                     cadastrarUsuario();
                 }
@@ -88,10 +88,10 @@ public class CadastroActivity extends AppCompatActivity {
     }
 
     private void cadastrarUsuario(){
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        autenticacao = ConfiguracaoFirebase.getFirebaseAuth();
         autenticacao.createUserWithEmailAndPassword(
                 usuarios.getEmail(),
-                usuarios.getSenha()
+                usuarios.getPass()
         ).addOnCompleteListener(CadastroActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -105,7 +105,7 @@ public class CadastroActivity extends AppCompatActivity {
                     usuarios.salvar();
 
                     Preferencias preferencias = new Preferencias(CadastroActivity.this);
-                    preferencias.salvarUsuarioPreferencias(identificadorUsuario, usuarios.getNome());
+                    preferencias.salvarUsuarioPreferencias(identificadorUsuario, usuarios.getFirstName());
 
                     abrirLoginUsuario();
 

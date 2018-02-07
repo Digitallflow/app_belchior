@@ -1,8 +1,12 @@
 package com.digitalflow.belchior.appbelchior.Entidades;
 
 import com.digitalflow.belchior.appbelchior.DAO.ConfiguracaoFirebase;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,47 +16,63 @@ import java.util.Map;
  */
 
 public class Usuarios {
-    private String id;
-    private String email;
-    private String senha;
-    private String nome;
-    private String sobrenome;
-    private String nascimento;
-    private String sexo;
+    private String id, email, pass, firstName, lastName, birth, sex;
 
-    public Usuarios(){
+    public Usuarios() {
 
     }
 
-    public void salvar(){
+    public Usuarios(String id, String email, String pass, String firstName,
+                    String lastName, String birth, String sex) {
+        this.id = id;
+        this.email = email;
+        this.pass = pass;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birth = birth;
+        this.sex = sex;
+    }
+
+    public Usuarios(String email, String pass, String firstName,
+                    String lastName, String birth, String sex) {
+        this.email = email;
+        this.pass = pass;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birth = birth;
+        this.sex = sex;
+    }
+
+    public void salvar() {
         DatabaseReference referenciaFirebase = ConfiguracaoFirebase.getFirebase();
         referenciaFirebase.child("usuario").child(String.valueOf(getId())).setValue(this);
     }
 
+
     @Exclude
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap() {
         HashMap<String, Object> hashMapUsuario = new HashMap<>();
 
         hashMapUsuario.put("id", getId());
         hashMapUsuario.put("email", getEmail());
-        hashMapUsuario.put("senha", getSenha());
-        hashMapUsuario.put("nome", getNome());
-        hashMapUsuario.put("sobrenome", getSobrenome());
-        hashMapUsuario.put("nascimento", getNascimento());
-        hashMapUsuario.put("sexo", getSexo());
+        hashMapUsuario.put("pass", getPass());
+        hashMapUsuario.put("firstName", getFirstName());
+        hashMapUsuario.put("lastName", getLastName());
+        hashMapUsuario.put("birth", getBirth());
+        hashMapUsuario.put("sex", getSex());
 
         return hashMapUsuario;
 
     }
 
     public String getId() {
-
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
     }
+
     public String getEmail() {
         return email;
     }
@@ -61,43 +81,43 @@ public class Usuarios {
         this.email = email;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getPass() {
+        return pass;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setPass(String pass) {
+        this.pass = pass;
     }
 
-    public String getNome() {
-        return nome;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setFirstName(String fristName) {
+        this.firstName = fristName;
     }
 
-    public String getSobrenome() {
-        return sobrenome;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getNascimento() {
-        return nascimento;
+    public String getBirth() {
+        return birth;
     }
 
-    public void setNascimento(String nascimento) {
-        this.nascimento = nascimento;
+    public void setBirth(String birth) {
+        this.birth = birth;
     }
 
-    public String getSexo() {
-        return sexo;
+    public String getSex() {
+        return sex;
     }
 
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Button;
 
 
 import com.digitalflow.belchior.appbelchior.DAO.ConfiguracaoFirebase;
+import com.digitalflow.belchior.appbelchior.DAO.Crud;
 import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
 import com.digitalflow.belchior.appbelchior.Helper.HelperAux;
 import com.digitalflow.belchior.appbelchior.R;
@@ -37,30 +38,27 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import static com.digitalflow.belchior.appbelchior.DAO.Crud.*;
+
 
 public class Inicial extends HelperAux {
     //implements GoogleApiClient.OnConnectionFailedListener
-    private Button btnAbrirTelaLogin;
-    private Button btnAbrirTelaCadastro;
-    private Button btnAbrirLoginGoogle;
-    private LoginButton btbnAbrirLoginFacebook;
-    private Button btnCustomFB;
-    private TextView textViewTermsOfUse;
-    private  TextView textViewPoliticPrivacity;
+    private Button btnAbrirTelaLogin, btnAbrirTelaCadastro, btnAbrirLoginGoogle, btnCustomFB, btnLogin;
+    private TextView textViewTermsOfUse, textViewPoliticPrivacity, textViewCadastro;
+    private EditText edtEmail, edtSenha;
+    private FirebaseAuth auth;
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
-    private FirebaseAuth autenticacao;
+    private Usuarios user, usuarios;
     public AlertDialog dialog;
-    private EditText edtEmail;
-    private EditText edtSenha;
-    private TextView textViewCadastro;
-    private Button btnLogin;
-    private Usuarios usuarios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +67,9 @@ public class Inicial extends HelperAux {
               //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_inicial);
 
-
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        auth = ConfiguracaoFirebase.getFirebaseAuth();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        //FirebaseUser currentUser = auth.getCurrentUser();
         btnAbrirTelaLogin = (Button)findViewById(R.id.btnLogin);
         btnAbrirTelaCadastro = (Button)findViewById(R.id.btnCadastrar);
         btnAbrirLoginGoogle = (Button)findViewById(R.id.btnLoginGoogle);
@@ -90,30 +89,11 @@ public class Inicial extends HelperAux {
                 finish();
             }
         });
-
-//        btbnAbrirLoginFacebook.setReadPermissions("email","public_profile");
-//
-//        btbnAbrirLoginFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-//            @Override
-//            public void onSuccess(LoginResult loginResult) {
-//                firebaseLogin(loginResult.getAccessToken());
-//            }
-//
-//            @Override
-//            public void onCancel() {
-//
-//            }
-//
-//            @Override
-//            public void onError(FacebookException error) {
-//
-//            }
-//        });
-
+        
         LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                graphRequest(loginResult.getAccessToken());
+                firebaseLogin(loginResult.getAccessToken());
             }
 
             @Override
@@ -146,39 +126,55 @@ public class Inicial extends HelperAux {
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
-
-
                 dialog.show();
+
                 btnLogin.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
+                            auth = ConfiguracaoFirebase.getFirebaseAuth();
+                            auth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
 
-                            usuarios = new Usuarios();
-                            usuarios.setEmail(edtEmail.getText().toString());
-                            usuarios.setSenha(edtSenha.getText().toString());
+                                    if (task.isSuccessful()){
+                                        usuarios = new Usuarios();
+//                                        usuarios.setEmail(edtEmail.getText().toString());
+//                                        usuarios.setPass(edtSenha.getText().toString());
+//                                        usuarios.setId(auth.getUid());
+//                                        Crud.setUser(usuarios);
 
-                            validarLogin();
+                                        usuarios = Crud.getUsers(auth.getUid());
+                                        Toast.makeText(Inicial.this, usuarios.getPass(), Toast.LENGTH_SHORT).show();
+//                                        usuarios = new Usuarios();
+//                                        usuarios.setEmail(edtEmail.getText().toString());
+//                                        usuarios.setSenha(edtSenha.getText().toString());
+//                                        usuarios.setId(auth.getUid());
+//                                        Crud.setUser(usuarios);
+                                        //openActivity(HomeActivity.class, dialog);
+                                    } else {
+                                        Toast.makeText(Inicial.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                         } else {
-                            Toast.makeText(Inicial.this, "Preencha os campos de email e senha!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Inicial.this, "Preencha os campos de email e senha! ", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+
                 textViewCadastro.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        abreCadastroUsuario();
+                        openActivity(CadastroActivity.class, dialog);
                     }
                 });
-//                Intent intentAbrirTelaLogin = new Intent(Inicial.this, LoginActivity.class);
-//                startActivity(intentAbrirTelaLogin);
             }
         });
 
         btnAbrirTelaCadastro.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                Intent intentAbrirTelaCadastro = new Intent(Inicial.this, CadastroActivity.class);
-                startActivity(intentAbrirTelaCadastro);
+                openActivity(CadastroActivity.class, dialog);
             }
         });
 
@@ -229,7 +225,7 @@ public class Inicial extends HelperAux {
 //        startActivityForResult(intent, 1);
 //    }
 //    private void signOut(){
-//        autenticacao.signOut();
+//        auth.signOut();
 //        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
 //            @Override
 //            public void onResult(@NonNull Status status) {
@@ -252,7 +248,7 @@ public class Inicial extends HelperAux {
 //    }
 //    private void firebaseLogin(GoogleSignInAccount account){
 //        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-//        autenticacao.signInWithCredential(credential)
+//        auth.signInWithCredential(credential)
 //                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 //                    @Override
 //                    public void onComplete(@NonNull Task<AuthResult> task) {
@@ -268,75 +264,53 @@ public class Inicial extends HelperAux {
 //    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 //        Toast.makeText(Inicial.this, "Falha na autenticação", Toast.LENGTH_SHORT).show();
 //    }
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
-    private void firebaseLogin(AccessToken token){
+
+    private void firebaseLogin(final AccessToken token){
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        autenticacao.signInWithCredential(credential)
+        auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            startActivity(new Intent(Inicial.this, MainActivity.class));
-                            finish();
+
+                            GraphRequest request = GraphRequest.newMeRequest(token,new GraphRequest.GraphJSONObjectCallback(){
+
+                                @Override
+                                public void onCompleted(JSONObject object, GraphResponse response) {
+
+
+                                    try {//object.toString();
+                                        Toast.makeText(getApplicationContext(),object.getString("id"),Toast.LENGTH_LONG).show();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            });
+
+                            Bundle b = new Bundle();
+                            b.putString("fields","id,email,first_name,last_name,picture.type(large)");
+                            request.setParameters(b);
+                            request.executeAsync();
+
+                            FirebaseUser user = auth.getCurrentUser();
+
+                            // update user firebase
+                            // updateUI(user)
+                            //finish();
+                            openActivity(HomeActivity.class);
                         }else {
                             Toast.makeText(Inicial.this, "Falha na autenticação", Toast.LENGTH_SHORT).show();
+//                            updateUI(null);
                         }
                     }
                 });
-    }
-
-    public void graphRequest(AccessToken token){
-        GraphRequest request = GraphRequest.newMeRequest(token,new GraphRequest.GraphJSONObjectCallback(){
-
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-
-
-                Toast.makeText(getApplicationContext(),object.toString(),Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-        Bundle b = new Bundle();
-        b.putString("fields","id,email,first_name,last_name,picture.type(large)");
-        request.setParameters(b);
-        request.executeAsync();
-
-    }
-
-    private void validarLogin() {
-
-        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        autenticacao.signInWithEmailAndPassword(usuarios.getEmail(), usuarios.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                if (task.isSuccessful()){
-
-                    abrirTelaPrincipal();
-                    Toast.makeText(Inicial.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(Inicial.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    public void abrirTelaPrincipal(){
-        Intent intentAbrirTelaPrincipal = new Intent(Inicial.this, HomeActivity.class);
-        startActivity(intentAbrirTelaPrincipal);
-        dialog.dismiss();
-    }
-
-    public void abreCadastroUsuario(){
-        Intent intent = new Intent(Inicial.this, CadastroActivity.class);
-        startActivity(intent);
-        dialog.dismiss();
     }
 
 }
