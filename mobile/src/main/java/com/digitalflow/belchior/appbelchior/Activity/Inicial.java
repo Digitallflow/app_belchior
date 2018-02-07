@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -21,6 +22,8 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 
 import android.widget.EditText;
@@ -39,6 +42,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
@@ -57,39 +62,41 @@ public class Inicial extends HelperAux {
     private FirebaseAuth auth;
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
-    private Usuarios user, usuarios;
+   // public Usuarios user;
     public AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-              //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //  WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_inicial);
 
+        //user = Usuarios.getInstance();
+
+        /* +++++++++++ FIREBASE CONFIGURATION +++++++++++ */
         auth = ConfiguracaoFirebase.getFirebaseAuth();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        //FirebaseUser currentUser = auth.getCurrentUser();
-        btnAbrirTelaLogin = (Button)findViewById(R.id.btnLogin);
-        btnAbrirTelaCadastro = (Button)findViewById(R.id.btnCadastrar);
-        btnAbrirLoginGoogle = (Button)findViewById(R.id.btnLoginGoogle);
+        /* ++++++++++++++++++++++++++++++++++++++++++++++ */
+
+        btnAbrirTelaLogin = (Button) findViewById(R.id.btnLogin);
+        btnAbrirTelaCadastro = (Button) findViewById(R.id.btnCadastrar);
+        btnAbrirLoginGoogle = (Button) findViewById(R.id.btnLoginGoogle);
         mCallbackManager = CallbackManager.Factory.create();
-//        btbnAbrirLoginFacebook = (LoginButton)findViewById(R.id.btnLoginFacebook);
-        btnCustomFB = (Button)findViewById(R.id.btnCustomFb);
-        textViewPoliticPrivacity = (TextView)findViewById(R.id.textViewPoliticPrivacity);
-        textViewTermsOfUse = (TextView)findViewById(R.id.textViewTermsOfUse);
+        btnCustomFB = (Button) findViewById(R.id.btnCustomFb);
+        textViewPoliticPrivacity = (TextView) findViewById(R.id.textViewPoliticPrivacity);
+        textViewTermsOfUse = (TextView) findViewById(R.id.textViewTermsOfUse);
 
         //Define back button
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        
+
         LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -110,19 +117,19 @@ public class Inicial extends HelperAux {
         btnCustomFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(Inicial.this, Arrays.asList("public_profile", "email","user_friends"));
+                LoginManager.getInstance().logInWithReadPermissions(Inicial.this, Arrays.asList("public_profile", "email", "user_friends"));
             }
         });
 
-        btnAbrirTelaLogin.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
+        btnAbrirTelaLogin.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(Inicial.this);
                 View mView = getLayoutInflater().inflate(R.layout.activity_login, null);
 
                 edtEmail = (EditText) mView.findViewById(R.id.edtEmail);
-                edtSenha = (EditText)  mView.findViewById(R.id.edtSenha);
-                textViewCadastro = (TextView)  mView.findViewById(R.id.textViewCadastro);
-                btnLogin = (Button)  mView.findViewById(R.id.btnLogin);
+                edtSenha = (EditText) mView.findViewById(R.id.edtSenha);
+                textViewCadastro = (TextView) mView.findViewById(R.id.textViewCadastro);
+                btnLogin = (Button) mView.findViewById(R.id.btnLogin);
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
@@ -132,26 +139,34 @@ public class Inicial extends HelperAux {
                     @Override
                     public void onClick(View view) {
                         if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
-                            auth = ConfiguracaoFirebase.getFirebaseAuth();
+                           // auth = ConfiguracaoFirebase.getFirebaseAuth();
                             auth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-
-                                    if (task.isSuccessful()){
-                                        usuarios = new Usuarios();
-//                                        usuarios.setEmail(edtEmail.getText().toString());
-//                                        usuarios.setPass(edtSenha.getText().toString());
-//                                        usuarios.setId(auth.getUid());
-//                                        Crud.setUser(usuarios);
-
-                                        usuarios = Crud.getUsers(auth.getUid());
-                                        Toast.makeText(Inicial.this, usuarios.getPass(), Toast.LENGTH_SHORT).show();
-//                                        usuarios = new Usuarios();
-//                                        usuarios.setEmail(edtEmail.getText().toString());
-//                                        usuarios.setSenha(edtSenha.getText().toString());
-//                                        usuarios.setId(auth.getUid());
-//                                        Crud.setUser(usuarios);
-                                        //openActivity(HomeActivity.class, dialog);
+                                    if (task.isSuccessful()) {
+                                        //load user info from database to Singleton
+                                        DocumentReference docRef = db.collection("users").document(auth.getUid());
+                                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                Usuarios user = documentSnapshot.toObject(Usuarios.class);
+                                                Log.w("laksd", "+++++++++++++++++++++++++++++ adding document++++++++++++++++++++++++++++++++++++++++++");
+                                                //fazer thread de carregamento
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("laksd", "Error adding document", e);
+                                                //exibir dialogo de erro
+                                            }
+                                        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                               Usuarios u = Usuarios.getInstance();
+                                                Toast.makeText(Inicial.this, u.getPass(), Toast.LENGTH_SHORT).show();
+                                                openActivity(HomeActivity.class, dialog);
+                                            }
+                                        });
                                     } else {
                                         Toast.makeText(Inicial.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
                                     }
@@ -172,8 +187,8 @@ public class Inicial extends HelperAux {
             }
         });
 
-        btnAbrirTelaCadastro.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
+        btnAbrirTelaCadastro.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
                 openActivity(CadastroActivity.class, dialog);
             }
         });
@@ -193,7 +208,6 @@ public class Inicial extends HelperAux {
                 MyCustomAlertDialog(Inicial.this, getString(R.string.termos_de_servico), getString(R.string.termos_de_uso_texto), Message.popUpMsg, false);
             }
         });
-
 
 
 //        btnAbrirLoginGoogle.setOnClickListener(new View.OnClickListener() {
@@ -264,29 +278,29 @@ public class Inicial extends HelperAux {
 //    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 //        Toast.makeText(Inicial.this, "Falha na autenticação", Toast.LENGTH_SHORT).show();
 //    }
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void firebaseLogin(final AccessToken token){
+    private void firebaseLogin(final AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
 
-                            GraphRequest request = GraphRequest.newMeRequest(token,new GraphRequest.GraphJSONObjectCallback(){
+                            GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
 
                                 @Override
                                 public void onCompleted(JSONObject object, GraphResponse response) {
 
 
                                     try {//object.toString();
-                                        Toast.makeText(getApplicationContext(),object.getString("id"),Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), object.getString("id"), Toast.LENGTH_LONG).show();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -295,7 +309,7 @@ public class Inicial extends HelperAux {
                             });
 
                             Bundle b = new Bundle();
-                            b.putString("fields","id,email,first_name,last_name,picture.type(large)");
+                            b.putString("fields", "id,email,first_name,last_name,picture.type(large)");
                             request.setParameters(b);
                             request.executeAsync();
 
@@ -305,7 +319,7 @@ public class Inicial extends HelperAux {
                             // updateUI(user)
                             //finish();
                             openActivity(HomeActivity.class);
-                        }else {
+                        } else {
                             Toast.makeText(Inicial.this, "Falha na autenticação", Toast.LENGTH_SHORT).show();
 //                            updateUI(null);
                         }

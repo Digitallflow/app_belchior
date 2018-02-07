@@ -47,7 +47,7 @@ public class LoginActivity extends Inicial {
             public void onClick(View view) {
                 if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
 
-                    usuarios = new Usuarios();
+                   // usuarios = new Usuarios();
                     usuarios.setEmail(edtEmail.getText().toString());
                     usuarios.setPass(edtSenha.getText().toString());
 

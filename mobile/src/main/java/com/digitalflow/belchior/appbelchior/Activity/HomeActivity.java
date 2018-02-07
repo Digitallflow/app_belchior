@@ -1,6 +1,7 @@
 package com.digitalflow.belchior.appbelchior.Activity;
 
 import android.graphics.Bitmap;
+import android.hardware.usb.UsbInterface;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +11,9 @@ import android.widget.ImageView;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
 import com.digitalflow.belchior.appbelchior.R;
 
 public class HomeActivity extends AppCompatActivity {
@@ -30,8 +33,10 @@ public class HomeActivity extends AppCompatActivity {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent,0);
+//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                startActivityForResult(intent,0);
+                Usuarios user = Usuarios.getInstance();
+                Toast.makeText(getApplicationContext(), user.getPass(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -26,9 +26,11 @@
 
     <EditText
         android:id="@+id/edtEmail"
-        android:layout_width="298dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:drawableLeft="@drawable/ic_email_black_24px"
         android:drawablePadding="10dp"
         android:hint="@string/email"
@@ -41,9 +43,11 @@
 
     <EditText
         android:id="@+id/edtSenha"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:drawableLeft="@drawable/ic_lock_white_24px"
         android:drawablePadding="10dp"
         android:hint="@string/senha"
@@ -56,7 +60,7 @@
 
     <Button
         android:id="@+id/btnLogin"
-        android:layout_width="0dp"
+        android:layout_width="299dp"
         android:layout_height="65dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="4dp"

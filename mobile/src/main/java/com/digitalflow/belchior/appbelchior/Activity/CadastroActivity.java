@@ -64,7 +64,7 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(edtCadSenha.getText().toString().equals(edtCadConfirmarSenha.getText().toString())){
-                    usuarios = new Usuarios();
+                    //usuarios = new Usuarios();
                     usuarios.setFirstName(edtCadNome.getText().toString());
                     usuarios.setEmail(edtCadEmail.getText().toString());
                     usuarios.setLastName(edtCadSobrenome.getText().toString());
