@@ -20,39 +20,39 @@
             android:layout_width="match_parent"
             android:inputType="textEmailAddress"
             android:layout_height="wrap_content"
-            android:hint="E-mail" />
+            android:hint="@string/edtEmail" />
         <EditText
             android:id="@+id/edtCadSenha"
             android:layout_width="match_parent"
             android:inputType="textPassword"
             android:layout_height="wrap_content"
-            android:hint="Senha" />
+            android:hint="@string/edtSenha" />
         <EditText
             android:id="@+id/edtCadConfirmarSenha"
             android:layout_width="match_parent"
             android:inputType="textPassword"
             android:layout_height="wrap_content"
-            android:hint="Confirmar Senha" />
+            android:hint="@string/edtConfSenha" />
         <EditText
             android:id="@+id/edtCadNome"
             android:layout_width="match_parent"
             android:inputType="textCapCharacters"
             android:layout_height="wrap_content"
-            android:hint="Nome" />
+            android:hint="@string/edtNome" />
 
         <EditText
             android:id="@+id/edtCadSobrenome"
             android:layout_width="match_parent"
             android:inputType="textCapCharacters"
             android:layout_height="wrap_content"
-            android:hint="Sobrenome" />
+            android:hint="@string/edtSobrenome" />
 
         <EditText
             android:id="@+id/edtCadNasc"
             android:layout_width="match_parent"
             android:inputType="date"
             android:layout_height="wrap_content"
-            android:hint="Nascimento" />
+            android:hint="@string/edtData" />
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -64,21 +64,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/rbFeminino"
-                android:text="Feminino"
+                android:text="@string/rdFeminino"
                 android:checked="true" />
 
             <RadioButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/rbMasculino"
-                android:text="Masculino" />
+                android:text="@string/rdMasculino" />
 
         </RadioGroup>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btnCadastrar"
-            android:text="Cadastrar"/>
+            android:text="@string/btnCadastrar"/>
         </LinearLayout>
 
     </ScrollView>
