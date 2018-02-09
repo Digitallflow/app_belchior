@@ -112,13 +112,13 @@ public class CadastroActivity extends AppCompatActivity {
                     try {
                         throw task.getException();
                     } catch (FirebaseAuthWeakPasswordException e){
-                        erroExcecao = "Digite uma senha mais forte, no mínimo 8 caracteres(letras e números)";
+                        erroExcecao = getString(R.string.msg_erro_senha_minimo);
                     } catch (FirebaseAuthInvalidCredentialsException e){
-                        erroExcecao = "Email digitado é inválido. Digite um novo Email";
+                        erroExcecao = getString(R.string.msg_erro_email_valido);
                     } catch (FirebaseAuthUserCollisionException e){
-                        erroExcecao = "Email cadastrado no sistema!";
+                        erroExcecao = getString(R.string.msg_erro_cadastro_existente);
                     } catch (Exception e){
-                        erroExcecao = "Erro ao efetuar o cadastro";
+                        erroExcecao = getString(R.string.msg_erro_cadastro);
                         e.printStackTrace();
                     }
                     Toast.makeText(CadastroActivity.this, R.string.error + erroExcecao, Toast.LENGTH_LONG).show();
