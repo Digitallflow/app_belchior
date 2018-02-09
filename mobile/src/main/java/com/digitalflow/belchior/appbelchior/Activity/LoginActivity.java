@@ -36,10 +36,10 @@ public class LoginActivity extends Inicial {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
 
-        edtEmail = findViewById(R.id.edtEmail);
-        edtSenha = findViewById(R.id.edtSenha);
-        textViewCadastro = findViewById(R.id.textViewCadastro);
-        btnLogin = findViewById(R.id.btnLogin);
+        edtEmail = (EditText) findViewById(R.id.edtEmail);
+        edtSenha = (EditText) findViewById(R.id.edtSenha);
+        textViewCadastro = (TextView) findViewById(R.id.textViewCadastro);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +53,7 @@ public class LoginActivity extends Inicial {
 
                     validarLogin();
                 } else {
-                    Toast.makeText(LoginActivity.this, R.string.msg_campos_email_senha, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Preencha os campos de e-mail e senha!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -75,9 +75,9 @@ public class LoginActivity extends Inicial {
                 if (task.isSuccessful()){
 
                     abrirTelaPrincipal();
-                    Toast.makeText(LoginActivity.this, R.string.msg_login_sucesso, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(LoginActivity.this, R.string.msg_usuario_senha, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
                 }
             }
         });
