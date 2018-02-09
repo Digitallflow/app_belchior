@@ -36,6 +36,11 @@
     <string name="msg_falha_autenticacao">Falha na autenticação</string>
     <string name="msg_login_sucesso">Login efetuado com sucesso</string>
 
+    <string name="msg_erro_senha_minimo">Digite uma senha mais forte, no mínimo 8 caracteres(letras e números)</string>
+    <string name="msg_erro_email_valido">Email digitado é inválido. Digite um novo Email</string>
+    <string name="msg_erro_cadastro_existente"> Email cadastrado no sistema!</string>
+    <string name="msg_erro_cadastro">Erro ao efetuar o cadastro</string>
+
 
     <string name="nao_possui_login">Não possui login?</string>
     <string name="login">Login</string>

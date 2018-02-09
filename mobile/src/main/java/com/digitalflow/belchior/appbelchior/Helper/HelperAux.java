@@ -125,7 +125,7 @@ public class HelperAux  extends AppCompatActivity {
                     btnYes.setVisibility(View.INVISIBLE);
                     btnNo.setText(R.string.ok);
                 }
-                textViewTitle.setText(getString(R.string.question, title));
+                textViewTitle.setText(getString(R.string.info, title));
                 textViewSubTitle.setText(subtitle);
                 break;
             case popUpMsg:
