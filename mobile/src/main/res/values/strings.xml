@@ -24,6 +24,7 @@
     <string name="sucesso">Sucesso! %1$s</string>
     <string name="ok">OK</string>
     <string name="info">Informação: %1$s</string>
+    <string name="question">Informação: %1$s</string>
     <string name="error">Erro</string>
     <string name="yes">OK</string>
     <string name="no">Cancelar</string>

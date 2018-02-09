@@ -47,7 +47,7 @@ public class HelperAux  extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public boolean MyCustomAlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo){
+    public boolean AlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo){
         final boolean[] bool = new boolean[1];
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
         View mView = getLayoutInflater().inflate(R.layout.aux_helper, null);

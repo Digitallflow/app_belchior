@@ -204,7 +204,7 @@ public class Inicial extends HelperAux {
             @Override
             public void onClick(View v) {
                 //intent para politica de privacidade
-                MyCustomAlertDialog(Inicial.this, getString(R.string.politica_de_privacidade), getString(R.string.politica_de_privacidade_texto), Message.popUpMsg, false);
+                AlertDialog(Inicial.this, getString(R.string.politica_de_privacidade), getString(R.string.politica_de_privacidade_texto), Message.popUpMsg, false);
             }
         });
 
@@ -212,7 +212,7 @@ public class Inicial extends HelperAux {
             @Override
             public void onClick(View v) {
                 //intent para termos de uso
-                MyCustomAlertDialog(Inicial.this, getString(R.string.termos_de_servico), getString(R.string.termos_de_uso_texto), Message.popUpMsg, false);
+                AlertDialog(Inicial.this, getString(R.string.termos_de_servico), getString(R.string.termos_de_uso_texto), Message.popUpMsg, false);
             }
         });
 
@@ -307,7 +307,16 @@ public class Inicial extends HelperAux {
 
 
                                     try {//object.toString();
-                                        Toast.makeText(getApplicationContext(), object.getString("id"), Toast.LENGTH_LONG).show();
+                                        //Toast.makeText(getApplicationContext(), object.getString("id"), Toast.LENGTH_LONG).show();
+                                        Usuarios user = Usuarios.getInstance();
+                                        user.setId(auth.getUid());
+                                        user.setFbId("https://facebook.com/" + object.getString("id"));
+                                        user.setEmail(object.getString("email"));
+                                        user.setFirstName(object.getString("first_name"));
+                                        user.setLastName(object.getString("last_name"));
+                                        Crud.setUser(user);
+                                        Usuarios.setInstance(user);
+                                        openActivity(HomeActivity.class);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -316,16 +325,15 @@ public class Inicial extends HelperAux {
                             });
 
                             Bundle b = new Bundle();
-                            b.putString("fields", "id,email,first_name,last_name,picture.type(large)");
+                            b.putString("fields", "id,email,first_name,last_name");
                             request.setParameters(b);
                             request.executeAsync();
 
-                            FirebaseUser user = auth.getCurrentUser();
 
                             // update user firebase
                             // updateUI(user)
                             //finish();
-                            openActivity(HomeActivity.class);
+
                         } else {
                             Toast.makeText(Inicial.this, R.string.msg_falha_autenticacao, Toast.LENGTH_SHORT).show();
 //                            updateUI(null);

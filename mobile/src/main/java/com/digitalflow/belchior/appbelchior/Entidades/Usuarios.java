@@ -26,7 +26,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class Usuarios {
-    private String id, email, pass, firstName, lastName, birth, sex;
+    private String id, email, pass, firstName, lastName, birth, sex, fbId, gId;
 
     private volatile static Usuarios instance = new Usuarios();
 
@@ -35,7 +35,8 @@ public class Usuarios {
     }
 
 //    public Usuarios(String id, String email, String pass, String firstName,
-//                    String lastName, String birth, String sex) {
+//                    String lastName, String birth, String sex, String fbId,
+//                    String gId) {
 //        this.id = id;
 //        this.email = email;
 //        this.pass = pass;
@@ -43,6 +44,8 @@ public class Usuarios {
 //        this.lastName = lastName;
 //        this.birth = birth;
 //        this.sex = sex;
+//        this.fbId = fbId;
+//        this.gId = gId;
 //    }
 //
 //    public Usuarios(String email, String pass, String firstName,
@@ -176,5 +179,21 @@ public class Usuarios {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public void setFbId(String fbId) {
+        this.fbId = fbId;
+    }
+
+    public void setgId(String gId) {
+        this.gId = gId;
+    }
+
+    public String getFbId() {
+        return fbId;
+    }
+
+    public String getgId() {
+        return gId;
     }
 }

@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Usuarios user = Usuarios.getInstance();
-                Toast.makeText(getApplicationContext(), user.getPass(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), user.getId(), Toast.LENGTH_SHORT).show();
             }
         });
     }
