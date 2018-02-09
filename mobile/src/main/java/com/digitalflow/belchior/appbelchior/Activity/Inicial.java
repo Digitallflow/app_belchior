@@ -56,13 +56,18 @@ import static com.digitalflow.belchior.appbelchior.DAO.Crud.*;
 
 public class Inicial extends HelperAux {
     //implements GoogleApiClient.OnConnectionFailedListener
-    private Button btnAbrirTelaLogin, btnAbrirTelaCadastro, btnAbrirLoginGoogle, btnCustomFB, btnLogin;
+    private Button btnAbrirTelaLogin, btnAbrirTelaCadastro, btnAbrirLoginGoogle, btnCustomFB,
+                   btnLogin;
+
     private TextView textViewTermsOfUse, textViewPoliticPrivacity, textViewCadastro;
+
     private EditText edtEmail, edtSenha;
+
     private FirebaseAuth auth;
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
    // public Usuarios user;
+
     public AlertDialog dialog;
 
     @Override
@@ -79,16 +84,16 @@ public class Inicial extends HelperAux {
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         /* ++++++++++++++++++++++++++++++++++++++++++++++ */
 
-        btnAbrirTelaLogin = (Button) findViewById(R.id.btnLogin);
-        btnAbrirTelaCadastro = (Button) findViewById(R.id.btnCadastrar);
-        btnAbrirLoginGoogle = (Button) findViewById(R.id.btnLoginGoogle);
+        btnAbrirTelaLogin = findViewById(R.id.btnLogin);
+        btnAbrirTelaCadastro = findViewById(R.id.btnCadastrar);
+        btnAbrirLoginGoogle = findViewById(R.id.btnLoginGoogle);
         mCallbackManager = CallbackManager.Factory.create();
-        btnCustomFB = (Button) findViewById(R.id.btnCustomFb);
-        textViewPoliticPrivacity = (TextView) findViewById(R.id.textViewPoliticPrivacity);
-        textViewTermsOfUse = (TextView) findViewById(R.id.textViewTermsOfUse);
+        btnCustomFB = findViewById(R.id.btnCustomFb);
+        textViewPoliticPrivacity = findViewById(R.id.textViewPoliticPrivacity);
+        textViewTermsOfUse = findViewById(R.id.textViewTermsOfUse);
 
         //Define back button
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,10 +131,10 @@ public class Inicial extends HelperAux {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(Inicial.this);
                 View mView = getLayoutInflater().inflate(R.layout.activity_login, null);
 
-                edtEmail = (EditText) mView.findViewById(R.id.edtEmail);
-                edtSenha = (EditText) mView.findViewById(R.id.edtSenha);
-                textViewCadastro = (TextView) mView.findViewById(R.id.textViewCadastro);
-                btnLogin = (Button) mView.findViewById(R.id.btnLogin);
+                edtEmail = mView.findViewById(R.id.edtEmail);
+                edtSenha = mView.findViewById(R.id.edtSenha);
+                textViewCadastro = mView.findViewById(R.id.textViewCadastro);
+                btnLogin = mView.findViewById(R.id.btnLogin);
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
@@ -170,12 +175,12 @@ public class Inicial extends HelperAux {
                                             }
                                         });
                                     } else {
-                                        Toast.makeText(Inicial.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Inicial.this, R.string.msg_usuario_senha, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                         } else {
-                            Toast.makeText(Inicial.this, "Preencha os campos de email e senha! ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Inicial.this, R.string.msg_campos_email_senha, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -322,7 +327,7 @@ public class Inicial extends HelperAux {
                             //finish();
                             openActivity(HomeActivity.class);
                         } else {
-                            Toast.makeText(Inicial.this, "Falha na autenticação", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Inicial.this, R.string.msg_falha_autenticacao, Toast.LENGTH_SHORT).show();
 //                            updateUI(null);
                         }
                     }

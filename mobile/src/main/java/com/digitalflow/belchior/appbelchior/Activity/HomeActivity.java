@@ -27,14 +27,12 @@ public class HomeActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_home);
 
-        ImageButton btnCamera = (ImageButton)findViewById(R.id.btnCamera);
-        imageView = (ImageView)findViewById(R.id.imageView);
+        ImageButton btnCamera = findViewById(R.id.btnCamera);
+        imageView = findViewById(R.id.imageView);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                startActivityForResult(intent,0);
                 Usuarios user = Usuarios.getInstance();
                 Toast.makeText(getApplicationContext(), user.getPass(), Toast.LENGTH_SHORT).show();
             }

@@ -28,17 +28,15 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class CadastroActivity extends AppCompatActivity {
 
-    private EditText edtCadEmail;
-    private EditText edtCadSenha;
-    private EditText edtCadConfirmarSenha;
-    private EditText edtCadNome;
-    private EditText edtCadSobrenome;
-    private EditText edtCadNasc;
-    private RadioButton rbMasculino;
-    private RadioButton rbFeminino;
+    private EditText edtCadEmail, edtCadSenha, edtCadConfirmarSenha, edtCadNome, edtCadSobrenome,
+                     edtCadNasc;
+
+    private RadioButton rbMasculino, rbFeminino;
+
     private Button btnCadastrar;
 
     private Usuarios usuarios;
+
     private FirebaseAuth autenticacao;
 
 
@@ -50,15 +48,15 @@ public class CadastroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cadastro);
 
 
-        edtCadEmail = (EditText)findViewById(R.id.edtCadEmail);
-        edtCadNome = (EditText)findViewById(R.id.edtCadNome);
-        edtCadSobrenome = (EditText)findViewById(R.id.edtCadSobrenome);
-        edtCadSenha = (EditText)findViewById(R.id.edtCadSenha);
-        edtCadConfirmarSenha = (EditText)findViewById(R.id.edtCadConfirmarSenha);
-        edtCadNasc = (EditText)findViewById(R.id.edtCadNasc);
-        rbMasculino = (RadioButton)findViewById(R.id.rbMasculino);
-        rbFeminino = (RadioButton)findViewById(R.id.rbFeminino);
-        btnCadastrar = (Button)findViewById(R.id.btnCadastrar);
+        edtCadEmail = findViewById(R.id.edtCadEmail);
+        edtCadNome = findViewById(R.id.edtCadNome);
+        edtCadSobrenome = findViewById(R.id.edtCadSobrenome);
+        edtCadSenha = findViewById(R.id.edtCadSenha);
+        edtCadConfirmarSenha = findViewById(R.id.edtCadConfirmarSenha);
+        edtCadNasc = findViewById(R.id.edtCadNasc);
+        rbMasculino = findViewById(R.id.rbMasculino);
+        rbFeminino = findViewById(R.id.rbFeminino);
+        btnCadastrar = findViewById(R.id.btnCadastrar);
 
         btnCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +77,7 @@ public class CadastroActivity extends AppCompatActivity {
                     cadastrarUsuario();
                 }
                 else{
-                    Toast.makeText(CadastroActivity.this, "As senhas não são correspondentes", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CadastroActivity.this, R.string.msg_erro_senha, Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -96,7 +94,7 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(CadastroActivity.this, "Usuário cadastrado com sucesso!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CadastroActivity.this, R.string.msg_cadastro_sucesso, Toast.LENGTH_LONG).show();
 
                     String identificadorUsuario = Base64Custom.codificarBase64(usuarios.getEmail());
 
@@ -123,7 +121,7 @@ public class CadastroActivity extends AppCompatActivity {
                         erroExcecao = "Erro ao efetuar o cadastro";
                         e.printStackTrace();
                     }
-                    Toast.makeText(CadastroActivity.this, "Erro: " + erroExcecao, Toast.LENGTH_LONG).show();
+                    Toast.makeText(CadastroActivity.this, R.string.error + erroExcecao, Toast.LENGTH_LONG).show();
                 }
 
             }
