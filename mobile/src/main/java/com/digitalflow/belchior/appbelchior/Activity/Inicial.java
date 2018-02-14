@@ -1,12 +1,19 @@
 package com.digitalflow.belchior.appbelchior.Activity;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 
@@ -49,17 +56,21 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import static android.view.View.INVISIBLE;
+
 
 public class Inicial extends HelperAux {
     //implements GoogleApiClient.OnConnectionFailedListener
     private Button btnAbrirTelaLogin, btnAbrirTelaCadastro, btnAbrirLoginGoogle, btnCustomFB, btnLogin;
     private TextView textViewTermsOfUse, textViewPoliticPrivacity, textViewCadastro;
+    private ConstraintLayout mainConstraintLayout;
     private EditText edtEmail, edtSenha;
     private FirebaseAuth auth;
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
    // public Usuarios user;
     public AlertDialog dialog;
+    Animation animation ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +93,7 @@ public class Inicial extends HelperAux {
         btnCustomFB = (Button) findViewById(R.id.btnCustomFb);
         textViewPoliticPrivacity = (TextView) findViewById(R.id.textViewPoliticPrivacity);
         textViewTermsOfUse = (TextView) findViewById(R.id.textViewTermsOfUse);
+        mainConstraintLayout = (ConstraintLayout) findViewById(R.id.mainConstraintLayout);
 
         //Define back button
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -129,6 +141,8 @@ public class Inicial extends HelperAux {
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                fadeViews(mainConstraintLayout, dialog);
                 dialog.show();
 
                 btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -199,6 +213,8 @@ public class Inicial extends HelperAux {
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                fadeViews(mainConstraintLayout, dialog);
                 dialog.show();
             }
         });

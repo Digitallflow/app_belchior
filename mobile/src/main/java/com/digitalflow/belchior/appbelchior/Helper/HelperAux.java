@@ -2,11 +2,16 @@ package com.digitalflow.belchior.appbelchior.Helper;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.digitalflow.belchior.appbelchior.Activity.HomeActivity;
@@ -45,6 +50,42 @@ public class HelperAux  extends AppCompatActivity {
     public void openActivity(Class<?> cls) {
         Intent intent = new Intent(getApplicationContext(), cls);
         startActivity(intent);
+    }
+
+    public void fadeButtons(final ConstraintLayout layout, AlertDialog dialog) {
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            final View v = layout.getChildAt(i);
+            if (v instanceof Button) {
+                v.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_out));
+                v.setVisibility(View.INVISIBLE);
+                //v.setVisibility(View.GONE); //Or View.INVISIBLE to keep its bounds
+            }
+        }
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                for (int i = 0; i < layout.getChildCount(); i++) {
+                    final View v = layout.getChildAt(i);
+                    if (v instanceof Button) {
+                        v.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_in));
+                        v.setVisibility(View.VISIBLE);
+                    }
+
+                }
+            }
+        });
+    }
+
+    public void fadeViews(final ConstraintLayout layout, AlertDialog dialog) {
+        layout.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_out));
+        layout.setVisibility(View.INVISIBLE);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                layout.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_in));
+                layout.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     public boolean AlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo){

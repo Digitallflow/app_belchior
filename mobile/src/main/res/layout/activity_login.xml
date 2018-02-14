@@ -5,7 +5,6 @@
     android:id="@+id/ConstraintLayout"
     android:layout_width="300dp"
     android:layout_height="300dp"
-    android:background="@drawable/background_app_belchior"
     android:gravity="center"
     tools:context=".Activity.LoginActivity"
     tools:layout_editor_absoluteY="25dp">
@@ -13,7 +12,6 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundVideo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

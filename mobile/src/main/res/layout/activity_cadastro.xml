@@ -15,7 +15,6 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:background="@drawable/background_app_belchior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -24,8 +23,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/backgroundVideo">
+            android:layout_height="match_parent">
 
             <EditText
                 android:id="@+id/edtCadConfirmarSenha"
