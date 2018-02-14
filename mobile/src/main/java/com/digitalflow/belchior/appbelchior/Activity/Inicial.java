@@ -21,7 +21,6 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +40,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -50,8 +48,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
-
-import static com.digitalflow.belchior.appbelchior.DAO.Crud.*;
 
 
 public class Inicial extends HelperAux {
@@ -127,7 +123,7 @@ public class Inicial extends HelperAux {
                 View mView = getLayoutInflater().inflate(R.layout.activity_login, null);
 
                 edtEmail = (EditText) mView.findViewById(R.id.edtEmail);
-                edtSenha = (EditText) mView.findViewById(R.id.edtSenha);
+                edtSenha = (EditText) mView.findViewById(R.id.edtCadSenha);
                 textViewCadastro = (TextView) mView.findViewById(R.id.textViewCadastro);
                 btnLogin = (Button) mView.findViewById(R.id.btnLogin);
 
@@ -191,7 +187,19 @@ public class Inicial extends HelperAux {
 
         btnAbrirTelaCadastro.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                openActivity(CadastroActivity.class, dialog);
+               // openActivity(CadastroActivity.class);
+
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(Inicial.this);
+                View mView = getLayoutInflater().inflate(R.layout.activity_cadastro, null);
+//
+//                edtEmail = (EditText) mView.findViewById(R.id.edtEmail);
+//                edtSenha = (EditText) mView.findViewById(R.id.edtCadSenha);
+//                textViewCadastro = (TextView) mView.findViewById(R.id.textViewCadastro);
+//                btnLogin = (Button) mView.findViewById(R.id.btnLogin);
+
+                mBuilder.setView(mView);
+                dialog = mBuilder.create();
+                dialog.show();
             }
         });
 

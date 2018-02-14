@@ -1,87 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/background_app_belchior"
-    tools:context=".Activity.CadastroActivity">
+    tools:context=".Activity.CadastroActivity"
+    tools:layout_editor_absoluteY="25dp">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <EditText
-            android:id="@+id/edtCadEmail"
-            android:layout_width="match_parent"
-            android:inputType="textEmailAddress"
-            android:layout_height="wrap_content"
-            android:hint="@string/edtEmail" />
-        <EditText
-            android:id="@+id/edtCadSenha"
-            android:layout_width="match_parent"
-            android:inputType="textPassword"
-            android:layout_height="wrap_content"
-            android:hint="@string/edtSenha" />
-        <EditText
-            android:id="@+id/edtCadConfirmarSenha"
-            android:layout_width="match_parent"
-            android:inputType="textPassword"
-            android:layout_height="wrap_content"
-            android:hint="@string/edtConfSenha" />
-        <EditText
-            android:id="@+id/edtCadNome"
-            android:layout_width="match_parent"
-            android:inputType="textCapCharacters"
-            android:layout_height="wrap_content"
-            android:hint="@string/edtNome" />
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="0dp"
+        android:layout_height="472dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/background_app_belchior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
-            android:id="@+id/edtCadSobrenome"
-            android:layout_width="match_parent"
-            android:inputType="textCapCharacters"
-            android:layout_height="wrap_content"
-            android:hint="@string/edtSobrenome" />
 
-        <EditText
-            android:id="@+id/edtCadNasc"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:inputType="date"
-            android:layout_height="wrap_content"
-            android:hint="@string/edtData" />
+            android:layout_height="match_parent"
+            android:background="@color/backgroundVideo">
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rgSexo"
-            android:gravity="center">
+            <EditText
+                android:id="@+id/edtCadConfirmarSenha"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/passw_black"
+                android:drawablePadding="10dp"
+                android:hint="@string/edtConfSenha"
+                android:inputType="textPassword"
+                android:textColor="@color/patternWhite"
+                android:textColorLink="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtCadSenha" />
+
+            <EditText
+                android:id="@+id/edtCadNome"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/acc_box_black"
+                android:drawablePadding="10dp"
+                android:hint="@string/edtNome"
+                android:inputType="textCapCharacters"
+                android:textColor="@color/patternWhite"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtCadConfirmarSenha" />
+
+            <EditText
+                android:id="@+id/edtCadNasc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/date_black"
+                android:drawablePadding="10dp"
+                android:hint="@string/edtData"
+                android:inputType="date"
+                android:textColor="@color/patternWhite"
+                android:textColorLink="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtCadSobrenome" />
+
+            <EditText
+                android:id="@+id/edtCadSenha"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/passw_black"
+                android:drawablePadding="10dp"
+                android:hint="@string/edtSenha"
+                android:inputType="textPassword"
+                android:textColor="@color/patternWhite"
+                android:textColorLink="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtCadEmail" />
+
+            <EditText
+                android:id="@+id/edtCadSobrenome"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/acc_box_black"
+                android:drawablePadding="10dp"
+                android:hint="@string/edtSobrenome"
+                android:inputType="textCapCharacters"
+                android:textColor="@color/patternWhite"
+                android:textColorLink="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtCadNome" />
 
             <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rbFeminino"
-                android:text="@string/rdFeminino"
-                android:checked="true" />
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/rbMasculino"
-                android:text="@string/rdMasculino" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/rdMasculino"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtCadNasc" />
 
-        </RadioGroup>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnCadastrar"
-            android:text="@string/btnCadastrar"/>
-        </LinearLayout>
+            <EditText
+                android:id="@+id/edtCadEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/email_black"
+                android:drawablePadding="10dp"
+                android:hint="@string/edtEmail"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/patternWhite"
+                android:textColorLink="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </ScrollView>
+            <RadioButton
+                android:id="@+id/rbFeminino"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:checked="true"
+                android:text="@string/rdFeminino"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rbMasculino" />
+
+            <Button
+                android:id="@+id/btnCadastrar"
+                android:layout_width="320dp"
+                android:layout_height="65dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/botao_conectar"
+                android:text="@string/btnCadastrar"
+                android:textColor="@color/patternWhite"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rbFeminino" />
+        </android.support.constraint.ConstraintLayout>
 
 
-</LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.constraint.ConstraintLayout>

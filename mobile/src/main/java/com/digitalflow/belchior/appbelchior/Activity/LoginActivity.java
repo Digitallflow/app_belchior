@@ -37,7 +37,7 @@ public class LoginActivity extends Inicial {
         setContentView(R.layout.activity_login);
 
         edtEmail = (EditText) findViewById(R.id.edtEmail);
-        edtSenha = (EditText) findViewById(R.id.edtSenha);
+        edtSenha = (EditText) findViewById(R.id.edtCadSenha);
         textViewCadastro = (TextView) findViewById(R.id.textViewCadastro);
         btnLogin = (Button) findViewById(R.id.btnLogin);
 
