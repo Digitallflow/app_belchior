@@ -35,6 +35,7 @@
     <string name="msg_campos_email_senha"> Preencha os campos de email e senha! </string>
     <string name="msg_falha_autenticacao">Falha na autenticação</string>
     <string name="msg_login_sucesso">Login efetuado com sucesso</string>
+    <string name="msg_camera_default">Posicione corretamente</string>
 
     <string name="msg_erro_senha_minimo">Digite uma senha mais forte, no mínimo 8 caracteres(letras e números)</string>
     <string name="msg_erro_email_valido">Email digitado é inválido. Digite um novo Email</string>
