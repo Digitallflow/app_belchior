@@ -41,7 +41,7 @@ public class MainActivity extends HelperAux {
             }
         });
 
-        Slide slide = new Slide();
+       // Slide slide = new Slide();
 //        getWindow().setExitTransition(slide);
 
 
