@@ -86,7 +86,7 @@ public class CadastroActivity extends AppCompatActivity {
                     }else{
                         usuarios.setSex("Masculino");
                     }
-                    cadastrarUsuario();
+                    //cadastrarUsuario();
                 }
                 else{
                     Toast.makeText(CadastroActivity.this, "As senhas não são correspondentes", Toast.LENGTH_LONG).show();
@@ -97,48 +97,7 @@ public class CadastroActivity extends AppCompatActivity {
 
     }
 
-    private void cadastrarUsuario(){
-        autenticacao = ConfiguracaoFirebase.getFirebaseAuth();
-        autenticacao.createUserWithEmailAndPassword(
-                usuarios.getEmail(),
-                usuarios.getPass()
-        ).addOnCompleteListener(CadastroActivity.this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(CadastroActivity.this, "Usuário cadastrado com sucesso!", Toast.LENGTH_LONG).show();
 
-                    String identificadorUsuario = Base64Custom.codificarBase64(usuarios.getEmail());
-
-                    FirebaseUser usuarioFirebase = task.getResult().getUser();
-                    usuarios.setId(identificadorUsuario);
-                    usuarios.salvar();
-
-                    Preferencias preferencias = new Preferencias(CadastroActivity.this);
-                    preferencias.salvarUsuarioPreferencias(identificadorUsuario, usuarios.getFirstName());
-
-                    abrirLoginUsuario();
-
-                } else{
-                    String erroExcecao = "";
-                    try {
-                        throw task.getException();
-                    } catch (FirebaseAuthWeakPasswordException e){
-                        erroExcecao = getString(R.string.msg_erro_senha_minimo);
-                    } catch (FirebaseAuthInvalidCredentialsException e){
-                        erroExcecao = getString(R.string.msg_erro_email_valido);
-                    } catch (FirebaseAuthUserCollisionException e){
-                        erroExcecao = getString(R.string.msg_erro_cadastro_existente);
-                    } catch (Exception e){
-                        erroExcecao = getString(R.string.msg_erro_cadastro);
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(CadastroActivity.this, "Erro: " + erroExcecao, Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-    }
     public void abrirLoginUsuario(){
         Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
         startActivity(intent);

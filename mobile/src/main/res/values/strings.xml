@@ -61,5 +61,9 @@
     <string name="rdFeminino">Feminino</string>
     <string name="rdMasculino">Masculino</string>
     <string name="cadastro">Cadastro</string>
+    <string name="registro">Registro</string>
+    <string name="insira_seus_dados">Insira seus dados para concluir a autenticação</string>
+    <string name="não_informado">Não Informado</string>
+    <string name="outro">Outro</string>
 
 </resources>

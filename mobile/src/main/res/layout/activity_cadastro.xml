@@ -11,8 +11,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
-        android:layout_height="472dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="534dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,7 +22,73 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="29dp">
+
+            <TextView
+                android:id="@+id/textViewLogin2"
+                android:layout_width="301dp"
+                android:layout_height="17dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/insira_seus_dados"
+                android:textAlignment="center"
+                android:textColor="@color/patternWhite"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewAutenticacao2" />
+
+            <TextView
+                android:id="@+id/textViewAutenticacao2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/registro"
+                android:textColor="@color/patternWhite"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/edtCadEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/email_black"
+                android:drawablePadding="10dp"
+                android:hint="@string/edtEmail"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/patternWhite"
+                android:textColorLink="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewLogin2" />
+
+            <EditText
+                android:id="@+id/edtCadSenha"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/passw_black"
+                android:drawablePadding="10dp"
+                android:hint="@string/edtSenha"
+                android:inputType="textPassword"
+                android:textColor="@color/patternWhite"
+                android:textColorLink="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtCadEmail" />
 
             <EditText
                 android:id="@+id/edtCadConfirmarSenha"
@@ -39,6 +104,7 @@
                 android:textColor="@color/patternWhite"
                 android:textColorLink="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edtCadSenha" />
 
@@ -55,42 +121,9 @@
                 android:inputType="textCapCharacters"
                 android:textColor="@color/patternWhite"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edtCadConfirmarSenha" />
-
-            <EditText
-                android:id="@+id/edtCadNasc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/date_black"
-                android:drawablePadding="10dp"
-                android:hint="@string/edtData"
-                android:inputType="date"
-                android:textColor="@color/patternWhite"
-                android:textColorLink="@color/colorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edtCadSobrenome" />
-
-            <EditText
-                android:id="@+id/edtCadSenha"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/passw_black"
-                android:drawablePadding="10dp"
-                android:hint="@string/edtSenha"
-                android:inputType="textPassword"
-                android:textColor="@color/patternWhite"
-                android:textColorLink="@color/colorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edtCadEmail" />
 
             <EditText
                 android:id="@+id/edtCadSobrenome"
@@ -106,50 +139,62 @@
                 android:textColor="@color/patternWhite"
                 android:textColorLink="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edtCadNome" />
 
-            <RadioButton
-                android:id="@+id/rbMasculino"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/rdMasculino"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edtCadNasc" />
-
             <EditText
-                android:id="@+id/edtCadEmail"
+                android:id="@+id/edtCadNasc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/email_black"
+                android:drawableLeft="@drawable/date_black"
                 android:drawablePadding="10dp"
-                android:hint="@string/edtEmail"
-                android:inputType="textEmailAddress"
+                android:hint="@string/edtData"
+                android:inputType="date"
                 android:textColor="@color/patternWhite"
                 android:textColorLink="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/edtCadSobrenome" />
 
-            <RadioButton
-                android:id="@+id/rbFeminino"
+            <RadioGroup
+                android:id="@+id/rgSexo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:checked="true"
-                android:text="@string/rdFeminino"
+                android:layout_marginTop="8dp"
+                android:checkedButton="@+id/rbFeminino"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rbMasculino" />
+                app:layout_constraintTop_toBottomOf="@+id/edtCadNasc">
+
+                <RadioButton
+                    android:id="@+id/rbFeminino"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:checked="false"
+                    android:text="@string/rdFeminino"
+                    app:layout_constraintEnd_toStartOf="@+id/rbOutro"
+                    app:layout_constraintStart_toStartOf="@+id/rbMasculino"
+                    app:layout_constraintTop_toBottomOf="@+id/rbMasculino" />
+
+                <RadioButton
+                    android:id="@+id/rbMasculino"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:checked="false"
+                    android:text="@string/rdMasculino"
+                    app:layout_constraintTop_toBottomOf="@+id/edtCadNasc"
+                    tools:layout_editor_absoluteX="37dp" />
+
+            </RadioGroup>
 
             <Button
                 android:id="@+id/btnCadastrar"
@@ -165,7 +210,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rbFeminino" />
+                app:layout_constraintTop_toBottomOf="@+id/rgSexo" />
+
         </android.support.constraint.ConstraintLayout>
 
 

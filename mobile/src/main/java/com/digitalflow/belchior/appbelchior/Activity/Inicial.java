@@ -20,7 +20,9 @@ import android.widget.Button;
 import com.digitalflow.belchior.appbelchior.DAO.ConfiguracaoFirebase;
 import com.digitalflow.belchior.appbelchior.DAO.Crud;
 import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
+import com.digitalflow.belchior.appbelchior.Helper.Base64Custom;
 import com.digitalflow.belchior.appbelchior.Helper.HelperAux;
+import com.digitalflow.belchior.appbelchior.Helper.Preferencias;
 import com.digitalflow.belchior.appbelchior.R;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -33,6 +35,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +51,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -60,17 +68,20 @@ import static android.view.View.INVISIBLE;
 
 
 public class Inicial extends HelperAux {
+    public AlertDialog dialog;
     //implements GoogleApiClient.OnConnectionFailedListener
-    private Button btnAbrirTelaLogin, btnAbrirTelaCadastro, btnAbrirLoginGoogle, btnCustomFB, btnLogin;
+    private Button btnAbrirTelaLogin, btnAbrirTelaCadastro, btnAbrirLoginGoogle, btnCustomFB;
+    private Button btnLogin;
+    private Button btnCadastrar;
     private TextView textViewTermsOfUse, textViewPoliticPrivacity, textViewCadastro;
     private ConstraintLayout mainConstraintLayout;
     private EditText edtEmail, edtSenha;
+    private EditText edtCadEmail, edtCadSenha, edtCadConfirmarSenha, edtCadNome, edtCadSobrenome, edtCadNascimento;
+    private RadioButton rbMasculino, rbFeminino, rbNaoInformado, rbOutro;
+    private RadioGroup rgSexo;
     private FirebaseAuth auth;
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
-   // public Usuarios user;
-    public AlertDialog dialog;
-    Animation animation ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +160,7 @@ public class Inicial extends HelperAux {
                     @Override
                     public void onClick(View view) {
                         if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
-                           // auth = ConfiguracaoFirebase.getFirebaseAuth();
+                            // auth = ConfiguracaoFirebase.getFirebaseAuth();
                             auth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -174,7 +185,7 @@ public class Inicial extends HelperAux {
                                         }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                               Usuarios u = Usuarios.getInstance();
+                                                Usuarios u = Usuarios.getInstance();
                                                 Toast.makeText(Inicial.this, u.getPass(), Toast.LENGTH_SHORT).show();
                                                 openActivity(HomeActivity.class, dialog);
                                             }
@@ -201,21 +212,98 @@ public class Inicial extends HelperAux {
 
         btnAbrirTelaCadastro.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-               // openActivity(CadastroActivity.class);
+                // openActivity(CadastroActivity.class);
 
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(Inicial.this);
                 View mView = getLayoutInflater().inflate(R.layout.activity_cadastro, null);
-//
-//                edtEmail = (EditText) mView.findViewById(R.id.edtEmail);
-//                edtSenha = (EditText) mView.findViewById(R.id.edtCadSenha);
-//                textViewCadastro = (TextView) mView.findViewById(R.id.textViewCadastro);
-//                btnLogin = (Button) mView.findViewById(R.id.btnLogin);
+
+                edtCadEmail = (EditText) mView.findViewById(R.id.edtCadEmail);
+                edtCadSenha = (EditText) mView.findViewById(R.id.edtCadSenha);
+                edtCadConfirmarSenha = (EditText) mView.findViewById(R.id.edtCadConfirmarSenha);
+                edtCadNome = (EditText) mView.findViewById(R.id.edtCadNome);
+                edtCadSobrenome = (EditText) mView.findViewById(R.id.edtCadSobrenome);
+                edtCadNascimento = (EditText) mView.findViewById(R.id.edtCadNasc);
+
+                rgSexo = (RadioGroup) findViewById(R.id.rgSexo);
+                rbMasculino = (RadioButton) mView.findViewById(R.id.rbMasculino);
+                rbFeminino = (RadioButton) mView.findViewById(R.id.rbFeminino);
+
+                btnCadastrar = (Button) mView.findViewById(R.id.btnCadastrar);
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 fadeViews(mainConstraintLayout, dialog);
                 dialog.show();
+
+                btnCadastrar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (edtCadSenha.getText().toString().equals(edtCadConfirmarSenha.getText().toString())) {
+                            auth.createUserWithEmailAndPassword(edtCadEmail.getText().toString(), edtCadSenha.getText().toString()).addOnCompleteListener(Inicial.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        final String[] userSex = new String[1];
+                                        final RadioGroup group = (RadioGroup) findViewById(R.id.rgSexo);
+                                        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                            @Override
+                                            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                                RadioButton rgButton = (RadioButton) group.findViewById(checkedId);
+                                                userSex[0] = rgButton.getText().toString();
+
+                                                for (int i = 0; i < group.getChildCount(); i++) {
+                                                    group.getChildAt(i).setEnabled(false);
+                                                }
+                                            }
+                                        });
+                                        //fazer exceçoes de edt vazio
+                                        Usuarios user = Usuarios.getInstance();
+                                        user.setId(auth.getUid());
+                                        user.setEmail(edtCadEmail.getText().toString());
+                                        user.setPass(edtCadSenha.getText().toString()); //decode string
+                                        user.setFirstName(edtCadNome.getText().toString());
+                                        user.setLastName(edtCadSobrenome.getText().toString());
+                                        user.setBirth(edtCadNascimento.getText().toString());
+                                        user.setSex(userSex[0]);
+                                        Crud.setUser(user);
+                                        Usuarios.setInstance(user);
+                                        openActivity(HomeActivity.class);
+
+//                                        String identificadorUsuario = Base64Custom.codificarBase64(usuarios.getEmail());
+//
+//                                        FirebaseUser usuarioFirebase = task.getResult().getUser();
+//                                        usuarios.setId(identificadorUsuario);
+//                                        usuarios.salvar();
+//
+//                                        Preferencias preferencias = new Preferencias(CadastroActivity.this);
+//                                        preferencias.salvarUsuarioPreferencias(identificadorUsuario, usuarios.getFirstName());
+//                                        //salvar usuario no singleton e na base de dados
+//                                        abrirLoginUsuario();
+
+                                    } else {
+                                        String erroExcecao = "";
+                                        try {
+                                            throw task.getException();
+                                        } catch (FirebaseAuthWeakPasswordException e) {
+                                            erroExcecao = getString(R.string.msg_erro_senha_minimo);
+                                        } catch (FirebaseAuthInvalidCredentialsException e) {
+                                            erroExcecao = getString(R.string.msg_erro_email_valido);
+                                        } catch (FirebaseAuthUserCollisionException e) {
+                                            erroExcecao = getString(R.string.msg_erro_cadastro_existente);
+                                        } catch (Exception e) {
+                                            erroExcecao = getString(R.string.msg_erro_cadastro);
+                                            e.printStackTrace();
+                                        }
+//                                        Toast.makeText(CadastroActivity.this, "Erro: " + erroExcecao, Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        } else {
+                            //senha incorreta, fazer o toast
+                        }
+                    }
+                });
             }
         });
 
@@ -306,10 +394,12 @@ public class Inicial extends HelperAux {
 //    }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent
+            data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
 
     private void firebaseLogin(final AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
