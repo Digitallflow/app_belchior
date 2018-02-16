@@ -152,7 +152,14 @@ public class Inicial extends HelperAux {
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                int sdk = android.os.Build.VERSION.SDK_INT;
+//
+//                if(sdk > android.os.Build.VERSION_CODES.JELLY_BEAN) {
+//                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                } else {
+//                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+//                }
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
                 fadeViews(mainConstraintLayout, dialog);
                 dialog.show();
 
@@ -232,7 +239,15 @@ public class Inicial extends HelperAux {
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                int sdk = android.os.Build.VERSION.SDK_INT;
+//
+//                if(sdk > android.os.Build.VERSION_CODES.JELLY_BEAN) {
+//                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+//                } else {
+//                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+               // }
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+
                 fadeViews(mainConstraintLayout, dialog);
                 dialog.show();
 
@@ -244,43 +259,20 @@ public class Inicial extends HelperAux {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        final String[] userSex = new String[1];
-                                        final RadioGroup group = (RadioGroup) findViewById(R.id.rgSexo);
-                                        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                                            @Override
-                                            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                                                RadioButton rgButton = (RadioButton) group.findViewById(checkedId);
-                                                userSex[0] = rgButton.getText().toString();
-
-                                                for (int i = 0; i < group.getChildCount(); i++) {
-                                                    group.getChildAt(i).setEnabled(false);
-                                                }
-                                            }
-                                        });
+                                        String userSex = rbMasculino.isChecked() ? "Masculino" : "Feminino";
                                         //fazer exceçoes de edt vazio
                                         Usuarios user = Usuarios.getInstance();
-                                        user.setId(auth.getUid());
+                                        FirebaseUser currentUser = auth.getCurrentUser();
+                                        user.setId(currentUser.getUid());
                                         user.setEmail(edtCadEmail.getText().toString());
                                         user.setPass(edtCadSenha.getText().toString()); //decode string
                                         user.setFirstName(edtCadNome.getText().toString());
                                         user.setLastName(edtCadSobrenome.getText().toString());
                                         user.setBirth(edtCadNascimento.getText().toString());
-                                        user.setSex(userSex[0]);
+                                        user.setSex(userSex);
                                         Crud.setUser(user);
                                         Usuarios.setInstance(user);
                                         openActivity(HomeActivity.class);
-
-//                                        String identificadorUsuario = Base64Custom.codificarBase64(usuarios.getEmail());
-//
-//                                        FirebaseUser usuarioFirebase = task.getResult().getUser();
-//                                        usuarios.setId(identificadorUsuario);
-//                                        usuarios.salvar();
-//
-//                                        Preferencias preferencias = new Preferencias(CadastroActivity.this);
-//                                        preferencias.salvarUsuarioPreferencias(identificadorUsuario, usuarios.getFirstName());
-//                                        //salvar usuario no singleton e na base de dados
-//                                        abrirLoginUsuario();
-
                                     } else {
                                         String erroExcecao = "";
                                         try {
@@ -300,7 +292,7 @@ public class Inicial extends HelperAux {
                                 }
                             });
                         } else {
-                            //senha incorreta, fazer o toast
+                            //senha nao confere, fazer o toast
                         }
                     }
                 });
