@@ -2,17 +2,25 @@ package com.digitalflow.belchior.appbelchior.Activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.hardware.usb.UsbInterface;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -31,134 +39,148 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.zxing.Result;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 
-public class HomeActivity extends AppCompatActivity {
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
+import static android.Manifest.permission.CAMERA;
+
+public class HomeActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     ImageView imageView;
+    ImageButton btnFlash;
     SurfaceView cameraPreview;
     TextView txtResult;
-    BarcodeDetector barcodeDetector;
-    CameraSource cameraSource;
-    final int RequestCameraPermissionID = 1001;
+
+    private static final int REQUEST_CAMERA = 1;
+    private ZXingScannerView scannerView;
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case RequestCameraPermissionID: {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
-                        return;
-                    }
-                    try {
-                        cameraSource.start(cameraPreview.getHolder());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-             }
-             break;
-         }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        scannerView = new ZXingScannerView(this);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_home);
+        setContentView(scannerView);
 
-//        ImageButton btnCamera = (ImageButton)findViewById(R.id.btnCamera);
-//        imageView = (ImageView)findViewById(R.id.imageView);
-
-//        btnCamera.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-////                startActivityForResult(intent,0);
-//                Usuarios user = Usuarios.getInstance();
-////                Toast.makeText(getApplicationContext(), user.getId(), Toast.LENGTH_SHORT).show();
 //
-//            }
-//        });
-        cameraPreview = (SurfaceView) findViewById(R.id.cameraPreview);
-        txtResult = (TextView) findViewById(R.id.txtResult);
+//        cameraPreview = (SurfaceView) findViewById(R.id.cameraPreview);
+//        txtResult = (TextView) findViewById(R.id.txtResult);
+//        btnFlash = (ImageButton) findViewById(R.id.btnFlash);
 
-        barcodeDetector = new BarcodeDetector.Builder(this)
-                .setBarcodeFormats(Barcode.QR_CODE)
-                .build();
-
-        cameraSource = new CameraSource
-                .Builder(this, barcodeDetector)
-                .setRequestedPreviewSize(640, 480)
-                .build();
-
-        cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.CAMERA}, RequestCameraPermissionID);
-                    return;
-                }
-                try{
-                    cameraSource.start(cameraPreview.getHolder());
-                } catch (IOException e){
-                    e.printStackTrace();
-                }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(checkPermission()){
+                Toast.makeText(HomeActivity.this, "Permitido", Toast.LENGTH_LONG).show();
+            } else {
+                requestPermission();
             }
+        }
 
-
-            @Override
-            public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                cameraSource.stop();
-            }
-        });
-        //END
-
-        barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
-            @Override
-            public void release() {
-
-            }
-
-            @Override
-            public void receiveDetections(Detector.Detections<Barcode> detections) {
-                final SparseArray<Barcode> qrcodes = detections.getDetectedItems();
-                if(qrcodes.size() != 0 ){
-                    txtResult.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Vibrator vibrator = (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                            vibrator.vibrate(1000);
-                            txtResult.setText(qrcodes.valueAt(0).displayValue);
-                            Toast.makeText(HomeActivity.this, "oie", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        Bitmap bitmap = (Bitmap)data.getExtras().get("data");
-//        imageView.setImageBitmap(bitmap);
-//    }
+    public boolean checkPermission(){
+        return (ContextCompat.checkSelfPermission(HomeActivity.this, CAMERA) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestPermission(){
+        ActivityCompat.requestPermissions(this, new String[]{CAMERA}, REQUEST_CAMERA);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permission[], int grantResult[]){
+        switch (requestCode){
+            case REQUEST_CAMERA:
+                if(grantResult.length > 0){
+                    boolean cameraAccepted = grantResult[0] == PackageManager.PERMISSION_GRANTED;
+                    if(cameraAccepted){
+                        Toast.makeText(HomeActivity.this, "Permitido", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(HomeActivity.this, "Não permitido", Toast.LENGTH_LONG).show();
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                            if(shouldShowRequestPermissionRationale(CAMERA)){
+                                displayAlertMessage("você precisa permitir o acesso a ambas as permissões",
+                                        new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            requestPermissions(new String[]{CAMERA}, REQUEST_CAMERA);
+                                        }
+                                    }
+                                });
+                                return;
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(checkPermission()){
+                if(scannerView == null){
+                    scannerView = new ZXingScannerView(this);
+                    setContentView(scannerView);
+                }
+                scannerView.setResultHandler(this);
+                scannerView.startCamera();
+            } else {
+                requestPermission();
+            }
+        }
+    }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        scannerView.stopCamera();
+    }
+
+    public void displayAlertMessage(String message, DialogInterface.OnClickListener listener){
+        new AlertDialog.Builder(HomeActivity.this)
+                .setMessage(message)
+                .setPositiveButton("OK", listener )
+                .setNegativeButton("Cancelar", null)
+                .create()
+                .show();
+    }
 
 
+    @Override
+    public void handleResult(Result result) {
+        final String myResult = result.getText();
+        Log.d("QRCodeScanner", result.getText());
+        Log.d("QRCodeScanner", result.getBarcodeFormat().toString());
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Scan Result");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                scannerView.resumeCameraPreview(HomeActivity.this);
+            }
+        });
+        builder.setNeutralButton("Visit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(myResult));
+                startActivity(browserIntent);
+            }
+        });
+        builder.setMessage(result.getText());
+        AlertDialog alert1 = builder.create();
+        alert1.show();
+    }
 }
 
