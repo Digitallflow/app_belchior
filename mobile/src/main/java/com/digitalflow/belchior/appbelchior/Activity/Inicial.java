@@ -260,7 +260,7 @@ public class Inicial extends HelperAux {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         String userSex = rbMasculino.isChecked() ? "Masculino" : "Feminino";
-                                        //fazer exceçoes de edt vazio
+                                        //fazer exceçoes em if de edt vazio
                                         Usuarios user = Usuarios.getInstance();
                                         FirebaseUser currentUser = auth.getCurrentUser();
                                         user.setId(currentUser.getUid());
