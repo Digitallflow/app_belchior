@@ -1,6 +1,7 @@
 package com.digitalflow.belchior.appbelchior.Activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 
@@ -152,13 +154,6 @@ public class Inicial extends HelperAux {
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
-//                int sdk = android.os.Build.VERSION.SDK_INT;
-//
-//                if(sdk > android.os.Build.VERSION_CODES.JELLY_BEAN) {
-//                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//                } else {
-//                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-//                }
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
                 fadeViews(mainConstraintLayout, dialog);
                 dialog.show();
@@ -166,8 +161,12 @@ public class Inicial extends HelperAux {
                 btnLogin.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                                .hideSoftInputFromWindow(edtSenha.getWindowToken(), 0);
+                        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                                .hideSoftInputFromWindow(edtEmail.getWindowToken(), 0);
+                        AlertDialog(dialog, Inicial.this, CadastroActivity.class,"ghSSSSSSSSSSjkl","ghSSSSSSSSSSjkl","ghSSSSSSSSSSjkl",true);
                         if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
-                            // auth = ConfiguracaoFirebase.getFirebaseAuth();
                             auth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -181,7 +180,6 @@ public class Inicial extends HelperAux {
                                                 Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
 //                                                user = documentSnapshot.toObject(Usuarios.class);
                                                 Log.w("laksd", "+++++++++++++++++++++++++++++ adding document++++++++++++++++++++++++++++++++++++++++++");
-                                                //fazer thread de carregamento
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -194,6 +192,7 @@ public class Inicial extends HelperAux {
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                 Usuarios u = Usuarios.getInstance();
                                                 Toast.makeText(Inicial.this, u.getPass(), Toast.LENGTH_SHORT).show();
+                                                dialog.dismiss();
                                                 openActivity(HomeActivity.class, dialog);
                                             }
                                         });
@@ -239,15 +238,7 @@ public class Inicial extends HelperAux {
 
                 mBuilder.setView(mView);
                 dialog = mBuilder.create();
-//                int sdk = android.os.Build.VERSION.SDK_INT;
-//
-//                if(sdk > android.os.Build.VERSION_CODES.JELLY_BEAN) {
-//                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
-//                } else {
-//                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-               // }
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
-
                 fadeViews(mainConstraintLayout, dialog);
                 dialog.show();
 

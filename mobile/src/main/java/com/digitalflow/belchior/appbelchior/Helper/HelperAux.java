@@ -4,19 +4,29 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.digitalflow.belchior.appbelchior.Activity.HomeActivity;
 import com.digitalflow.belchior.appbelchior.Activity.Inicial;
 import com.digitalflow.belchior.appbelchior.R;
+
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 /**
  * Created by MarllonS on 25/01/2018.
@@ -86,6 +96,45 @@ public class HelperAux  extends AppCompatActivity {
                 layout.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    public void AlertDialog(AlertDialog alert, Context inContext, Class<?> toCls, String title, String line1, String line2, boolean processing){
+       // alert.dismiss();
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
+        View mView = getLayoutInflater().inflate(R.layout.activity_layout, null);
+        ProgressBar progressBar2 = (ProgressBar) mView.findViewById(R.id.progressBar2);
+        TextView textViewTitle = (TextView) mView.findViewById(R.id.textViewTitle);
+        TextView textViewLine1 = (TextView) mView.findViewById(R.id.textViewLine1);
+        TextView textViewLine2 = (TextView) mView.findViewById(R.id.textViewLine2);
+        ImageView imageViewLock = (ImageView) mView.findViewById(R.id.imageViewLock);
+
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) progressBar2.getLayoutParams();
+
+        if (processing) {
+            params.setMarginStart(32);
+            dialog.setCancelable(false);
+            imageViewLock.setVisibility(View.GONE);
+            textViewTitle.setText(title);
+            textViewLine1.setText(line1);
+            textViewLine2.setText(line2);
+           //openActivity(toCls);
+        } else {
+            params.setMarginStart(0);
+            progressBar2.setVisibility(View.INVISIBLE);
+            textViewTitle.setText(title);
+            textViewLine1.setText(line1);
+            textViewLine2.setText(line2);
+            imageViewLock.setBackgroundResource(R.drawable.lock_animation);
+
+            AnimationDrawable mAnimation = (AnimationDrawable)imageViewLock.getBackground();
+            mAnimation.start();
+        }
+        progressBar2.setLayoutParams(params);
+        dialog.show();
     }
 
     public boolean AlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo){
