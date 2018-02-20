@@ -76,6 +76,7 @@
                     android:textAlignment="center"
                     android:textColor="@color/patternWhite"
                     app:layout_constraintBottom_toTopOf="@+id/textViewLine2"
+                    app:layout_constraintEnd_toEndOf="@+id/textViewLine2"
                     app:layout_constraintStart_toStartOf="@+id/textViewLine2" />
 
                 <TextView

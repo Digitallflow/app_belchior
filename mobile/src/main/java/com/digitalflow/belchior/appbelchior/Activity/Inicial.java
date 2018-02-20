@@ -165,7 +165,7 @@ public class Inicial extends HelperAux {
                                 .hideSoftInputFromWindow(edtSenha.getWindowToken(), 0);
                         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(edtEmail.getWindowToken(), 0);
-                        AlertDialog(dialog, Inicial.this, CadastroActivity.class,"ghSSSSSSSSSSjkl","ghSSSSSSSSSSjkl","ghSSSSSSSSSSjkl",true);
+                        final AlertDialog processDialog = AlertDialog(Inicial.this, "carregando", "Autenticando dados do usuário...", "", true);
                         if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
                             auth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -192,18 +192,21 @@ public class Inicial extends HelperAux {
                                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                 Usuarios u = Usuarios.getInstance();
                                                 Toast.makeText(Inicial.this, u.getPass(), Toast.LENGTH_SHORT).show();
-                                                dialog.dismiss();
-                                                openActivity(HomeActivity.class, dialog);
+                                                openActivity(HomeActivity.class, processDialog);
                                             }
                                         });
                                     } else {
+                                        processDialog.dismiss();
                                         Toast.makeText(Inicial.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                         } else {
+                            processDialog.dismiss();
                             Toast.makeText(Inicial.this, "Preencha os campos de email e senha! ", Toast.LENGTH_SHORT).show();
+
                         }
+
                     }
                 });
 

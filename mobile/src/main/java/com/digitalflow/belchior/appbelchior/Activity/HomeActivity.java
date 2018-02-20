@@ -65,6 +65,11 @@ public class HomeActivity extends AppCompatActivity{
 
     final int RequestCameraPermissionID = 1001;
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        //finish();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

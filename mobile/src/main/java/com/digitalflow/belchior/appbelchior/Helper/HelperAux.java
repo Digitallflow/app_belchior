@@ -98,7 +98,7 @@ public class HelperAux  extends AppCompatActivity {
         });
     }
 
-    public void AlertDialog(AlertDialog alert, Context inContext, Class<?> toCls, String title, String line1, String line2, boolean processing){
+    public AlertDialog AlertDialog(Context inContext, String title, String line1, String line2, boolean processing){
        // alert.dismiss();
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
@@ -135,6 +135,7 @@ public class HelperAux  extends AppCompatActivity {
         }
         progressBar2.setLayoutParams(params);
         dialog.show();
+        return dialog;
     }
 
     public boolean AlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo){
