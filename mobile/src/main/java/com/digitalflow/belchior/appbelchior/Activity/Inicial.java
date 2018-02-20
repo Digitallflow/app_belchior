@@ -75,7 +75,7 @@ public class Inicial extends HelperAux {
     private Button btnAbrirTelaLogin, btnAbrirTelaCadastro, btnAbrirLoginGoogle, btnCustomFB;
     private Button btnLogin;
     private Button btnCadastrar;
-    private TextView textViewTermsOfUse, textViewPoliticPrivacity, textViewCadastro;
+    private TextView textViewTermsOfUse, textViewPoliticPrivacity, textViewCadastro, textViewEsqueci;
     private ConstraintLayout mainConstraintLayout;
     private EditText edtEmail, edtSenha;
     private EditText edtCadEmail, edtCadSenha, edtCadConfirmarSenha, edtCadNome, edtCadSobrenome, edtCadNascimento;
@@ -150,6 +150,7 @@ public class Inicial extends HelperAux {
                 edtEmail = (EditText) mView.findViewById(R.id.edtEmail);
                 edtSenha = (EditText) mView.findViewById(R.id.edtCadSenha);
                 textViewCadastro = (TextView) mView.findViewById(R.id.textViewCadastro);
+                textViewEsqueci = (TextView) mView.findViewById(R.id.textViewEsqueci);
                 btnLogin = (Button) mView.findViewById(R.id.btnLogin);
 
                 mBuilder.setView(mView);
@@ -213,7 +214,15 @@ public class Inicial extends HelperAux {
                 textViewCadastro.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        openActivity(CadastroActivity.class, dialog);
+                        btnAbrirTelaCadastro.callOnClick()
+                    }
+                });
+
+                textViewEsqueci.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // Fazer função de esquecer a senha aqui
+                        // não esquecer de atualizar o singleton
                     }
                 });
             }
@@ -221,8 +230,6 @@ public class Inicial extends HelperAux {
 
         btnAbrirTelaCadastro.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                // openActivity(CadastroActivity.class);
-
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(Inicial.this);
                 View mView = getLayoutInflater().inflate(R.layout.activity_cadastro, null);
 

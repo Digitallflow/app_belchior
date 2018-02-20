@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ConstraintLayout"
     android:layout_width="300dp"
-    android:layout_height="300dp"
+    android:layout_height="350dp"
+    android:background="@drawable/shape"
     android:gravity="center"
     tools:context=".Activity.LoginActivity"
-    tools:layout_editor_absoluteY="25dp"
-    android:background="@drawable/shape">
+    tools:layout_editor_absoluteY="25dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,6 +17,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textViewEsqueci"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:text="@string/esqueci_senha"
+            android:textColor="@color/hiperlinkColor"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/btnLogin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.937"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textViewCadastro"
@@ -55,7 +71,7 @@
             android:id="@+id/edtCadSenha"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:backgroundTint="@color/patternWhite"
@@ -66,15 +82,16 @@
             android:textColor="@color/patternWhite"
             android:textColorHint="@color/patternHint"
             android:textColorLink="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/btnLogin"
+            app:layout_constraintBottom_toTopOf="@+id/textViewEsqueci"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textViewNaoPossuiLogin"
             android:layout_width="123dp"
             android:layout_height="22dp"
-            android:layout_marginStart="88dp"
+            android:layout_marginStart="72dp"
             android:gravity="center"
             android:text="@string/nao_possui_login"
             android:textColor="@color/patternWhite"

@@ -65,5 +65,6 @@
     <string name="insira_seus_dados">Insira seus dados para concluir a autenticação</string>
     <string name="não_informado">Não Informado</string>
     <string name="outro">Outro</string>
+    <string name="esqueci_senha">Esqueceu sua senha?</string>
 
 </resources>
