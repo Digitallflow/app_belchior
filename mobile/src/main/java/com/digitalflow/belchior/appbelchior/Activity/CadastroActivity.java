@@ -87,6 +87,18 @@ public class CadastroActivity extends AppCompatActivity {
                         usuarios.setSex("Masculino");
                     }
                     //cadastrarUsuario();
+                    autenticacao.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(CadastroActivity.this, "Enviado para: " + autenticacao.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                Toast.makeText(CadastroActivity.this, "E-mail não existente para autenticação", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
                 }
                 else{
                     Toast.makeText(CadastroActivity.this, "As senhas não são correspondentes", Toast.LENGTH_LONG).show();
@@ -102,6 +114,5 @@ public class CadastroActivity extends AppCompatActivity {
         Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
-
     }
 }

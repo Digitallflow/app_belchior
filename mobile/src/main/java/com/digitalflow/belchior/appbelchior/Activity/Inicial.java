@@ -167,11 +167,13 @@ public class Inicial extends HelperAux {
                         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(edtEmail.getWindowToken(), 0);
                         final AlertDialog processDialog = AlertDialog(Inicial.this, "carregando", "Autenticando dados do usuário...", "", true);
+
                         if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
                             auth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
+                                        if(auth.getCurrentUser().isEmailVerified()){
                                         //load user info from database to Singleton
                                         DocumentReference docRef = db.collection("users").document(auth.getUid());
                                         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -198,9 +200,12 @@ public class Inicial extends HelperAux {
                                         });
                                     } else {
                                         processDialog.dismiss();
-                                        Toast.makeText(Inicial.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(Inicial.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(Inicial.this, "Verifique seu e-mail e confirme o cadastro", Toast.LENGTH_SHORT).show();
+
                                     }
-                                }
+                                }}
+
                             });
                         } else {
                             processDialog.dismiss();
@@ -214,7 +219,7 @@ public class Inicial extends HelperAux {
                 textViewCadastro.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        btnAbrirTelaCadastro.callOnClick()
+                        btnAbrirTelaCadastro.callOnClick();
                     }
                 });
 
@@ -274,6 +279,17 @@ public class Inicial extends HelperAux {
                                         Crud.setUser(user);
                                         Usuarios.setInstance(user);
                                         openActivity(HomeActivity.class);
+                                        auth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    Toast.makeText(Inicial.this, "Enviado para: " + auth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+
+                                                } else {
+                                                    Toast.makeText(Inicial.this, "E-mail não existente para autenticação", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
                                     } else {
                                         String erroExcecao = "";
                                         try {

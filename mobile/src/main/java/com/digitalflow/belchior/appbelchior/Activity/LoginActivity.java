@@ -73,7 +73,6 @@ public class LoginActivity extends Inicial {
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (task.isSuccessful()){
-
                     abrirTelaPrincipal();
                     Toast.makeText(LoginActivity.this, "Login efetuado com sucesso", Toast.LENGTH_SHORT).show();
                 }else {
