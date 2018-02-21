@@ -77,7 +77,7 @@ public class Inicial extends HelperAux {
     private Button btnLogin;
     private Button btnCadastrar;
     private TextView textViewTermsOfUse, textViewPoliticPrivacity, textViewCadastro, textViewEsqueci;
-    private ConstraintLayout mainConstraintLayout,loginConstraintLayout;
+    private ConstraintLayout mainConstraintLayout, loginConstraintLayout;
     private EditText edtEmail, edtSenha;
     private EditText edtCadEmail, edtCadSenha, edtCadConfirmarSenha, edtCadNome, edtCadSobrenome, edtCadNascimento;
     private RadioButton rbMasculino, rbFeminino, rbNaoInformado, rbOutro;
@@ -207,15 +207,15 @@ public class Inicial extends HelperAux {
                                         try {
                                             throw task.getException();
                                         } catch (FirebaseAuthWeakPasswordException e) {
-                                            stringException += getString(R.string.msg_erro_senha_minimo);
+                                            stringException = getString(R.string.msg_erro_senha_minimo);
                                         } catch (FirebaseAuthInvalidCredentialsException e) {
-                                            stringException += getString(R.string.msg_erro_senha_invalida);
+                                            stringException = getString(R.string.msg_erro_senha_invalida);
                                         } catch (FirebaseAuthUserCollisionException e) {
-                                            stringException += getString(R.string.msg_erro_cadastro_existente);
+                                            stringException = getString(R.string.msg_erro_cadastro_existente);
                                         } catch (FirebaseAuthInvalidUserException e) {
-                                            stringException += getString(R.string.msg_erro_email_nao_existe);
+                                            stringException = getString(R.string.msg_erro_email_nao_existe);
                                         } catch (Exception e) {
-                                            stringException += getString(R.string.msg_erro_cadastro);
+                                            stringException = getString(R.string.msg_erro_cadastro);
                                             e.printStackTrace();
                                         }
                                         AlertDialog(Inicial.this, getString(R.string.error), stringException, Message.msgError, false);
@@ -267,7 +267,7 @@ public class Inicial extends HelperAux {
                 rbMasculino = (RadioButton) mView.findViewById(R.id.rbMasculino);
                 rbFeminino = (RadioButton) mView.findViewById(R.id.rbFeminino);
                 btnCadastrar = (Button) mView.findViewById(R.id.btnCadastrar);
-                loginConstraintLayout =  mView.findViewById(R.id.loginConstraintLayout);
+                loginConstraintLayout = mView.findViewById(R.id.loginConstraintLayout);
 
                 mBuilder.setView(mView);
                 dialogCadastro = mBuilder.create();
@@ -278,19 +278,20 @@ public class Inicial extends HelperAux {
                 btnCadastrar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        EditText[] edits = {edtCadConfirmarSenha, edtCadEmail, edtCadNascimento, edtCadNome, edtCadSenha, edtEmail, edtSenha};
-                            if(isEmpty(edits, Inicial.this)){
-                                return;
-                            }
+                        EditText[] edits = {edtCadConfirmarSenha, edtCadEmail, edtCadNascimento, edtCadNome, edtCadSenha, edtCadSobrenome};
+                        if (isEmpty(edits, Inicial.this)) {
+                            return;
+                        }
 
                         if (edtCadSenha.getText().toString().equals(edtCadConfirmarSenha.getText().toString())) {
+                            final AlertDialog processDialog = AlertDialog(Inicial.this, getString(R.string.processando), "cadastrando usuario", "", true);
+
                             auth.createUserWithEmailAndPassword(edtCadEmail.getText().toString(), edtCadSenha.getText().toString()).addOnCompleteListener(Inicial.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        String userSex = rbMasculino.isChecked() ? "Masculino" : "Feminino";
-                                        //fazer exceçoes em if de edt vazio
-                                        Usuarios user = Usuarios.getInstance();
+                                        String userSex = rbMasculino.isChecked() ? getString(R.string.rdMasculino) : getString(R.string.rdFeminino);
+                                        final Usuarios user = Usuarios.getInstance();
                                         FirebaseUser currentUser = auth.getCurrentUser();
                                         user.setId(currentUser.getUid());
                                         user.setEmail(edtCadEmail.getText().toString());
@@ -301,40 +302,43 @@ public class Inicial extends HelperAux {
                                         user.setSex(userSex);
                                         Crud.setUser(user);
                                         Usuarios.setInstance(user);
-                                        //openActivity(HomeActivity.class);
+
                                         auth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(Inicial.this, "Enviado para: " + auth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
-
+                                                    fadeViews(mainConstraintLayout,dialogCadastro);
+                                                    processDialog.dismiss();
+                                                    dialogCadastro.dismiss();
+                                                    AlertDialog(Inicial.this,getString(R.string.email_enviado_title), getString(R.string.msg_info_um_email_foi_enviado, user.getEmail()), Message.msgInfo,false);
                                                 } else {
-                                                    Toast.makeText(Inicial.this, "E-mail não existente para autenticação", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(Inicial.this, R.string.msg_erro_email_nao_existente_para_autenticacao, Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
                                     } else {
-                                        String erroExcecao = "";
+                                        processDialog.dismiss();
+                                        String stringException = "";
                                         try {
                                             throw task.getException();
                                         } catch (FirebaseAuthWeakPasswordException e) {
-                                            erroExcecao = getString(R.string.msg_erro_senha_minimo);
+                                            stringException = getString(R.string.msg_erro_senha_minimo);
                                         } catch (FirebaseAuthInvalidCredentialsException e) {
-                                            erroExcecao = getString(R.string.msg_erro_email_valido);
+                                            stringException = getString(R.string.msg_erro_senha_invalida);
                                         } catch (FirebaseAuthUserCollisionException e) {
-                                            erroExcecao = getString(R.string.msg_erro_cadastro_existente);
+                                            stringException = getString(R.string.msg_erro_cadastro_existente);
+                                        } catch (FirebaseAuthInvalidUserException e) {
+                                            stringException = getString(R.string.msg_erro_email_valido);
                                         } catch (Exception e) {
-                                            erroExcecao = getString(R.string.msg_erro_cadastro);
+                                            stringException = getString(R.string.msg_erro_cadastro);
                                             e.printStackTrace();
-                                            //FirebaseAuthInvalidUserException = ou ta errado e email ou fori desativado
-                                            //
                                         }
-//                                        Toast.makeText(CadastroActivity.this, "Erro: " + erroExcecao, Toast.LENGTH_LONG).show();
+                                        AlertDialog(Inicial.this, getString(R.string.error), stringException, Message.msgError, false);
                                     }
                                 }
                             });
                         } else {
-                            //senha nao confere, fazer o toast
+                            Toast.makeText(Inicial.this, R.string.msg_erro_senhas_nao_conferem, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

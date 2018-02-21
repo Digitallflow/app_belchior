@@ -37,10 +37,11 @@
     <string name="msg_login_sucesso">Login efetuado com sucesso</string>
     <string name="msg_camera_default">Posicione corretamente</string>
 
-    <string name="msg_erro_senha_minimo">Digite uma senha mais forte, no mínimo 8 caracteres(letras e números)</string>
+    <string name="msg_erro_senha_minimo">Digite uma senha mais forte, no mínimo 6 caracteres(letras e números)</string>
     <string name="msg_erro_email_valido">Email digitado é inválido. Digite um novo Email</string>
     <string name="msg_erro_cadastro_existente"> Já existe um usuário com esse email cadastrado no sistema!</string>
     <string name="msg_erro_cadastro">Um erro desconhecido aconteceu. Tente novamente!</string>
+    <string name="msg_info_um_email_foi_enviado"> Um email foi enviado para  %1$s para completar o seu cadastro. Verifique!</string>
     <string name="nao_possui_login">Não possui login?</string>
     <string name="login">Login</string>
     <string name="entre_para_fazer_login">Entre com os seus dados para fazer login</string>
@@ -75,5 +76,8 @@
     <string name="msg_erro_preencha_email_e_senha">Preencha os campos de email e senha!</string>
     <string name="msg_erro_preencha_todos_os_campos">Preencha todos os campos para continuar o cadastro!</string>
     <string name="insira_email_para_recuperar_senha">Insira o email cadastrado anteriomente para recuperar a senha</string>
+    <string name="msg_erro_senhas_nao_conferem">As senhas não conferem!</string>
+    <string name="email_enviado_title">Email enviado</string>
+    <string name="msg_erro_email_nao_existente_para_autenticacao">Email não existente para autenticação</string>
 
 </resources>

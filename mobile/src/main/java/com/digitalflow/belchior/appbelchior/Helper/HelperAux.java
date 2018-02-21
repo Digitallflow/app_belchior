@@ -324,9 +324,9 @@ public class HelperAux extends AppCompatActivity {
         boolean bool = false;
         for (EditText edit : editTextList) {
             if (TextUtils.isEmpty(edit.getText())) {
-                edit.setBackgroundColor(Color.RED);
-                Toast.makeText(context, R.string.msg_erro_preencha_todos_os_campos, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.msg_erro_preencha_todos_os_campos, Toast.LENGTH_SHORT).show();
                 bool = true;
+                break;
             }
         }
         return bool;
