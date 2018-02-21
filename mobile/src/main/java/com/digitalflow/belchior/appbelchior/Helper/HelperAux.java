@@ -8,11 +8,13 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
@@ -27,6 +29,9 @@ import android.widget.Toast;
 import com.digitalflow.belchior.appbelchior.Activity.HomeActivity;
 import com.digitalflow.belchior.appbelchior.Activity.Inicial;
 import com.digitalflow.belchior.appbelchior.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -259,13 +264,13 @@ public class HelperAux extends AppCompatActivity {
         return bool[0];
     }
 
-    public String AlertDialog(final Context context) {
-        final String[] email = new String[1];
+    public void AlertDialog(final Context context, final FirebaseAuth auth) {
+        //final String[] email = new String[1];
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
         View mView = getLayoutInflater().inflate(R.layout.activity_forgot, null);
         final EditText edtTextEmail = (EditText) mView.findViewById(R.id.edtTextEmail);
         Button btnYes = (Button) mView.findViewById(R.id.btnYes);
-        final Button btnNo = (Button) mView.findViewById(R.id.btnNo);
+        Button btnNo = (Button) mView.findViewById(R.id.btnNo);
 
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
@@ -276,9 +281,19 @@ public class HelperAux extends AppCompatActivity {
         btnYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(edtTextEmail.getText())){
-                    email[0] = edtTextEmail.getText().toString();
-                    dialog.dismiss();
+                if (!edtTextEmail.getText().toString().equals("")){
+                    auth.sendPasswordResetEmail(edtTextEmail.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(context, "//////TESTE EMAIL Email sent. TO: ", Toast.LENGTH_SHORT);
+                                    } else {
+                                        Toast.makeText(context, task.getException().toString(), Toast.LENGTH_SHORT);
+                                    }
+                                    dialog.dismiss();
+                                }
+                            });
                 } else {
                     Toast.makeText(context, R.string.insira_email_para_recuperar_senha, Toast.LENGTH_LONG).show();
                 }
@@ -288,11 +303,9 @@ public class HelperAux extends AppCompatActivity {
         btnNo.setOnClickListener(new View.OnClickListener() {
             @Override
                 public void onClick(View v) {
-                email[0] = "";
                 dialog.dismiss();
             }
         });
-        return email[0];
     }
 
 

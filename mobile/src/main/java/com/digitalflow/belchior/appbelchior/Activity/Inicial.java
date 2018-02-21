@@ -242,16 +242,11 @@ public class Inicial extends HelperAux {
                 textViewEsqueci.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                       String x = auth.getCurrentUser().getEmail();
-                        auth.sendPasswordResetEmail(x)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Log.d("//////TESTE EMAIL", "Email sent. TO: " + auth.getCurrentUser().getEmail());
-                                        }
-                                    }
-                                });
+                        dialogLogin.dismiss();
+                        fadeViews(mainConstraintLayout, dialogLogin);
+                        AlertDialog(Inicial.this, auth);
+//
+//                       String x = auth.getCurrentUser().getEmail();
                     }
                 });
             }
