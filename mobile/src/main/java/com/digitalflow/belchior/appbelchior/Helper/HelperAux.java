@@ -32,6 +32,7 @@ import com.digitalflow.belchior.appbelchior.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.ProviderQueryResult;
 
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -282,18 +283,27 @@ public class HelperAux extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!edtTextEmail.getText().toString().equals("")){
-                    auth.sendPasswordResetEmail(edtTextEmail.getText().toString())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    auth.fetchProvidersForEmail(edtTextEmail.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(context, "//////TESTE EMAIL Email sent. TO: ", Toast.LENGTH_SHORT);
-                                    } else {
-                                        Toast.makeText(context, task.getException().toString(), Toast.LENGTH_SHORT);
+                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                                    if(task.isSuccessful()){
+                                        auth.sendPasswordResetEmail(edtTextEmail.getText().toString())
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(context, "E-mail enviado para: " + auth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            Toast.makeText(context, "E-mail não cadastrado", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                        dialog.dismiss();
+                                                    }
+                                                });
                                     }
-                                    dialog.dismiss();
                                 }
-                            });
+                    });
+
                 } else {
                     Toast.makeText(context, R.string.insira_email_para_recuperar_senha, Toast.LENGTH_LONG).show();
                 }
