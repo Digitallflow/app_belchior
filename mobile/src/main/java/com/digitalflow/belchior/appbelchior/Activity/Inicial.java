@@ -242,8 +242,16 @@ public class Inicial extends HelperAux {
                 textViewEsqueci.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // Fazer função de esquecer a senha aqui
-                        // não esquecer de atualizar o singleton
+                       String x = auth.getCurrentUser().getEmail();
+                        auth.sendPasswordResetEmail(x)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("//////TESTE EMAIL", "Email sent. TO: " + auth.getCurrentUser().getEmail());
+                                        }
+                                    }
+                                });
                     }
                 });
             }
