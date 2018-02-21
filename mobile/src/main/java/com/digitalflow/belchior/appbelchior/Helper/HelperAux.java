@@ -12,14 +12,17 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.digitalflow.belchior.appbelchior.Activity.HomeActivity;
 import com.digitalflow.belchior.appbelchior.Activity.Inicial;
@@ -32,30 +35,20 @@ import java.util.logging.LogRecord;
  * Created by MarllonS on 25/01/2018.
  */
 
-public class HelperAux  extends AppCompatActivity {
+public class HelperAux extends AppCompatActivity {
 
-    public enum Message{
-        msgError(0), msgWarning(1), msgInfo(2), msgQuestion(3), msgDone(4), popUpMsg(5);
-
-        private int result;
-
-        Message(int result){
-            this.result = result;
+    public void getSupportActionB() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
     }
 
-   public void getSupportActionB() {
-       if (getSupportActionBar() != null) {
-           getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-           getSupportActionBar().setDisplayShowHomeEnabled(true);
-       }
-   }
-
-   public void openActivity(Class<?> cls, AlertDialog dialog) {
-       Intent intent = new Intent(getApplicationContext(), cls);
-       startActivity(intent);
-       dialog.dismiss();
-   }
+    public void openActivity(Class<?> cls, AlertDialog dialog) {
+        Intent intent = new Intent(getApplicationContext(), cls);
+        startActivity(intent);
+        dialog.dismiss();
+    }
 
     public void openActivity(Class<?> cls) {
         Intent intent = new Intent(getApplicationContext(), cls);
@@ -98,7 +91,7 @@ public class HelperAux  extends AppCompatActivity {
         });
     }
 
-    public AlertDialog AlertDialog(Context inContext, String title, String line1, String line2, boolean processing){
+    public AlertDialog AlertDialog(Context inContext, String title, String line1, String line2, boolean processing) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
         View mView = getLayoutInflater().inflate(R.layout.activity_layout, null);
         ProgressBar progressBar2 = (ProgressBar) mView.findViewById(R.id.progressBar2);
@@ -118,20 +111,20 @@ public class HelperAux  extends AppCompatActivity {
             dialog.setCancelable(false);
             imageViewLock.setVisibility(View.GONE);
             textViewTitle.setText(title);
-            paramsTitle.setMargins(textViewTitle.getLeft(),32,textViewTitle.getRight(),textViewTitle.getBottom());
+            paramsTitle.setMargins(textViewTitle.getLeft(), 32, textViewTitle.getRight(), textViewTitle.getBottom());
             textViewLine1.setText(line1);
             textViewLine2.setText(line2);
-           //openActivity(toCls);
+            //openActivity(toCls);
         } else {
             params.setMarginStart(0);
-            paramsTitle.setMargins(textViewTitle.getLeft(),12,textViewTitle.getRight(),textViewTitle.getBottom());
+            paramsTitle.setMargins(textViewTitle.getLeft(), 12, textViewTitle.getRight(), textViewTitle.getBottom());
             progressBar2.setVisibility(View.INVISIBLE);
             textViewTitle.setText(title);
             textViewLine1.setText(line1);
             textViewLine2.setText(line2);
             imageViewLock.setBackgroundResource(R.drawable.lock_animation);
 
-            AnimationDrawable mAnimation = (AnimationDrawable)imageViewLock.getBackground();
+            AnimationDrawable mAnimation = (AnimationDrawable) imageViewLock.getBackground();
             mAnimation.start();
         }
         progressBar2.setLayoutParams(params);
@@ -139,7 +132,7 @@ public class HelperAux  extends AppCompatActivity {
         return dialog;
     }
 
-    public boolean AlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo){
+    public boolean AlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo) {
         final boolean[] bool = new boolean[1];
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
         View mView = getLayoutInflater().inflate(R.layout.aux_helper, null);
@@ -236,9 +229,9 @@ public class HelperAux  extends AppCompatActivity {
                 textViewTitle.setText(title);
                 textViewSubTitle.setText(subtitle);
                 break;
-             default:
-                 textViewSubTitle.setText(R.string.error);
-                 textViewTitle.setText(R.string.error);
+            default:
+                textViewSubTitle.setText(R.string.error);
+                textViewTitle.setText(R.string.error);
         }
 
         mBuilder.setView(mView);
@@ -264,5 +257,65 @@ public class HelperAux  extends AppCompatActivity {
         });
 
         return bool[0];
-    } 
+    }
+
+    public String AlertDialog(final Context context) {
+        final String[] email = new String[1];
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+        View mView = getLayoutInflater().inflate(R.layout.activity_forgot, null);
+        final EditText edtTextEmail = (EditText) mView.findViewById(R.id.edtTextEmail);
+        Button btnYes = (Button) mView.findViewById(R.id.btnYes);
+        final Button btnNo = (Button) mView.findViewById(R.id.btnNo);
+
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+        dialog.setCancelable(false);
+        dialog.show();
+
+        btnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TextUtils.isEmpty(edtTextEmail.getText())){
+                    email[0] = edtTextEmail.getText().toString();
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(context, R.string.insira_email_para_recuperar_senha, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+                public void onClick(View v) {
+                email[0] = "";
+                dialog.dismiss();
+            }
+        });
+        return email[0];
+    }
+
+
+
+    public boolean isEmpty(EditText[] editTextList, Context context) {
+        boolean bool = false;
+        for (EditText edit : editTextList) {
+            if (TextUtils.isEmpty(edit.getText())) {
+                edit.setBackgroundColor(Color.RED);
+                Toast.makeText(context, R.string.msg_erro_preencha_todos_os_campos, Toast.LENGTH_LONG).show();
+                bool = true;
+            }
+        }
+        return bool;
+    }
+
+    public enum Message {
+        msgError(0), msgWarning(1), msgInfo(2), msgQuestion(3), msgDone(4), popUpMsg(5);
+
+        private int result;
+
+        Message(int result) {
+            this.result = result;
+        }
+    }
 }

@@ -272,7 +272,7 @@ public class Inicial extends HelperAux {
                 rbMasculino = (RadioButton) mView.findViewById(R.id.rbMasculino);
                 rbFeminino = (RadioButton) mView.findViewById(R.id.rbFeminino);
                 btnCadastrar = (Button) mView.findViewById(R.id.btnCadastrar);
-                loginConstraintLayout = (ConstraintLayout) mView.findViewById(R.id.loginConstraintLayout);
+                loginConstraintLayout =  mView.findViewById(R.id.loginConstraintLayout);
 
                 mBuilder.setView(mView);
                 dialogCadastro = mBuilder.create();
@@ -283,15 +283,11 @@ public class Inicial extends HelperAux {
                 btnCadastrar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-                        for (int i = 0; i < loginConstraintLayout.getChildCount(); i++) {
-                            final View v = loginConstraintLayout.getChildAt(i);
-                            if ((v instanceof EditText) && (v.equals(""))) {
-                                Toast.makeText(Inicial.this, R.string.msg_erro_preencha_todos_os_campos, Toast.LENGTH_LONG).show();
+                        EditText[] edits = {edtCadConfirmarSenha, edtCadEmail, edtCadNascimento, edtCadNome, edtCadSenha, edtEmail, edtSenha};
+                            if(isEmpty(edits, Inicial.this)){
                                 return;
                             }
 
-                        }
                         if (edtCadSenha.getText().toString().equals(edtCadConfirmarSenha.getText().toString())) {
                             auth.createUserWithEmailAndPassword(edtCadEmail.getText().toString(), edtCadSenha.getText().toString()).addOnCompleteListener(Inicial.this, new OnCompleteListener<AuthResult>() {
                                 @Override

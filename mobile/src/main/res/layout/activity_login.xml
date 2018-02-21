@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ConstraintLayout"
+    android:id="@+id/loginConstraintLayout"
     android:layout_width="300dp"
     android:layout_height="350dp"
     android:background="@drawable/shape"
@@ -11,7 +11,6 @@
     tools:layout_editor_absoluteY="25dp">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/loginConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

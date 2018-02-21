@@ -74,5 +74,6 @@
     <string name="msg_autenticando_dados_do_usuario">Autenticando dados do usuário...</string>
     <string name="msg_erro_preencha_email_e_senha">Preencha os campos de email e senha!</string>
     <string name="msg_erro_preencha_todos_os_campos">Preencha todos os campos para continuar o cadastro!</string>
+    <string name="insira_email_para_recuperar_senha">Insira o email cadastrado anteriomente para recuperar a senha</string>
 
 </resources>
