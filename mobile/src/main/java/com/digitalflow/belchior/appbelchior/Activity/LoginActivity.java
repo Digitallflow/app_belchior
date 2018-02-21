@@ -85,7 +85,7 @@ public class LoginActivity extends Inicial {
     public void abrirTelaPrincipal(){
         Intent intentAbrirTelaPrincipal = new Intent(LoginActivity.this, HomeActivity.class);
         startActivity(intentAbrirTelaPrincipal);
-        dialog.dismiss();
+        dialogLogin.dismiss();
     }
 
     public void abreCadastroUsuario(){

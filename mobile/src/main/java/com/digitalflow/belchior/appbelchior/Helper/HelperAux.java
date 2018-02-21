@@ -99,8 +99,6 @@ public class HelperAux  extends AppCompatActivity {
     }
 
     public AlertDialog AlertDialog(Context inContext, String title, String line1, String line2, boolean processing){
-       // alert.dismiss();
-
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
         View mView = getLayoutInflater().inflate(R.layout.activity_layout, null);
         ProgressBar progressBar2 = (ProgressBar) mView.findViewById(R.id.progressBar2);
@@ -113,17 +111,20 @@ public class HelperAux  extends AppCompatActivity {
         final AlertDialog dialog = mBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) progressBar2.getLayoutParams();
+        ConstraintLayout.LayoutParams paramsTitle = (ConstraintLayout.LayoutParams) textViewTitle.getLayoutParams();
 
         if (processing) {
             params.setMarginStart(32);
             dialog.setCancelable(false);
             imageViewLock.setVisibility(View.GONE);
             textViewTitle.setText(title);
+            paramsTitle.setMargins(textViewTitle.getLeft(),32,textViewTitle.getRight(),textViewTitle.getBottom());
             textViewLine1.setText(line1);
             textViewLine2.setText(line2);
            //openActivity(toCls);
         } else {
             params.setMarginStart(0);
+            paramsTitle.setMargins(textViewTitle.getLeft(),12,textViewTitle.getRight(),textViewTitle.getBottom());
             progressBar2.setVisibility(View.INVISIBLE);
             textViewTitle.setText(title);
             textViewLine1.setText(line1);
@@ -242,6 +243,8 @@ public class HelperAux  extends AppCompatActivity {
 
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+        dialog.setCancelable(false);
         dialog.show();
 
         btnYes.setOnClickListener(new View.OnClickListener() {

@@ -39,8 +39,8 @@
 
     <string name="msg_erro_senha_minimo">Digite uma senha mais forte, no mínimo 8 caracteres(letras e números)</string>
     <string name="msg_erro_email_valido">Email digitado é inválido. Digite um novo Email</string>
-    <string name="msg_erro_cadastro_existente"> Email cadastrado no sistema!</string>
-    <string name="msg_erro_cadastro">Erro ao efetuar o cadastro</string>
+    <string name="msg_erro_cadastro_existente"> Já existe um usuário com esse email cadastrado no sistema!</string>
+    <string name="msg_erro_cadastro">Um erro desconhecido aconteceu. Tente novamente!</string>
     <string name="nao_possui_login">Não possui login?</string>
     <string name="login">Login</string>
     <string name="entre_para_fazer_login">Entre com os seus dados para fazer login</string>
@@ -66,5 +66,13 @@
     <string name="não_informado">Não Informado</string>
     <string name="outro">Outro</string>
     <string name="esqueci_senha">Esqueceu sua senha?</string>
+    <string name="msg_erro_email_nao_existe">O usuário cujo email foi inserido não existe.</string>
+    <string name="msg_erro_senha_invalida">A senha inserida é inválida para este usuário</string>
+    <string name="msg_erro_requisicao_falhada">Erro de requisição get. Tente novamente.</string>
+    <string name="msg_erro_email_nao_verificado">Seu email não foi verificado! Verifique seu e-mail e confirme o cadastro.</string>
+    <string name="processando">Processando</string>
+    <string name="msg_autenticando_dados_do_usuario">Autenticando dados do usuário...</string>
+    <string name="msg_erro_preencha_email_e_senha">Preencha os campos de email e senha!</string>
+    <string name="msg_erro_preencha_todos_os_campos">Preencha todos os campos para continuar o cadastro!</string>
 
 </resources>

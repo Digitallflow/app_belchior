@@ -54,6 +54,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
@@ -70,13 +71,13 @@ import static android.view.View.INVISIBLE;
 
 
 public class Inicial extends HelperAux {
-    public AlertDialog dialog;
+    public AlertDialog dialogLogin, dialogCadastro;
     //implements GoogleApiClient.OnConnectionFailedListener
     private Button btnAbrirTelaLogin, btnAbrirTelaCadastro, btnAbrirLoginGoogle, btnCustomFB;
     private Button btnLogin;
     private Button btnCadastrar;
     private TextView textViewTermsOfUse, textViewPoliticPrivacity, textViewCadastro, textViewEsqueci;
-    private ConstraintLayout mainConstraintLayout;
+    private ConstraintLayout mainConstraintLayout,loginConstraintLayout;
     private EditText edtEmail, edtSenha;
     private EditText edtCadEmail, edtCadSenha, edtCadConfirmarSenha, edtCadNome, edtCadSobrenome, edtCadNascimento;
     private RadioButton rbMasculino, rbFeminino, rbNaoInformado, rbOutro;
@@ -131,7 +132,7 @@ public class Inicial extends HelperAux {
 
             @Override
             public void onError(FacebookException error) {
-
+                //fazer exceçoes
             }
         });
 
@@ -154,10 +155,10 @@ public class Inicial extends HelperAux {
                 btnLogin = (Button) mView.findViewById(R.id.btnLogin);
 
                 mBuilder.setView(mView);
-                dialog = mBuilder.create();
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
-                fadeViews(mainConstraintLayout, dialog);
-                dialog.show();
+                dialogLogin = mBuilder.create();
+                dialogLogin.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+                fadeViews(mainConstraintLayout, dialogLogin);
+                dialogLogin.show();
 
                 btnLogin.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -166,51 +167,64 @@ public class Inicial extends HelperAux {
                                 .hideSoftInputFromWindow(edtSenha.getWindowToken(), 0);
                         ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(edtEmail.getWindowToken(), 0);
-                        final AlertDialog processDialog = AlertDialog(Inicial.this, "carregando", "Autenticando dados do usuário...", "", true);
+                        final AlertDialog processDialog = AlertDialog(Inicial.this, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), "", true);
 
                         if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
                             auth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        if(auth.getCurrentUser().isEmailVerified()){
-                                        //load user info from database to Singleton
-                                        DocumentReference docRef = db.collection("users").document(auth.getUid());
-                                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                Usuarios user = Usuarios.getInstance();
-                                                Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
-//                                                user = documentSnapshot.toObject(Usuarios.class);
-                                                Log.w("laksd", "+++++++++++++++++++++++++++++ adding document++++++++++++++++++++++++++++++++++++++++++");
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("laksd", "Error adding document", e);
-                                                //exibir dialogo de erro
-                                            }
-                                        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                Usuarios u = Usuarios.getInstance();
-                                                Toast.makeText(Inicial.this, u.getPass(), Toast.LENGTH_SHORT).show();
-                                                openActivity(HomeActivity.class, processDialog);
-                                            }
-                                        });
+                                        if (auth.getCurrentUser().isEmailVerified()) {
+                                            //load user info from database to Singleton
+                                            DocumentReference docRef = db.collection("users").document(auth.getUid());
+                                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    Usuarios user = Usuarios.getInstance();
+                                                    Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("Console Log", "Error adding document", e);
+                                                    Toast.makeText(Inicial.this, R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
+                                                }
+                                            }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    Usuarios u = Usuarios.getInstance();
+                                                    Toast.makeText(Inicial.this, u.getPass(), Toast.LENGTH_SHORT).show();
+                                                    openActivity(HomeActivity.class, processDialog);
+                                                }
+                                            });
+                                        } else {
+                                            processDialog.dismiss();
+                                            AlertDialog(Inicial.this, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), Message.msgError, false);
+                                        }
                                     } else {
                                         processDialog.dismiss();
-//                                        Toast.makeText(Inicial.this, "Usuário ou senha inválidos", Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(Inicial.this, "Verifique seu e-mail e confirme o cadastro", Toast.LENGTH_SHORT).show();
-
+                                        String stringException = "";
+                                        try {
+                                            throw task.getException();
+                                        } catch (FirebaseAuthWeakPasswordException e) {
+                                            stringException += getString(R.string.msg_erro_senha_minimo);
+                                        } catch (FirebaseAuthInvalidCredentialsException e) {
+                                            stringException += getString(R.string.msg_erro_senha_invalida);
+                                        } catch (FirebaseAuthUserCollisionException e) {
+                                            stringException += getString(R.string.msg_erro_cadastro_existente);
+                                        } catch (FirebaseAuthInvalidUserException e) {
+                                            stringException += getString(R.string.msg_erro_email_nao_existe);
+                                        } catch (Exception e) {
+                                            stringException += getString(R.string.msg_erro_cadastro);
+                                            e.printStackTrace();
+                                        }
+                                        AlertDialog(Inicial.this, getString(R.string.error), stringException, Message.msgError, false);
                                     }
-                                }}
-
+                                }
                             });
                         } else {
                             processDialog.dismiss();
-                            Toast.makeText(Inicial.this, "Preencha os campos de email e senha! ", Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(Inicial.this, R.string.msg_erro_preencha_email_e_senha, Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -219,6 +233,8 @@ public class Inicial extends HelperAux {
                 textViewCadastro.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        dialogLogin.dismiss();
+                        fadeViews(mainConstraintLayout, dialogLogin);
                         btnAbrirTelaCadastro.callOnClick();
                     }
                 });
@@ -244,22 +260,30 @@ public class Inicial extends HelperAux {
                 edtCadNome = (EditText) mView.findViewById(R.id.edtCadNome);
                 edtCadSobrenome = (EditText) mView.findViewById(R.id.edtCadSobrenome);
                 edtCadNascimento = (EditText) mView.findViewById(R.id.edtCadNasc);
-
                 rgSexo = (RadioGroup) findViewById(R.id.rgSexo);
                 rbMasculino = (RadioButton) mView.findViewById(R.id.rbMasculino);
                 rbFeminino = (RadioButton) mView.findViewById(R.id.rbFeminino);
-
                 btnCadastrar = (Button) mView.findViewById(R.id.btnCadastrar);
+                loginConstraintLayout = (ConstraintLayout) mView.findViewById(R.id.loginConstraintLayout);
 
                 mBuilder.setView(mView);
-                dialog = mBuilder.create();
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
-                fadeViews(mainConstraintLayout, dialog);
-                dialog.show();
+                dialogCadastro = mBuilder.create();
+                dialogCadastro.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+                fadeViews(mainConstraintLayout, dialogCadastro);
+                dialogCadastro.show();
 
                 btnCadastrar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        for (int i = 0; i < loginConstraintLayout.getChildCount(); i++) {
+                            final View v = loginConstraintLayout.getChildAt(i);
+                            if ((v instanceof EditText) && (v.equals(""))) {
+                                Toast.makeText(Inicial.this, R.string.msg_erro_preencha_todos_os_campos, Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                        }
                         if (edtCadSenha.getText().toString().equals(edtCadConfirmarSenha.getText().toString())) {
                             auth.createUserWithEmailAndPassword(edtCadEmail.getText().toString(), edtCadSenha.getText().toString()).addOnCompleteListener(Inicial.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -278,11 +302,11 @@ public class Inicial extends HelperAux {
                                         user.setSex(userSex);
                                         Crud.setUser(user);
                                         Usuarios.setInstance(user);
-                                        openActivity(HomeActivity.class);
+                                        //openActivity(HomeActivity.class);
                                         auth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                if(task.isSuccessful()){
+                                                if (task.isSuccessful()) {
                                                     Toast.makeText(Inicial.this, "Enviado para: " + auth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
 
                                                 } else {
@@ -303,6 +327,8 @@ public class Inicial extends HelperAux {
                                         } catch (Exception e) {
                                             erroExcecao = getString(R.string.msg_erro_cadastro);
                                             e.printStackTrace();
+                                            //FirebaseAuthInvalidUserException = ou ta errado e email ou fori desativado
+                                            //
                                         }
 //                                        Toast.makeText(CadastroActivity.this, "Erro: " + erroExcecao, Toast.LENGTH_LONG).show();
                                     }
@@ -417,15 +443,10 @@ public class Inicial extends HelperAux {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
                             GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
-
                                 @Override
                                 public void onCompleted(JSONObject object, GraphResponse response) {
-
-
-                                    try {//object.toString();
-                                        //Toast.makeText(getApplicationContext(), object.getString("id"), Toast.LENGTH_LONG).show();
+                                    try {
                                         Usuarios user = Usuarios.getInstance();
                                         user.setId(auth.getUid());
                                         user.setFbId("https://facebook.com/" + object.getString("id"));
@@ -438,7 +459,6 @@ public class Inicial extends HelperAux {
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-
                                 }
                             });
 
@@ -446,18 +466,11 @@ public class Inicial extends HelperAux {
                             b.putString("fields", "id,email,first_name,last_name");
                             request.setParameters(b);
                             request.executeAsync();
-
-
-                            // update user firebase
-                            // updateUI(user)
-                            //finish();
-
                         } else {
-                            Toast.makeText(Inicial.this, "Falha na autenticação", Toast.LENGTH_SHORT).show();
-//                            updateUI(null);
+                            //task.getException();
+                            //Toast.makeText(Inicial.this, "Falha na autenticação" + task.getException(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
-
 }
