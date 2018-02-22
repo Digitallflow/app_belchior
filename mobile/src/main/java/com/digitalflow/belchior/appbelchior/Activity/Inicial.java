@@ -194,7 +194,7 @@ public class Inicial extends HelperAux {
                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                     Usuarios u = Usuarios.getInstance();
                                                     Toast.makeText(Inicial.this, u.getPass(), Toast.LENGTH_SHORT).show();
-                                                    openActivity(HomeActivity.class, processDialog);
+                                                    openActivity(MusicActivity.class, processDialog);
                                                 }
                                             });
                                         } else {
