@@ -47,4 +47,26 @@
     <string name="rdFeminino">" Female"</string>
     <string name="rdMasculino">Male</string>
     <string name="msg_erro_cadastro">Error while registering</string>
+    <string name="msg_camera_default">Correctly position</string>
+    <string name="msg_send_email">E-mail sent to</string>
+    <string name="msg_email_nao_cad">E-mail address not registered</string>
+    <string name="msg_info_um_email_foi_enviado">An email has been sent to %1$s to complete your registration. Check it out!</string>
+    <string name="cadastro">Sign up</string>
+    <string name="registro">Register</string>
+    <string name="insira_seus_dados">"Enter your data to complete the authentication "</string>
+    <string name="não_informado">Not Informed</string>
+    <string name="outro">Other</string>
+    <string name="esqueci_senha">Forgot your password?</string>
+    <string name="msg_erro_email_nao_existe">The user whose e-mail address was entered does not exist.</string>
+    <string name="msg_erro_senha_invalida">The password entered is invalid for this user</string>
+    <string name="msg_erro_requisicao_falhada">Requisition error. Please try again.</string>
+    <string name="msg_erro_email_nao_verificado">Your e-mail address was not found! Please check your email and confirm registration.</string>
+    <string name="processando">Processing</string>
+    <string name="msg_autenticando_dados_do_usuario">Authenticating user data...</string>
+    <string name="msg_erro_preencha_email_e_senha">Fill in the fields of e-mail and password!</string>
+    <string name="msg_erro_preencha_todos_os_campos">Fill in all the fields to continue the sign up!</string>
+    <string name="insira_email_para_recuperar_senha">Insert the previously registered email to retrieve the password</string>
+    <string name="msg_erro_senhas_nao_conferem">The passwords do not confer!</string>
+    <string name="email_enviado_title">Email Sent</string>
+    <string name="msg_erro_email_nao_existente_para_autenticacao">Email does not exist for authentication</string>
 </resources>

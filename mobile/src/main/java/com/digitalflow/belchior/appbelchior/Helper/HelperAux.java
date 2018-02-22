@@ -293,9 +293,9 @@ public class HelperAux extends AppCompatActivity {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            Toast.makeText(context, "E-mail enviado para: " + auth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(context, R.string.msg_send_email + auth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
                                                         } else {
-                                                            Toast.makeText(context, "E-mail não cadastrado", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(context, R.string.msg_email_nao_cad, Toast.LENGTH_SHORT).show();
                                                         }
                                                         dialog.dismiss();
                                                     }

@@ -36,6 +36,8 @@
     <string name="msg_falha_autenticacao">Falha na autenticação</string>
     <string name="msg_login_sucesso">Login efetuado com sucesso</string>
     <string name="msg_camera_default">Posicione corretamente</string>
+    <string name="msg_send_email">E-mail enviado para: </string>
+    <string name="msg_email_nao_cad">E-mail não cadastrado</string>
 
     <string name="msg_erro_senha_minimo">Digite uma senha mais forte, no mínimo 6 caracteres(letras e números)</string>
     <string name="msg_erro_email_valido">Email digitado é inválido. Digite um novo Email</string>
