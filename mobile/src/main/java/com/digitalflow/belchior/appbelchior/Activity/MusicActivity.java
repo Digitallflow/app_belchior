@@ -20,7 +20,9 @@ import java.util.concurrent.TimeUnit;
 
 import dyanamitechetan.vusikview.VusikView;
 
-public class MusicActivity extends AppCompatActivity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener{
+public class MusicActivity extends AppCompatActivity implements  MediaPlayer.OnCompletionListener{
+                                                            //MediaPlayer.OnBufferingUpdateListener,
+
 
     private ImageButton btnCamera, btnPlayPause;
     private TextView txtTimer;
@@ -41,24 +43,24 @@ public class MusicActivity extends AppCompatActivity implements MediaPlayer.OnBu
 
         btnCamera = (ImageButton) findViewById(R.id.btnCamera);
         btnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
-        txtTimer = (TextView) findViewById(R.id.txtTimer);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
+//        txtTimer = (TextView) findViewById(R.id.txtTimer);
+//        seekBar = (SeekBar) findViewById(R.id.seekBar);
         musicView = (VusikView) findViewById(R.id.musicaView);
 
 
 
-        seekBar.setMax(99); // 100% (0~99)
-        seekBar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                if(mediaPlayer.isPlaying()){
-                    SeekBar seekBar = (SeekBar)view;
-                    int playPosition = (mediaFileLength/100)*seekBar.getProgress();
-                    mediaPlayer.seekTo(playPosition);
-                }
-                return false;
-            }
-        });
+//        seekBar.setMax(99); // 100% (0~99)
+//        seekBar.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent event) {
+//                if(mediaPlayer.isPlaying()){
+//                    SeekBar seekBar = (SeekBar)view;
+//                    int playPosition = (mediaFileLength/100)*seekBar.getProgress();
+//                    mediaPlayer.seekTo(playPosition);
+//                }
+//                return false;
+//            }
+//        });
 
 
 
@@ -100,7 +102,7 @@ public class MusicActivity extends AppCompatActivity implements MediaPlayer.OnBu
 
                         }
 
-                        updateSeekBar();
+//                        updateSeekBar();
                         mDialog.dismiss();
                     }
                 };
@@ -112,7 +114,7 @@ public class MusicActivity extends AppCompatActivity implements MediaPlayer.OnBu
         });
 
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setOnBufferingUpdateListener(this);
+//        mediaPlayer.setOnBufferingUpdateListener(this);
         mediaPlayer.setOnCompletionListener(this);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
@@ -125,30 +127,30 @@ public class MusicActivity extends AppCompatActivity implements MediaPlayer.OnBu
 
     }
 
-    private void updateSeekBar() {
-        seekBar.setProgress((int)(((float)mediaPlayer.getCurrentPosition() / mediaFileLength)*100));
-        if(mediaPlayer.isPlaying())
-        {
-            Runnable updater = new Runnable() {
-                @Override
-                public void run() {
-                    updateSeekBar();
-                    realtimelength-=1000; // declare 1 second
-                    txtTimer.setText(String.format("%d:%d",TimeUnit.MILLISECONDS.toMinutes(realtimelength),
-                            TimeUnit.MILLISECONDS.toSeconds(realtimelength) -
-                                    TimeUnit.MILLISECONDS.toSeconds(TimeUnit.MILLISECONDS.toMinutes(realtimelength))));
+//    private void updateSeekBar() {
+//        seekBar.setProgress((int)(((float)mediaPlayer.getCurrentPosition() / mediaFileLength)*100));
+//        if(mediaPlayer.isPlaying())
+//        {
+//            Runnable updater = new Runnable() {
+//                @Override
+//                public void run() {
+//                    updateSeekBar();
+//                    realtimelength-=1000; // declare 1 second
+//                    txtTimer.setText(String.format("%d:%d",TimeUnit.MILLISECONDS.toMinutes(realtimelength),
+//                            TimeUnit.MILLISECONDS.toSeconds(realtimelength) -
+//                                    TimeUnit.MILLISECONDS.toSeconds(TimeUnit.MILLISECONDS.toMinutes(realtimelength))));
+//
+//                }
+//
+//            };
+//            handler.postDelayed(updater,1000); // 1 second
+//        }
+//    }
 
-                }
-
-            };
-            handler.postDelayed(updater,1000); // 1 second
-        }
-    }
-
-    @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        seekBar.setSecondaryProgress(percent);
-    }
+//    @Override
+//    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+//        seekBar.setSecondaryProgress(percent);
+//    }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
