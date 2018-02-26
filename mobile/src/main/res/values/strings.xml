@@ -37,14 +37,14 @@
     <string name="msg_falha_autenticacao">Falha na autenticação</string>
     <string name="msg_login_sucesso">Login efetuado com sucesso</string>
     <string name="msg_camera_default">Posicione corretamente</string>
-    <string name="msg_send_email">E-mail enviado para: </string>
-    <string name="msg_email_nao_cad">E-mail não cadastrado</string>
+    <string name="msg_send_email">Um email foi enviado para %1$s com as instruções de troca de senha!</string>
+    <string name="msg_email_nao_cad">Email não cadastrado na base de dados.</string>
 
     <string name="msg_erro_senha_minimo">Digite uma senha mais forte, no mínimo 6 caracteres(letras e números)</string>
     <string name="msg_erro_email_valido">Email digitado é inválido. Digite um novo Email</string>
     <string name="msg_erro_cadastro_existente"> Já existe um usuário com esse email cadastrado no sistema!</string>
-    <string name="msg_erro_cadastro">Um erro desconhecido aconteceu. Tente novamente!</string>
-    <string name="msg_info_um_email_foi_enviado"> Um email foi enviado para  %1$s para completar o seu cadastro. Verifique!</string>
+    <string name="msg_erro_cadastro">Um erro do endereçamento de pacotes desconhecido aconteceu. Tente o processo novamente!</string>
+    <string name="msg_info_um_email_foi_enviado">Um email foi enviado para  %1$s para completar o seu cadastro. Verifique!</string>
     <string name="nao_possui_login">Não possui login?</string>
     <string name="login">Login</string>
     <string name="entre_para_fazer_login">Entre com os seus dados para fazer login</string>
@@ -56,7 +56,7 @@
     <string name="cadastre_se">Cadastre-se.</string>
 
     <!-- Formularios -->
-    <string name="edtEmail">E-mail</string>
+    <string name="edtEmail">Email</string>
     <string name="edtSenha">Senha</string>
     <string name="edtConfSenha">Confirmar senha</string>
     <string name="edtNome">Nome</string>
@@ -73,15 +73,22 @@
     <string name="msg_erro_email_nao_existe">O usuário cujo email foi inserido não existe.</string>
     <string name="msg_erro_senha_invalida">A senha inserida é inválida para este usuário</string>
     <string name="msg_erro_requisicao_falhada">Erro de requisição get. Tente novamente.</string>
-    <string name="msg_erro_email_nao_verificado">Seu email não foi verificado! Verifique seu e-mail e confirme o cadastro.</string>
+    <string name="msg_erro_email_nao_verificado">Seu email não foi verificado! Verifique seu email e confirme o cadastro.</string>
+    <string name="msg_erro_get_documento">Ocorreu um erro ao fazer a requisição para recuperar todos os dados. Tente novamente. Erro %1$s.</string>
     <string name="processando">Processando</string>
     <string name="msg_autenticando_dados_do_usuario">Autenticando dados do usuário...</string>
+    <string name="msg_cadastrando_dados_do_usuario">Cadastrando dados do usuário...</string>
     <string name="msg_erro_preencha_email_e_senha">Preencha os campos de email e senha!</string>
     <string name="msg_erro_preencha_todos_os_campos">Preencha todos os campos para continuar o cadastro!</string>
     <string name="insira_email_para_recuperar_senha">Insira o email cadastrado anteriomente para recuperar a senha</string>
     <string name="msg_erro_senhas_nao_conferem">As senhas não conferem!</string>
     <string name="email_enviado_title">Email enviado</string>
     <string name="msg_erro_email_nao_existente_para_autenticacao">Email não existente para autenticação</string>
+    <string name="politica_de_privacidad_texto">Todas as suas informações pessoais coletadas serão usadas para ajudar a tornar a sua visita no nosso aplicativo tão produtiva e agradável quanto possível. Garantir a confidencialidade dos dados pessoais dos usuários do nosso aplicativo é importante para o AppBelchior. Todas as informações pessoais relativas a membros, assinantes, clientes ou visitantes que utilizem o aplicativo AppBelchior serão tratadas de acordo com a Lei de Proteção de Dados Pessoais de 26 de outubro de 1998 (Lei nº 67/98). As informações pessoais coletadas podem incluir seu nome, endereço de e-mail, número de telefone e / ou telefone celular, data de nascimento e / ou outro. O uso do aplicativo AppBelchior assume aceitação deste contrato de privacidade, bem como os Termos de Uso. O pessoal da AppBelchior reserva-se o direito de alterar este contrato sem aviso prévio. Portanto, recomendamos que você revise nossa política de privacidade e termos de uso regularmente para que você esteja sempre atualizado.</string>
+    <string name="verificando_usuario_na_database">Verificando usuario na base de dados</string>
+    <string name="de_dados">de dados</string>
+    <string name="msg_erro_conecte_a_internet_para_continuar">Conecte-se a internet para continuar</string>
+    <string name="msg_erro_nenhum_doc_encontrado_para_esse_usuario">Não foi encontrado nenhum documento na base de dados para esse usuário.</string>
 
 
     <!-- MUSICAS -->

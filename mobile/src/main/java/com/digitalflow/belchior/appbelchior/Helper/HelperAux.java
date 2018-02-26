@@ -61,7 +61,7 @@ public class HelperAux extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void fadeButtons(final ConstraintLayout layout, AlertDialog dialog) {
+    public void fadeButtons(final ConstraintLayout layout, AlertDialog dialog, final boolean overlayViews) {
         for (int i = 0; i < layout.getChildCount(); i++) {
             final View v = layout.getChildAt(i);
             if (v instanceof Button) {
@@ -73,37 +73,47 @@ public class HelperAux extends AppCompatActivity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                for (int i = 0; i < layout.getChildCount(); i++) {
-                    final View v = layout.getChildAt(i);
-                    if (v instanceof Button) {
-                        v.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_in));
-                        v.setVisibility(View.VISIBLE);
-                    }
+                if (!overlayViews) {
+                    for (int i = 0; i < layout.getChildCount(); i++) {
+                        final View v = layout.getChildAt(i);
+                        if (v instanceof Button) {
+                            v.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_in));
+                            v.setVisibility(View.VISIBLE);
+                        }
 
+                    }
                 }
             }
         });
     }
 
-    public void fadeViews(final ConstraintLayout layout, AlertDialog dialog) {
+    public void fadeViews(final ConstraintLayout layout, AlertDialog dialog, boolean overlayViews) {
         layout.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_out));
         layout.setVisibility(View.INVISIBLE);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                layout.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_in));
-                layout.setVisibility(View.VISIBLE);
-            }
-        });
+        if (!overlayViews) {
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    layout.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_in));
+                    layout.setVisibility(View.VISIBLE);
+                }
+            });
+        } else {
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+
+                }
+            });
+        }
     }
 
-    public AlertDialog AlertDialog(Context inContext, String title, String line1, String line2, boolean processing) {
+    public AlertDialog AlertDialog(Context inContext, String title, String line1, boolean processing) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
         View mView = getLayoutInflater().inflate(R.layout.activity_layout, null);
         ProgressBar progressBar2 = (ProgressBar) mView.findViewById(R.id.progressBar2);
         TextView textViewTitle = (TextView) mView.findViewById(R.id.textViewTitle);
         TextView textViewLine1 = (TextView) mView.findViewById(R.id.textViewLine1);
-        TextView textViewLine2 = (TextView) mView.findViewById(R.id.textViewLine2);
         ImageView imageViewLock = (ImageView) mView.findViewById(R.id.imageViewLock);
 
         mBuilder.setView(mView);
@@ -119,7 +129,6 @@ public class HelperAux extends AppCompatActivity {
             textViewTitle.setText(title);
             paramsTitle.setMargins(textViewTitle.getLeft(), 32, textViewTitle.getRight(), textViewTitle.getBottom());
             textViewLine1.setText(line1);
-            textViewLine2.setText(line2);
             //openActivity(toCls);
         } else {
             params.setMarginStart(0);
@@ -127,7 +136,6 @@ public class HelperAux extends AppCompatActivity {
             progressBar2.setVisibility(View.INVISIBLE);
             textViewTitle.setText(title);
             textViewLine1.setText(line1);
-            textViewLine2.setText(line2);
             imageViewLock.setBackgroundResource(R.drawable.lock_animation);
 
             AnimationDrawable mAnimation = (AnimationDrawable) imageViewLock.getBackground();
@@ -136,6 +144,48 @@ public class HelperAux extends AppCompatActivity {
         progressBar2.setLayoutParams(params);
         dialog.show();
         return dialog;
+    }
+
+    public void AlertDialog(Context context, String title, String subtitle, final ConstraintLayout layout) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+        View mView = getLayoutInflater().inflate(R.layout.aux_helper, null);
+        TextView textViewTitle = (TextView) mView.findViewById(R.id.textViewTitle);
+        TextView textViewSubTitle = (TextView) mView.findViewById(R.id.textViewSubTitle);
+        Button btnYes = (Button) mView.findViewById(R.id.btnYes);
+        Button btnNo = (Button) mView.findViewById(R.id.btnNo);
+        ImageView imageViewType = (ImageView) mView.findViewById(R.id.imageViewType);
+
+        imageViewType.setVisibility(View.INVISIBLE);
+        imageViewType.getLayoutParams().height = 0;
+        imageViewType.getLayoutParams().width = 0;
+        btnYes.setVisibility(View.INVISIBLE);
+        btnNo.setText(R.string.ok);
+        textViewTitle.setText(title);
+        textViewSubTitle.setText(subtitle);
+        layout.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_out));
+        layout.setVisibility(View.INVISIBLE);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+        dialog.setCancelable(false);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                layout.startAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_in));
+                layout.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        dialog.show();
+
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        //return dialog;
     }
 
     public boolean AlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo) {
@@ -147,7 +197,10 @@ public class HelperAux extends AppCompatActivity {
         Button btnYes = (Button) mView.findViewById(R.id.btnYes);
         Button btnNo = (Button) mView.findViewById(R.id.btnNo);
         ImageView imageViewType = (ImageView) mView.findViewById(R.id.imageViewType);
-
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+        dialog.setCancelable(false);
         switch (msgType) {
             case msgDone:
                 imageViewType.setImageDrawable(getResources().getDrawable(R.drawable.done_white));
@@ -240,10 +293,6 @@ public class HelperAux extends AppCompatActivity {
                 textViewTitle.setText(R.string.error);
         }
 
-        mBuilder.setView(mView);
-        final AlertDialog dialog = mBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
-        dialog.setCancelable(false);
         dialog.show();
 
         btnYes.setOnClickListener(new View.OnClickListener() {
@@ -265,8 +314,7 @@ public class HelperAux extends AppCompatActivity {
         return bool[0];
     }
 
-    public void AlertDialog(final Context context, final FirebaseAuth auth) {
-        //final String[] email = new String[1];
+    public void AlertDialog(final Context context, final FirebaseAuth auth, final ConstraintLayout constraintLayout, AlertDialog dialogs) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
         View mView = getLayoutInflater().inflate(R.layout.activity_forgot, null);
         final EditText edtTextEmail = (EditText) mView.findViewById(R.id.edtTextEmail);
@@ -277,32 +325,36 @@ public class HelperAux extends AppCompatActivity {
         final AlertDialog dialog = mBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
         dialog.setCancelable(false);
+        fadeViews(constraintLayout, dialogs, false);
         dialog.show();
 
         btnYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!edtTextEmail.getText().toString().equals("")){
+                if (!edtTextEmail.getText().toString().equals("")) {
+                    final AlertDialog alertD = AlertDialog(context, getString(R.string.processando), getString(R.string.verificando_usuario_na_database), true);
                     auth.fetchProvidersForEmail(edtTextEmail.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         auth.sendPasswordResetEmail(edtTextEmail.getText().toString())
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            Toast.makeText(context, R.string.msg_send_email + auth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+                                                            alertD.dismiss();
+                                                            Toast.makeText(context, getString(R.string.msg_send_email, edtTextEmail.getText().toString()), Toast.LENGTH_LONG).show();
                                                         } else {
+                                                            alertD.dismiss();
                                                             Toast.makeText(context, R.string.msg_email_nao_cad, Toast.LENGTH_SHORT).show();
                                                         }
-                                                        dialog.dismiss();
+                                                        //dialog.dismiss();
                                                     }
                                                 });
                                     }
                                 }
-                    });
+                            });
 
                 } else {
                     Toast.makeText(context, R.string.insira_email_para_recuperar_senha, Toast.LENGTH_LONG).show();
@@ -312,12 +364,12 @@ public class HelperAux extends AppCompatActivity {
 
         btnNo.setOnClickListener(new View.OnClickListener() {
             @Override
-                public void onClick(View v) {
+            public void onClick(View v) {
+                fadeViews(constraintLayout, dialog, false);
                 dialog.dismiss();
             }
         });
     }
-
 
 
     public boolean isEmpty(EditText[] editTextList, Context context) {

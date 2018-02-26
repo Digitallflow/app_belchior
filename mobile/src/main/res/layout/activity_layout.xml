@@ -69,26 +69,18 @@
 
                 <TextView
                     android:id="@+id/textViewLine1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="194dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
                     android:text="Lorem ipsum dolor sit amet,"
-                    android:textAlignment="center"
-                    android:textColor="@color/patternWhite"
-                    app:layout_constraintBottom_toTopOf="@+id/textViewLine2"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewLine2"
-                    app:layout_constraintStart_toStartOf="@+id/textViewLine2"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textViewLine2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" consectetur adipiscing elit"
                     android:textAlignment="center"
                     android:textColor="@color/patternWhite"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
             </android.support.constraint.ConstraintLayout>
 
             <ProgressBar

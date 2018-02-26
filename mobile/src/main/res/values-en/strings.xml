@@ -16,13 +16,13 @@
     <string name="termos_de_servico">terms of use</string>
     <string name="politica_de_privacidade">privacy policy</string>
     <string name="cancelar">Cancel</string>
-    <string name="sucesso">Success</string>
+    <string name="sucesso">Success! %1$s]</string>
     <string name="ok">Ok</string>
-    <string name="info">" Information"</string>
+    <string name="info">Information:  %1$s</string>
     <string name="error">Error</string>
-    <string name="yes">Ok</string>
+    <string name="yes">OK</string>
     <string name="no">Cancel</string>
-    <string name="warning">Alert</string>
+    <string name="warning">Alert %1$s</string>
     <string name="msg_cadastro_sucesso">Username registered successfully!</string>
     <string name="msg_erro_senha">Passwords are not match</string>
     <string name="msg_usuario_senha">username or password is invalid</string>
@@ -37,8 +37,8 @@
     <string name="entre_para_fazer_login">" Enter your details to sign in"</string>
     <string name="autentication">" Authentication"</string>
     <string name="politica_de_privacidade_texto">All of your personal information collected will be used to help make your visit to our app as productive and enjoyable as possible. Ensuring the confidentiality of the personal data of our app users is important to AppBelchior. All personal information relating to members, subscribers, customers or visitors using the AppBelchior application will be handled in accordance with the Personal Data Protection Act of 26 October 1998 (Law No. 67/98). Personal information collected may include your name, email address, telephone number and / or mobile phone, date of birth and / or other. The use of the AppBelchior application assumes acceptance of this privacy agreement as well as the Terms of Use. AppBelchior staff reserves the right to change this agreement without prior notice. Therefore, we recommend that you review our privacy policy and terms of use on a regular basis so that you are always up-to-date.</string>
-    <string name="cadastre_se">Sign up</string>
-    <string name="edtEmail">E-mail</string>
+    <string name="cadastre_se">Sign up.</string>
+    <string name="edtEmail">Email</string>
     <string name="edtSenha">Password</string>
     <string name="edtConfSenha">confirm password</string>
     <string name="edtNome">Name</string>
@@ -48,8 +48,8 @@
     <string name="rdMasculino">Male</string>
     <string name="msg_erro_cadastro">Error while registering</string>
     <string name="msg_camera_default">Correctly position</string>
-    <string name="msg_send_email">E-mail sent to</string>
-    <string name="msg_email_nao_cad">E-mail address not registered</string>
+    <string name="msg_send_email">" An email was sent to %1$s with password change instructions!"</string>
+    <string name="msg_email_nao_cad">Email address not registered on database</string>
     <string name="msg_info_um_email_foi_enviado">An email has been sent to %1$s to complete your registration. Check it out!</string>
     <string name="cadastro">Sign up</string>
     <string name="registro">Register</string>
@@ -60,7 +60,7 @@
     <string name="msg_erro_email_nao_existe">The user whose e-mail address was entered does not exist.</string>
     <string name="msg_erro_senha_invalida">The password entered is invalid for this user</string>
     <string name="msg_erro_requisicao_falhada">Requisition error. Please try again.</string>
-    <string name="msg_erro_email_nao_verificado">Your e-mail address was not found! Please check your email and confirm registration.</string>
+    <string name="msg_erro_email_nao_verificado">Your email address was not found! Please check your email and confirm registration.</string>
     <string name="processando">Processing</string>
     <string name="msg_autenticando_dados_do_usuario">Authenticating user data...</string>
     <string name="msg_erro_preencha_email_e_senha">Fill in the fields of e-mail and password!</string>
@@ -69,4 +69,5 @@
     <string name="msg_erro_senhas_nao_conferem">The passwords do not confer!</string>
     <string name="email_enviado_title">Email Sent</string>
     <string name="msg_erro_email_nao_existente_para_autenticacao">Email does not exist for authentication</string>
+    <string name="question">Information:  %1$s</string>
 </resources>

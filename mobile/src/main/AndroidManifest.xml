@@ -47,7 +47,8 @@
             <!-- </intent-filter> -->
 
         </activity>
-        <activity android:name=".Activity.Inicial" />
+        <activity android:name=".Activity.Inicial"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

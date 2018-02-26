@@ -27,7 +27,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class Usuarios {
     private String id, email, pass, firstName, lastName, birth, sex, fbId, gId;
-
+    private HashMap<String, Object> music;
     private volatile static Usuarios instance = new Usuarios();
 
     private Usuarios() {
@@ -196,4 +196,13 @@ public class Usuarios {
     public String getgId() {
         return gId;
     }
+
+    public HashMap<String, Object> getMusic() {
+        return music;
+    }
+
+    public void setMusic(HashMap<String, Object> music) {
+        this.music = music;
+    }
+
 }
