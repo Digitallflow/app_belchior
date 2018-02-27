@@ -62,6 +62,8 @@ public class HomeActivity extends AppCompatActivity{
     TextView txtResult;
     BarcodeDetector barcodeDetector;
     CameraSource cameraSource;
+    private ImageButton btnMusicas;
+
 
     final int RequestCameraPermissionID = 1001;
 
@@ -98,6 +100,15 @@ public class HomeActivity extends AppCompatActivity{
 
         cameraPreview = (SurfaceView) findViewById(R.id.cameraPreview);
         txtResult = (TextView) findViewById(R.id.txtResult);
+        btnMusicas = (ImageButton)findViewById(R.id.btnMusicas);
+
+        btnMusicas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, MusicActivity.class);
+                startActivity(intent);
+            }
+        });
 
         barcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.QR_CODE)

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 
 import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
 import com.digitalflow.belchior.appbelchior.R;
-import com.google.android.gms.vision.text.Line;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,6 +76,7 @@ public class MusicActivity extends AppCompatActivity implements  MediaPlayer.OnC
             public void onClick(View view) {
                 Intent intent = new Intent(MusicActivity.this, HomeActivity.class);
                 startActivity(intent);
+
             }
         });
 
