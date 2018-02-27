@@ -238,7 +238,7 @@ public class Inicial extends HelperAux {
                                                                             u.setMusic((HashMap<String, Object>) task.getResult().getData());
                                                                             Usuarios.setInstance(u);
                                                                             //Toast.makeText(Inicial.this, u.getMusic().toString(), Toast.LENGTH_LONG).show();
-                                                                            openActivity(HomeActivity.class, processDialog);
+                                                                            openActivity(MusicActivity.class, processDialog);
                                                                         } else {
                                                                             processDialog.dismiss();
                                                                             AlertDialog(Inicial.this, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), Message.msgError, false);
