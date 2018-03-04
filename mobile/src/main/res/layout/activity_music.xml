@@ -15,9 +15,9 @@
         android:layout_height="match_parent" />
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/mainConstraint"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/mainConstraint">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/logoEuOuvi"
@@ -41,8 +41,8 @@
             android:layout_marginStart="8dp"
             android:gravity="center"
             android:text="@string/textoTelaInicial"
-            android:textColor="@color/patternWhite"
             android:textAlignment="center"
+            android:textColor="@color/patternWhite"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,15 +53,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="437dp"
-            android:textColor="@color/patternWhite"
             android:gravity="center"
             android:text="@string/textoTelaInicial2"
+            android:textColor="@color/patternWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tituloTelaMusica" />
 
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/tabConstraintLayout"
         android:layout_width="300dp"
         android:layout_height="420dp"
         android:layout_marginBottom="8dp"
@@ -74,58 +75,78 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="390dp"
-            android:background="@drawable/shape_music"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <ScrollView
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPagerMain"
                 android:layout_width="match_parent"
-                android:layout_height="330dp">
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-                <LinearLayout
+            <com.digitalflow.belchior.appbelchior.Util.SlidingTabLayout
+                android:id="@+id/slidingTabMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@android:color/transparent" />
+
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="390dp"
+                android:background="@drawable/shape_music"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp">
+
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:orientation="horizontal" >
+                    android:layout_height="330dp">
 
-                <TextView
-                    android:id="@+id/tituloMusica1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_weight="1"
-                    android:text="@string/tituloMusica1"
-                    android:textColor="@color/patternWhite"
-                    android:textSize="15dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/btn_play_pause"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                     />
+                        <TextView
+                            android:id="@+id/tituloMusica1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_weight="1"
+                            android:text="@string/tituloMusica1"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textColor="@color/patternWhite"
+                            android:textSize="15dp" />
 
-                    <!--android:background="@drawable/botao_desbloqueado"-->
-                </LinearLayout>
+                        <ImageButton
+                            android:id="@+id/btn_play_pause"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="right"
+                            android:gravity="right" />
 
-            </ScrollView>
+                        <!--android:background="@drawable/botao_desbloqueado"-->
+                    </LinearLayout>
 
+                </ScrollView>
 
-        </android.support.constraint.ConstraintLayout>
+            </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
 
         <Button
+            android:id="@+id/btnMusicas"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="336dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/botao_musicas"
-            android:id="@+id/btnMusicas"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -133,51 +154,38 @@
         <ImageButton
             android:id="@+id/btnCamera"
             android:layout_width="80dp"
-            android:layout_height="70dp"
+            android:layout_height="77dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="352dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/botao_camera_blue"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.843"
+            app:layout_constraintHorizontal_bias="0.906"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
 
+    <!--<android.support.constraint.ConstraintLayout--><!--android:id="@+id/musicasConstraint"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--tools:layout_editor_absoluteX="0dp"--><!--tools:layout_editor_absoluteY="0dp">-->
 
-    <!--<android.support.constraint.ConstraintLayout-->
-        <!--android:id="@+id/musicasConstraint"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--tools:layout_editor_absoluteX="0dp"-->
-        <!--tools:layout_editor_absoluteY="0dp">-->
-
-        <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/txtTimer"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_marginBottom="8dp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_marginEnd="8dp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_marginStart="8dp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:text="00:00"&ndash;&gt;-->
-            <!--&lt;!&ndash;app:layout_constraintBottom_toTopOf="@+id/btn_play_pause"&ndash;&gt;-->
-            <!--&lt;!&ndash;app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;app:layout_constraintStart_toStartOf="parent" />&ndash;&gt;-->
+    <!--&lt;!&ndash;<TextView&ndash;&gt;--><!--&lt;!&ndash;android:id="@+id/txtTimer"&ndash;&gt;--><!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;--><!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;--><!--&lt;!&ndash;android:layout_marginBottom="8dp"&ndash;&gt;--><!--&lt;!&ndash;android:layout_marginEnd="8dp"&ndash;&gt;--><!--&lt;!&ndash;android:layout_marginStart="8dp"&ndash;&gt;--><!--&lt;!&ndash;android:gravity="center"&ndash;&gt;--><!--&lt;!&ndash;android:text="00:00"&ndash;&gt;--><!--&lt;!&ndash;app:layout_constraintBottom_toTopOf="@+id/btn_play_pause"&ndash;&gt;--><!--&lt;!&ndash;app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;--><!--&lt;!&ndash;app:layout_constraintStart_toStartOf="parent" />&ndash;&gt;-->
 
 
+    <!--&lt;!&ndash;<SeekBar&ndash;&gt;--><!--&lt;!&ndash;android:id="@+id/seekBar"&ndash;&gt;--><!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;--><!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;--><!--&lt;!&ndash;android:layout_marginBottom="212dp"&ndash;&gt;--><!--&lt;!&ndash;app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;--><!--&lt;!&ndash;tools:layout_editor_absoluteX="0dp" />&ndash;&gt;-->
 
-        <!--&lt;!&ndash;<SeekBar&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/seekBar"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_marginBottom="212dp"&ndash;&gt;-->
-            <!--&lt;!&ndash;app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;tools:layout_editor_absoluteX="0dp" />&ndash;&gt;-->
-
-        <!---->
+    <!---->
 
 
     <!--</android.support.constraint.ConstraintLayout>-->

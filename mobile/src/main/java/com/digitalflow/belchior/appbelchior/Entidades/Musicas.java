@@ -1,37 +1,36 @@
 package com.digitalflow.belchior.appbelchior.Entidades;
 
 /**
- * Created by MarllonS on 25/02/2018.
+ * Created by MarllonS on 03/03/2018.
  */
 
 public class Musicas {
+    private String name;
+    private Object isUnlocked;
 
-    private String id;
-    private boolean locked;
-
-    public Musicas() {
-
+    public Musicas(String name, Object isUnlocked) {
+        this.name = name;
+        this.isUnlocked = isUnlocked;
     }
 
-    public Musicas(String id, String name, boolean locked){
-        this.id = id;
-        this.locked = locked;
+    public Musicas(String name) {
+        this.name = name;
     }
 
-    public String getId() {
-        return id;
+    public String getNome() {
+        return name;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setNome(String name) {
+        this.name = name;
     }
 
-    public boolean isLocked() {
-        return locked;
+    public Object getLocked() {
+        return isUnlocked;
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
+    public void setLocked(Object unlocked) {
+        isUnlocked = unlocked;
     }
 
 }

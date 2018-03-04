@@ -12,7 +12,7 @@
 
 
     <!-- Legendas -->
-    <string name="textoTelaInicial">Suas músicas estão grafitadas </string>
+    <string name="textoTelaInicial">Suas músicas estão grafitadas nas paredes. Encontre e ouça. </string>
     <string name="textoTelaInicial2"> nas paredes. Encontre e ouça.</string>
     <string name="ao_clicar_login_voce_concorda_com_os_nossos">Ao fazer login, você concorda com os nossos</string>
     <string name="e">e a nossa </string>
@@ -103,7 +103,8 @@
     <string name="tituloMusica9">Como Nossos Pais (1976)</string>
     <string name="tituloMusica10">Paralelas (1977)</string>
 
-
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

@@ -8,4 +8,5 @@
     <color name="patternBlack">#000</color>
     <color name="hiperlinkColor">#186bfa</color>
     <color name="patternHint">#d5d5d5</color>
+    <color name="transparent">#00000000</color>
 </resources>
