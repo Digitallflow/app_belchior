@@ -1,25 +1,10 @@
 package com.digitalflow.belchior.appbelchior.Entidades;
 
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
-
 import com.digitalflow.belchior.appbelchior.DAO.ConfiguracaoFirebase;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Exclude;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
-import java.util.Map;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
+import java.util.HashMap;
 
 /**
  * Created by RUTH on 19/12/2017.
@@ -27,7 +12,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class Usuarios {
     private String id, email, pass, firstName, lastName, birth, sex, fbId, gId;
-    private HashMap<String, Object> music;
+    private Musicas[] music;
     private volatile static Usuarios instance = new Usuarios();
 
     private Usuarios() {
@@ -197,11 +182,11 @@ public class Usuarios {
         return gId;
     }
 
-    public HashMap<String, Object> getMusic() {
+    public Musicas[] getMusic() {
         return music;
     }
 
-    public void setMusic(HashMap<String, Object> music) {
+    public void setMusic(Musicas[] music) {
         this.music = music;
     }
 

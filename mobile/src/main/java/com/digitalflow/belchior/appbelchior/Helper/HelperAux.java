@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
@@ -58,6 +59,11 @@ public class HelperAux extends AppCompatActivity {
 
     public void openActivity(Class<?> cls) {
         Intent intent = new Intent(getApplicationContext(), cls);
+        startActivity(intent);
+    }
+
+    public void openActivity(Class<?> cls, Context context) {
+        Intent intent = new Intent(context, cls);
         startActivity(intent);
     }
 
@@ -108,9 +114,15 @@ public class HelperAux extends AppCompatActivity {
         }
     }
 
-    public AlertDialog AlertDialog(Context inContext, String title, String line1, boolean processing) {
+    public AlertDialog AlertDialog(Context inContext, LayoutInflater inflater, String title, String line1, boolean processing) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
-        View mView = getLayoutInflater().inflate(R.layout.activity_layout, null);
+        View mView = null;
+        if (inflater == null) {
+            mView = getLayoutInflater().inflate(R.layout.activity_layout, null);
+        } else {
+            mView = inflater.inflate(R.layout.activity_layout, null);
+        }
+
         ProgressBar progressBar2 = (ProgressBar) mView.findViewById(R.id.progressBar2);
         TextView textViewTitle = (TextView) mView.findViewById(R.id.textViewTitle);
         TextView textViewLine1 = (TextView) mView.findViewById(R.id.textViewLine1);
@@ -146,9 +158,14 @@ public class HelperAux extends AppCompatActivity {
         return dialog;
     }
 
-    public void AlertDialog(Context context, String title, String subtitle, final ConstraintLayout layout) {
+    public void AlertDialog(Context context, LayoutInflater inflater, String title, String subtitle, final ConstraintLayout layout) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
-        View mView = getLayoutInflater().inflate(R.layout.aux_helper, null);
+        View mView = null;
+        if (inflater == null) {
+            mView = getLayoutInflater().inflate(R.layout.aux_helper, null);
+        } else {
+            mView = inflater.inflate(R.layout.aux_helper, null);
+        }
         TextView textViewTitle = (TextView) mView.findViewById(R.id.textViewTitle);
         TextView textViewSubTitle = (TextView) mView.findViewById(R.id.textViewSubTitle);
         Button btnYes = (Button) mView.findViewById(R.id.btnYes);
@@ -188,10 +205,16 @@ public class HelperAux extends AppCompatActivity {
         //return dialog;
     }
 
-    public boolean AlertDialog(Context context, String title, String subtitle, Message msgType, boolean yesNo) {
+    public boolean AlertDialog(Context context, LayoutInflater inflater, String title, String subtitle, Message msgType, boolean yesNo) {
         final boolean[] bool = new boolean[1];
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
-        View mView = getLayoutInflater().inflate(R.layout.aux_helper, null);
+        View mView = null;
+        if (inflater == null) {
+            mView = getLayoutInflater().inflate(R.layout.aux_helper, null);
+        } else {
+            mView = inflater.inflate(R.layout.aux_helper, null);
+        }
+
         TextView textViewTitle = (TextView) mView.findViewById(R.id.textViewTitle);
         TextView textViewSubTitle = (TextView) mView.findViewById(R.id.textViewSubTitle);
         Button btnYes = (Button) mView.findViewById(R.id.btnYes);
@@ -314,9 +337,14 @@ public class HelperAux extends AppCompatActivity {
         return bool[0];
     }
 
-    public void AlertDialog(final Context context, final FirebaseAuth auth, final ConstraintLayout constraintLayout, AlertDialog dialogs) {
+    public void AlertDialog(final Context context, LayoutInflater inflater, final FirebaseAuth auth, final ConstraintLayout constraintLayout, AlertDialog dialogs) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
-        View mView = getLayoutInflater().inflate(R.layout.activity_forgot, null);
+        View mView = null;
+        if (inflater == null) {
+            mView = getLayoutInflater().inflate(R.layout.activity_forgot, null);
+        } else {
+            mView = inflater.inflate(R.layout.activity_forgot, null);
+        }
         final EditText edtTextEmail = (EditText) mView.findViewById(R.id.edtTextEmail);
         Button btnYes = (Button) mView.findViewById(R.id.btnYes);
         Button btnNo = (Button) mView.findViewById(R.id.btnNo);
@@ -332,7 +360,7 @@ public class HelperAux extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!edtTextEmail.getText().toString().equals("")) {
-                    final AlertDialog alertD = AlertDialog(context, getString(R.string.processando), getString(R.string.verificando_usuario_na_database), true);
+                    final AlertDialog alertD = AlertDialog(context, null, getString(R.string.processando), getString(R.string.verificando_usuario_na_database), true);
                     auth.fetchProvidersForEmail(edtTextEmail.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
                                 @Override
