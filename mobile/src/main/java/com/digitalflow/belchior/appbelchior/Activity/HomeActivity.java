@@ -33,6 +33,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digitalflow.belchior.appbelchior.DAO.Crud;
+import com.digitalflow.belchior.appbelchior.Entidades.Musicas;
 import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
 import com.digitalflow.belchior.appbelchior.R;
 import com.google.android.gms.vision.CameraSource;
@@ -45,11 +47,17 @@ import android.os.Handler;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -157,7 +165,71 @@ public class HomeActivity extends AppCompatActivity{
                             Vibrator vibrator = (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                             vibrator.vibrate(1000);
                             txtResult.setText(qrcodes.valueAt(0).displayValue);
-                            Toast.makeText(HomeActivity.this, "oie", Toast.LENGTH_SHORT).show();
+
+                            Usuarios user = Usuarios.getInstance();
+                            Musicas[] musicas_user = user.getMusic();
+
+
+                            String tituloMusica = txtResult.getText().toString();
+
+                            Toast.makeText(HomeActivity.this, "oie ", Toast.LENGTH_SHORT).show();
+
+                            if(tituloMusica != null){
+
+                                switch (tituloMusica){
+                                    case "numero00":
+                                        Musicas music0 = new Musicas("Music 0", true);
+                                        user.setMusic(music0,0);
+                                        Crud.setFirMusic(user,music0);
+                                        break;
+                                    case "numero01":
+                                        Musicas music1 = new Musicas("Music 1", true);
+                                        user.setMusic(music1,1);
+                                        Crud.setFirMusic(user,music1);
+                                        break;
+                                    case "numero02":
+                                        Musicas music2 = new Musicas("Music 2", true);
+                                        user.setMusic(music2,2);
+                                        Crud.setFirMusic(user,music2);
+                                        break;
+                                    case "numero03":
+                                        Musicas music3 = new Musicas("Music 3", true);
+                                        user.setMusic(music3,3);
+                                        Crud.setFirMusic(user,music3);
+                                        break;
+                                    case "numero04":
+                                        Musicas music4 = new Musicas("Music 4", true);
+                                        user.setMusic(music4,4);
+                                        Crud.setFirMusic(user,music4);
+                                        break;
+                                    case "numero05":
+                                        Musicas music5 = new Musicas("Music 5", true);
+                                        user.setMusic(music5,5);
+                                        Crud.setFirMusic(user,music5);
+                                        break;
+                                    case "numero06":
+                                        Musicas music6 = new Musicas("Music 6", true);
+                                        user.setMusic(music6,6);
+                                        Crud.setFirMusic(user,music6);
+                                        break;
+                                    case "numero07":
+                                        Musicas music7 = new Musicas("Music 7", true);
+                                        user.setMusic(music7,7);
+                                        Crud.setFirMusic(user,music7);
+                                        break;
+                                    case "numero08":
+                                        Musicas music8 = new Musicas("Music 8", true);
+                                        user.setMusic(music8,8);
+                                        Crud.setFirMusic(user,music8);
+                                        break;
+                                    case "numero09":
+                                        Musicas music9 = new Musicas("Music 9", true);
+                                        user.setMusic(music9,9);
+                                        Crud.setFirMusic(user,music9);
+                                        break;
+                                }
+                            }
+
                         }
                         });
                     }

@@ -121,8 +121,10 @@ public class Crud extends Inicial {
     }
 
     public static void setFirMusic(Usuarios user, Musicas music){
+        HashMap<String, Object> hashMap = new HashMap<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("musics").document(user.getId()).set(music).addOnSuccessListener(new OnSuccessListener<Void>() {
+        hashMap.put(music.getNome(), music.getLocked());
+        db.collection("musics").document(user.getId()).update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.d("CRUD", "++++++++++++++++++++++++++++++++saved++++++++++++++++++++++++++++++++++++++++++++++++++");
