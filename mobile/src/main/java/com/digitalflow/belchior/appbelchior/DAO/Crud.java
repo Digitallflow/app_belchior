@@ -120,6 +120,25 @@ public class Crud extends Inicial {
         return musics;
     }
 
+    public static void setFirMusic(Usuarios user, Musicas music){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("musics").document(user.getId()).set(music).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("CRUD", "++++++++++++++++++++++++++++++++saved++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("CRUD", "+++++++++++++++++++++++++++++++++++++++++++not saved+++++++++++++++++++++++++++++++++++", e);
+                //fazer excecoes com toast
+            }
+
+        });
+    }
+
 
 
     public enum Login {

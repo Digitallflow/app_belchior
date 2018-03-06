@@ -12,6 +12,7 @@
         android:layout_marginStart="60dp"
         android:layout_marginTop="32dp"
         android:text="TextView"
+        android:textColor="@color/patternWhite"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,6 +23,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="TextView"
+        android:textColor="@color/patternWhite"
         app:layout_constraintBaseline_toBaselineOf="@+id/textViewBool"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.046"

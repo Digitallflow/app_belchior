@@ -30,8 +30,8 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
     final Handler handler = new Handler();
     private final Usuarios user = Usuarios.getInstance();
     LinearLayout linearLayout;
-    private ImageButton btnCamera, btnPlayPause;
-    private Button btnMusicas, button2;
+    private ImageButton btnPlayPause;
+    private Button btnMusicas, btnCamera, button2;
     private TextView txtTimer;
     private SeekBar seekBar;
     private VusikView musicView;
@@ -49,10 +49,9 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music);
-
-        btnCamera = (ImageButton) findViewById(R.id.btnCamera);
-        btnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
+        btnCamera = (Button) findViewById(R.id.btnCamera);
         btnMusicas = (Button) findViewById(R.id.btnMusicas);
+        //btnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
         button2 = (Button) findViewById(R.id.button2);
 //        txtTimer = (TextView) findViewById(R.id.txtTimer);
 //        seekBar = (SeekBar) findViewById(R.id.seekBar);
@@ -72,7 +71,7 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                //
             }
 
             @Override
@@ -95,7 +94,7 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                //
             }
         });
 
@@ -108,12 +107,7 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(MusicActivity.this, HomeActivity.class);
-//                startActivity(intent);
 
-//                Toast.makeText(MusicActivity.this, user.getEmail(), Toast.LENGTH_LONG);
-//                Usuarios u = Usuarios.getInstance();
-//                AlertDialog(MusicActivity.this, u.getId(), u.getFirstName(), false);
                 viewPager.setCurrentItem(1);
             }
         });

@@ -190,4 +190,8 @@ public class Usuarios {
         this.music = music;
     }
 
+    public void setMusic(Musicas music, int position) {
+        this.music[position] = music;
+    }
+
 }
