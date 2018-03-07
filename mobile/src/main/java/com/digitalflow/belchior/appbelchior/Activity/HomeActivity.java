@@ -100,7 +100,7 @@ public class HomeActivity extends AppCompatActivity{
                     return;
                 }
                 try{
-                    cameraSource.start(cameraPreview.getHolder())
+                    cameraSource.start(cameraPreview.getHolder());
                 } catch (IOException e){
                     e.printStackTrace();
                 }
