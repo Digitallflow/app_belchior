@@ -110,12 +110,16 @@ public class Crud extends Inicial {
     }
 
     public static Musicas[] hashMaptoArrayMusics(HashMap<String,Object> map){
-        Musicas[] musics = new Musicas[11];
+        Musicas[] musics = new Musicas[10];
         TreeMap<String, Object> sorted = new TreeMap<>(map); //hashmap sorted
         int i = 0;
         for (Map.Entry<String, Object> pair : sorted.entrySet()) {
-            musics[i] = new Musicas(pair.getKey(), pair.getValue());
-            i++;
+            if (i == 10){
+                continue;
+            } else {
+                musics[i] = new Musicas(pair.getKey(), pair.getValue());
+                i++;
+            }
         }
         return musics;
     }

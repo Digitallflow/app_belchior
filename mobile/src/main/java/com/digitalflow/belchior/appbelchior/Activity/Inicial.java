@@ -240,7 +240,7 @@ public class Inicial extends HelperAux {
                                                                             //Toast.makeText(context, u.getMusic().toString(), Toast.LENGTH_LONG).show();
                                                                             ///////////////
                                                                             Crud.isLogin = true;
-                                                                            openActivity(HomeActivity.class, processDialog);
+                                                                            openActivity(MusicActivity.class, processDialog);
                                                                         } else {
                                                                             processDialog.dismiss();
                                                                             AlertDialog(context, null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
