@@ -112,7 +112,6 @@ public class CameraFragment extends Fragment {
 
                                 Usuarios user = Usuarios.getInstance();
 
-
                                 String tituloMusica = txtResult.getText().toString();
                                 HelperAux helper = new HelperAux();
                                 int p = 0;
@@ -183,7 +182,7 @@ public class CameraFragment extends Fragment {
                                             break;
                                         case "numero06":
                                             p = 6;
-                                            if (isUnlocked(user, p)) {/
+                                            if (isUnlocked(user, p)) {
                                                 alert.dismiss();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {

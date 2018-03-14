@@ -139,7 +139,7 @@ public class HomeActivity extends AppCompatActivity{
 
                             Toast.makeText(HomeActivity.this, "oie ", Toast.LENGTH_SHORT).show();
 
-                            if(tituloMusica != null){
+                            /*  if(tituloMusica != null){
 
                                 switch (tituloMusica){
                                     case "numero00":
@@ -193,7 +193,7 @@ public class HomeActivity extends AppCompatActivity{
                                         Crud.setFirMusic(user,music9);
                                         break;
                                 }
-                            }
+                            }*/
 
                         }
                         });
