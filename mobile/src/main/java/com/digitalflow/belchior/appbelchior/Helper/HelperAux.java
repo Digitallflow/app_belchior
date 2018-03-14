@@ -226,7 +226,7 @@ public class HelperAux extends AppCompatActivity {
         dialog.setCancelable(false);
         switch (msgType) {
             case msgDone:
-                imageViewType.setImageDrawable(getResources().getDrawable(R.drawable.done_white));
+                imageViewType.setBackgroundResource(R.drawable.done_white);
                 if (yesNo) {
                     btnYes.setVisibility(View.VISIBLE);
                     btnNo.setVisibility(View.VISIBLE);
@@ -240,7 +240,7 @@ public class HelperAux extends AppCompatActivity {
                 textViewSubTitle.setText(subtitle);
                 break;
             case msgInfo:
-                imageViewType.setImageDrawable(getResources().getDrawable(R.drawable.info_white));
+                imageViewType.setBackgroundResource(R.drawable.info_white);
                 if (yesNo) {
                     btnYes.setVisibility(View.VISIBLE);
                     btnNo.setVisibility(View.VISIBLE);
@@ -254,7 +254,7 @@ public class HelperAux extends AppCompatActivity {
                 textViewSubTitle.setText(subtitle);
                 break;
             case msgError:
-                imageViewType.setImageDrawable(getResources().getDrawable(R.drawable.error_white));
+                imageViewType.setBackgroundResource(R.drawable.error_white);
                 if (yesNo) {
                     btnYes.setVisibility(View.VISIBLE);
                     btnNo.setVisibility(View.VISIBLE);
@@ -264,11 +264,11 @@ public class HelperAux extends AppCompatActivity {
                     btnYes.setVisibility(View.INVISIBLE);
                     btnNo.setText(R.string.ok);
                 }
-                textViewTitle.setText(getString(R.string.error, title));
+                textViewTitle.setText(title);
                 textViewSubTitle.setText(subtitle);
                 break;
             case msgWarning:
-                imageViewType.setImageDrawable(getResources().getDrawable(R.drawable.warning_white));
+                imageViewType.setBackgroundResource(R.drawable.warning_white);
                 if (yesNo) {
                     btnYes.setVisibility(View.VISIBLE);
                     btnNo.setVisibility(View.VISIBLE);
@@ -282,7 +282,7 @@ public class HelperAux extends AppCompatActivity {
                 textViewSubTitle.setText(subtitle);
                 break;
             case msgQuestion:
-                imageViewType.setImageDrawable(getResources().getDrawable(R.drawable.question_white));
+                imageViewType.setBackgroundResource(R.drawable.question_white);
                 if (yesNo) {
                     btnYes.setVisibility(View.VISIBLE);
                     btnNo.setVisibility(View.VISIBLE);

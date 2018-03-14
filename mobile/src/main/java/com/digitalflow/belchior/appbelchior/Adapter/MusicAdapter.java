@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digitalflow.belchior.appbelchior.DAO.Crud;
 import com.digitalflow.belchior.appbelchior.Entidades.Musicas;
 import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
 import com.digitalflow.belchior.appbelchior.R;
@@ -64,25 +65,25 @@ public class MusicAdapter extends ArrayAdapter<Musicas> {
     public String returnTitleMusic(String rootMusic) {
         switch (rootMusic) {
             case "Music 0":
-                return "Fotografia 3x4 (1976)";
+                return Crud.titleMusics[0];
             case "Music 1":
-                return "Tudo Outra Vez (1979)";
+                return Crud.titleMusics[1];
             case "Music 2":
-                return "Galos, Noites e Quintais (1977)";
+                return Crud.titleMusics[2];
             case "Music 3":
-                return "A Palo Seco (1973)";
+                return Crud.titleMusics[3];
             case "Music 4":
-                return "Alucinação (1976)";
+                return Crud.titleMusics[4];
             case "Music 5":
-                return "Divina Comédia Romântica (1978)";
+                return Crud.titleMusics[5];
             case "Music 6":
-                return "Coração Selvagem (1977)";
+                return Crud.titleMusics[6];
             case "Music 7":
-                return "Velha Roupa Colorida (1976)";
+                return Crud.titleMusics[7];
             case "Music 8":
-                return "Como Nossos Pais (1976)";
+                return Crud.titleMusics[8];
             case "Music 9":
-                return "Paralelas (1976)";
+                return Crud.titleMusics[9];
             default:
                 return "";
         }

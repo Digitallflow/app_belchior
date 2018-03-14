@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.digitalflow.belchior.appbelchior.Adapter.TabsAdapter;
 import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
+import com.digitalflow.belchior.appbelchior.Fragments.MusicFragment;
 import com.digitalflow.belchior.appbelchior.Helper.HelperAux;
 import com.digitalflow.belchior.appbelchior.R;
 import com.digitalflow.belchior.appbelchior.Util.SlidingTabLayout;
@@ -107,7 +108,6 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 viewPager.setCurrentItem(1);
             }
         });
@@ -309,4 +309,10 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
 
     }
 
+    public void updateUserMusics(){
+        //Atualizar a listagem de itens do fragmento MusicFragment
+        TabsAdapter newAdapter = (TabsAdapter) viewPager.getAdapter();
+        MusicFragment newMusicFragment = (MusicFragment) newAdapter.getFragment(0);
+        newMusicFragment.getMusicsByUserLogged();
+    }
 }

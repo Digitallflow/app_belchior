@@ -13,6 +13,10 @@ public class Musicas {
         this.isUnlocked = isUnlocked;
     }
 
+    public Musicas(){
+
+    }
+
     public Musicas(String name) {
         this.name = name;
     }

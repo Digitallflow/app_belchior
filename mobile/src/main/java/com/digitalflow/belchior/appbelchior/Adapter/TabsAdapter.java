@@ -10,10 +10,13 @@ import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
+import android.view.ViewGroup;
 
 import com.digitalflow.belchior.appbelchior.Fragments.CameraFragment;
 import com.digitalflow.belchior.appbelchior.Fragments.MusicFragment;
 import com.digitalflow.belchior.appbelchior.R;
+
+import java.util.HashMap;
 
 /**
  * Created by MarllonS on 01/03/2018.
@@ -23,6 +26,7 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
     private Context context;
     private String[] abas = new String[]{"MUSICA", "CAMERA"};
     private int[] icons = new int[]{R.drawable.botao_musicas_blue,R.drawable.botao_camera_blue};
+    private HashMap<Integer, Fragment> fragmentsUsed = new HashMap<>();
 //    private int tamIcon;
 
     public TabsAdapter(FragmentManager fm, Context context) {
@@ -38,15 +42,26 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 fragment = new MusicFragment();
+                fragmentsUsed.put(position, fragment);
                 break;
             case 1:
                 fragment = new CameraFragment();
+//                fragmentsUsed.put(position, fragment);
                 break;
         }
         return fragment;
     }
+    public Fragment getFragment(Integer index){
+        return fragmentsUsed.get(index);
+    }
 
-/* ========= TAB BUTTONS ========= */
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        super.destroyItem(container, position, object);
+        fragmentsUsed.remove(position);
+    }
+
+    /* ========= TAB BUTTONS ========= */
 /*
     @Nullable
     @Override

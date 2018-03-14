@@ -186,6 +186,10 @@ public class Usuarios {
         return music;
     }
 
+    public Musicas getMusic(int position) {
+        return music[position];
+    }
+
     public void setMusic(Musicas[] music) {
         this.music = music;
     }

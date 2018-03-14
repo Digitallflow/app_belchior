@@ -75,7 +75,7 @@ public class MusicFragment extends Fragment {
         adapter = new MusicAdapter(getActivity(), musics);
         listViewMusic.setAdapter(adapter);
 
-        //recuperar aqui algum dado no firebase.. ou do usuário
+        //recuperar aqui algum dado no firebase ou do usuário logado
 
         if(Crud.isLogin){
             //exibir aqui os dados ja armazenados nas classes locais
@@ -86,89 +86,155 @@ public class MusicFragment extends Fragment {
             //adapter.notifyDataSetChanged();
         } else {
            // FirebaseAuth.getInstance().signOut();
-            final HelperAux helper = new HelperAux();
-            users = ConfiguracaoFirebase.getFirebaseAuth().getCurrentUser();
-            if (users != null) {
-                processUserDialog = helper.AlertDialog(getActivity(), inflater, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), true);
-                if (users.isEmailVerified()) {
-                    final FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    //load user info from database to Singleton
-                    DocumentReference docRefUser = db.collection("users").document(users.getUid());
-                    docRefUser.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("Console Log", "Error adding document", e);
-                            processUserDialog.dismiss();
-                            Toast.makeText(getActivity().getApplicationContext(), R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                if (task.getResult() != null) {
-                                    processUserDialog.dismiss();
-                                    DocumentReference docRefMusic = db.collection("musics").document(users.getUid());
-                                    docRefMusic.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                if (task.getResult() != null) {
-                                                    Usuarios user = Usuarios.getInstance();
-                                                    HashMap<String, Object> document =  (HashMap<String, Object>) task.getResult().getData();
-                                                    Musicas[] arrayMusicas = Crud.hashMaptoArrayMusics(document);
-                                                    user.setMusic(arrayMusicas);
-                                                    Usuarios.setInstance(user);
-                                                    musics.clear();
-                                                    Collections.addAll(musics, arrayMusicas);
-                                                    progressBar4.setVisibility(View.INVISIBLE);
-                                                    adapter.notifyDataSetChanged();
-                                                } else {
-                                                    helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
-                                                    return;
-                                                }//there is no music documents by this user
-                                            } else {
-                                                processUserDialog.dismiss();
-                                                helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
-                                                return;
-                                            }//failed complete get document of musics
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure
-                                                (@NonNull Exception e) {
-                                            Toast.makeText(getActivity(), R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                    });//failed to get requisition
-                                } else {
-                                    processUserDialog.dismiss();
-                                    helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
-                                    return;
-                                }//there is no document by this user
-                            } else {
-                                processUserDialog.dismiss();
-                                helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
-                                return;
-                            }//failed to get document complete on user
-                        }
-                    });
-                } else {
-                    processUserDialog.dismiss();
-                    helper.AlertDialog(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), HelperAux.Message.msgError, false);
-                }
-            } else {
-                startActivity(new Intent(getActivity(),MainActivity.class));
-            }
+           getUserData(inflater);
         }
 
         return view;
 
+    }
+
+    private void getUserData(LayoutInflater inflater) {
+        final HelperAux helper = new HelperAux();
+        users = ConfiguracaoFirebase.getFirebaseAuth().getCurrentUser();
+        if (users != null) {
+            processUserDialog = helper.AlertDialog(getActivity(), inflater, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), true);
+            if (users.isEmailVerified()) {
+                final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                //load user info from database to Singleton
+                DocumentReference docRefUser = db.collection("users").document(users.getUid());
+                docRefUser.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Console Log", "Error adding document", e);
+                        processUserDialog.dismiss();
+                        Toast.makeText(getActivity().getApplicationContext(), R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if (task.getResult() != null) {
+                                processUserDialog.dismiss();
+                                DocumentReference docRefMusic = db.collection("musics").document(users.getUid());
+                                docRefMusic.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            if (task.getResult() != null) {
+                                                Usuarios user = Usuarios.getInstance();
+                                                HashMap<String, Object> document =  (HashMap<String, Object>) task.getResult().getData();
+                                                Musicas[] arrayMusicas = Crud.hashMaptoArrayMusics(document);
+                                                user.setMusic(arrayMusicas);
+                                                Usuarios.setInstance(user);
+                                                musics.clear();
+                                                Collections.addAll(musics, arrayMusicas);
+                                                progressBar4.setVisibility(View.INVISIBLE);
+                                                adapter.notifyDataSetChanged();
+                                            } else {
+                                                helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
+                                                return;
+                                            }//there is no music documents by this user
+                                        } else {
+                                            processUserDialog.dismiss();
+                                            helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                                            return;
+                                        }//failed complete get document of musics
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure
+                                            (@NonNull Exception e) {
+                                        Toast.makeText(getActivity(), R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                });//failed to get requisition
+                            } else {
+                                processUserDialog.dismiss();
+                                helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
+                                return;
+                            }//there is no document by this user
+                        } else {
+                            processUserDialog.dismiss();
+                            helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                            return;
+                        }//failed to get document complete on user
+                    }
+                });
+            } else {
+                processUserDialog.dismiss();
+                helper.AlertDialog(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), HelperAux.Message.msgError, false);
+            }
+        } else {
+            startActivity(new Intent(getActivity(),MainActivity.class));
+        }
+    }
+
+    public void getMusicsByUserLogged(){
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final HelperAux helper = new HelperAux();
+        //load user info from database to Singleton
+        DocumentReference docRefUser = db.collection("users").document(users.getUid());
+        docRefUser.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w("Console Log", "Error adding document", e);
+                processUserDialog.dismiss();
+                Toast.makeText(getActivity().getApplicationContext(), R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult() != null) {
+                        processUserDialog.dismiss();
+                        DocumentReference docRefMusic = db.collection("musics").document(users.getUid());
+                        docRefMusic.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    if (task.getResult() != null) {
+                                        Usuarios user = Usuarios.getInstance();
+                                        HashMap<String, Object> document =  (HashMap<String, Object>) task.getResult().getData();
+                                        Musicas[] arrayMusicas = Crud.hashMaptoArrayMusics(document);
+                                        user.setMusic(arrayMusicas);
+                                        Usuarios.setInstance(user);
+                                        musics.clear();
+                                        Collections.addAll(musics, arrayMusicas);
+                                        progressBar4.setVisibility(View.INVISIBLE);
+                                        adapter.notifyDataSetChanged();
+                                    } else {
+                                        helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
+                                    }//there is no music documents by this user
+                                } else {
+                                    helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                                }//failed complete get document of musics
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure
+                                    (@NonNull Exception e) {
+                                Toast.makeText(getActivity(), R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
+                            }
+                        });//failed to get requisition
+                    } else {
+                        helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
+                    }//there is no document by this user
+                } else {
+                    helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                }//failed to get document complete on user
+            }
+        });
     }
 
 }

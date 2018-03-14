@@ -51,6 +51,8 @@
     <string name="autentication">Autenticação</string>
     <string name="termos_de_uso_texto">Ao realizar o cadastro para utilização do Aplicativo, o Usuário se submeterá automaticamente a todas as regras e condições destes Termos de Uso:                                                  O Aplicativo permite que o Usuário tenha acesso a informações e conteúdos relacionados a publicações do AppBelchior. Dentro deste contexto, o Usuário poderá interagir com o ae com os contatos de seu perfil enviando ou publicando textos, imagens, fotografias além de ter acesso a outras funcionalidades disponibilizadas pelo Aplicativo.                 Será permitido um único cadastramento por Usuário, devendo o acesso, visualização e uso do Aplicativo ser feito pelo Usuário em caráter pessoal e intransferível.                                 O Usuário não poderá, em qualquer hipótese, compartilhar o Aplicativo em qualquer site ou ambiente virtual, nem se utilizar do cadastro de outro Usuário, sem sua respectiva autorização. Nestes casos, o AppBelchior se reserva o direito de bloquear o acesso sem aviso prévio ao Usuário.  Recomendamos que o usuário para ter acesso deverá ter 14 (quatorze) anos completos, no mínimo. No caso de menores de 18 (dezoito) e outras pessoas que necessitem de representação na forma da lei, estes devem estar devidamente representados ou assistidos, conforme o caso, por seus pais ou responsáveis legais, os quais deverão preencher o cadastro em caráter de representação ou assistência ao Usuário, responsabilizando-se integralmente por este e por seus atos.         O AppBelchior se reserva o direito de, sem aviso prévio, cancelar e/ou bloquear o acesso do Usuário, a qualquer momento, caso seja constatado que este praticou algum ato ou mantenha conduta que (i) viole as leis e regulamentos federais, estaduais e/ou municipais; (ii) contrarie as regras destes Termos de Uso, e (ii) viole os princípios da moral e dos bons costumes.          Toda e qualquer ação executada ou conteúdo publicado pelo Usuário durante o uso do Aplicativo será de sua exclusiva e integral responsabilidade, devendo isentar e indenizar o AppBelchior de quaisquer reclamações judiciais ou extrajudiciais, prejuízos, perdas e danos causados ao AppBelchior , em decorrência de tais ações ou manifestações.        O AppBelchior se reserva o direito de incluir, excluir ou alterar quaisquer aspectos e conteúdo do Aplicativo, podendo suspendê-lo temporariamente ou cancelá-lo, a seu exclusivo critério e a qualquer tempo, independente de aviso prévio ao Usuário. Da mesma forma, o AppBelchior poderá modificar estes Termos de Uso, cuja versão mais recente estará sempre disponível para consulta no próprio Aplicativo.        O AppBelchior se exime de toda e qualquer responsabilidade pelos danos e prejuízos de qualquer natureza que possam decorrer do acesso, interceptação, eliminação, alteração, modificação ou manipulação, por terceiros não autorizados, dos dados do Usuário durante a utilização do aplicativo. As informações solicitadas ao Usuário no momento do cadastro serão utilizadas pelo AppBelchior somente para os fins previstos nestes Termos de Uso e em nenhuma circunstância tais informações serão cedidas ou compartilhadas com terceiros, exceto por ordem judicial ou de autoridade competente.</string>
     <string name="politica_de_privacidade_texto">Todas as suas informações pessoais recolhidas, serão usadas para o ajudar a tornar a sua visita no nosso aplicativo o mais produtiva e agradável possível. A garantia da confidencialidade dos dados pessoais dos utilizadores do nosso aplicativo é importante para o AppBelchior.  Todas as informações pessoais relativas a membros, assinantes, clientes ou visitantes que usem o aplicativo AppBelchior serão tratadas em concordância com a Lei da Proteção de Dados Pessoais de 26 de outubro de 1998 (Lei n.º 67/98). A informação pessoal recolhida pode incluir o seu nome, e-mail, número de telefone e/ou telemóvel, data de nascimento e/ou outros. O uso do aplicativo AppBelchior pressupõe a aceitação deste acordo de privacidade bem como dos Termos de Uso. A equipe do AppBelchior reserva-se ao direito de alterar este acordo sem aviso prévio. Deste modo, recomendamos que consulte a nossa política de privacidade e termos de uso com regularidade, de forma a estar sempre atualizado.</string>
+    <string name="a_musica_ja_foi_desbloqueada">A musica "%1$s" já foi desbloqueada.</string>
+    <string name="voce_desbloqueou_a_musica">A musica "%1$s" foi desbloqueada.</string>
 
     <!-- Links -->
     <string name="cadastre_se">Cadastre-se.</string>
@@ -92,19 +94,21 @@
 
 
     <!-- MUSICAS -->
-    <string name="tituloMusica1">Fotografia 3x4 (1976)</string>
-    <string name="tituloMusica2">Tudo outra vez (1979)</string>
-    <string name="tituloMusica3">Galos, Noites e Quintais (1977)</string>
-    <string name="tituloMusica4">À palo seco (1973)</string>
-    <string name="tituloMusica5">Alucinação (1976)</string>
-    <string name="tituloMusica6">Divina Comédia Humana (1978)</string>
-    <string name="tituloMusica7">Coração Selvagem (1977)</string>
-    <string name="tituloMusica8">Velha Roupa Colorida (1976)</string>
-    <string name="tituloMusica9">Como Nossos Pais (1976)</string>
-    <string name="tituloMusica10">Paralelas (1977)</string>
+    <string name="tituloMusica0">Fotografia 3x4 (1976)</string>
+    <string name="tituloMusica1">Tudo outra vez (1979)</string>
+    <string name="tituloMusica2">Galos, Noites e Quintais (1977)</string>
+    <string name="tituloMusica3">À palo seco (1973)</string>
+    <string name="tituloMusica4">Alucinação (1976)</string>
+    <string name="tituloMusica5">Divina Comédia Humana (1978)</string>
+    <string name="tituloMusica6">Coração Selvagem (1977)</string>
+    <string name="tituloMusica7">Velha Roupa Colorida (1976)</string>
+    <string name="tituloMusica8">Como Nossos Pais (1976)</string>
+    <string name="tituloMusica9">Paralelas (1977)</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="procure_a_proxima">Procure a próxima!</string>
+    <string name="parabens">Parabéns</string>
 
 
 </resources>
