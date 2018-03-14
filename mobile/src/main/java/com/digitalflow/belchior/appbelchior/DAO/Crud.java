@@ -116,35 +116,4 @@ public class Crud extends Inicial {
         return musics;
     }
 
-    public static boolean setFirMusic(Usuarios user, Musicas music) {
-        HashMap<String, Object> hashMap = new HashMap<>();
-        final boolean[] returnValue = new boolean[1];
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        hashMap.put(music.getNome(), music.getLocked());
-        db.collection("musics").document(user.getId()).update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("CRUD", "++++++++++++++++++++++++++++++++saved++++++++++++++++++++++++++++++++++++++++++++++++++");
-            }
-
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("CRUD", "+++++++++++++++++++++++++++++++++++++++++++not saved+++++++++++++++++++++++++++++++++++", e);
-                //fazer excecoes com toast
-            }
-
-        }).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                returnValue[0] = true;
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                returnValue[0] = false;
-            }
-        });
-        return returnValue[0];
-    }
 }
