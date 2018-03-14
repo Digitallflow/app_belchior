@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.digitalflow.belchior.appbelchior.Activity.Inicial;
 import com.digitalflow.belchior.appbelchior.Activity.MainActivity;
 import com.digitalflow.belchior.appbelchior.Adapter.MusicAdapter;
 import com.digitalflow.belchior.appbelchior.DAO.ConfiguracaoFirebase;
@@ -168,10 +169,11 @@ public class MusicFragment extends Fragment {
                 });
             } else {
                 processUserDialog.dismiss();
-                helper.AlertDialog(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), HelperAux.Message.msgError, false);
+                MainActivity.isVerificate = false;
+                startActivity(new Intent(getActivity(), MainActivity.class));
             }
         } else {
-            startActivity(new Intent(getActivity(),MainActivity.class));
+            startActivity(new Intent(getActivity(), MainActivity.class));
         }
     }
 

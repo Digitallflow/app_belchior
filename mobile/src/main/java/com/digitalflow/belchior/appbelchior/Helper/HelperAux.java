@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
 import android.text.TextUtils;
@@ -29,12 +30,15 @@ import android.widget.Toast;
 
 import com.digitalflow.belchior.appbelchior.Activity.HomeActivity;
 import com.digitalflow.belchior.appbelchior.Activity.Inicial;
+import com.digitalflow.belchior.appbelchior.Activity.MusicActivity;
+import com.digitalflow.belchior.appbelchior.Fragments.MusicFragment;
 import com.digitalflow.belchior.appbelchior.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ProviderQueryResult;
 
+import java.util.concurrent.Callable;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
@@ -204,6 +208,138 @@ public class HelperAux extends AppCompatActivity {
         });
         //return dialog;
     }
+
+
+    public void AlertDialogLogout(final Context context, LayoutInflater inflater, String title, String subtitle, Message msgType, boolean yesNo) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+        View mView = null;
+        if (inflater == null) {
+            mView = getLayoutInflater().inflate(R.layout.aux_helper, null);
+        } else {
+            mView = inflater.inflate(R.layout.aux_helper, null);
+        }
+
+        TextView textViewTitle = (TextView) mView.findViewById(R.id.textViewTitle);
+        TextView textViewSubTitle = (TextView) mView.findViewById(R.id.textViewSubTitle);
+        Button btnYes = (Button) mView.findViewById(R.id.btnYes);
+        Button btnNo = (Button) mView.findViewById(R.id.btnNo);
+        ImageView imageViewType = (ImageView) mView.findViewById(R.id.imageViewType);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+        dialog.setCancelable(false);
+        switch (msgType) {
+            case msgDone:
+                imageViewType.setBackgroundResource(R.drawable.done_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(getString(R.string.sucesso, title));
+                textViewSubTitle.setText(subtitle);
+                break;
+            case msgInfo:
+                imageViewType.setBackgroundResource(R.drawable.info_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(getString(R.string.info, title));
+                textViewSubTitle.setText(subtitle);
+                break;
+            case msgError:
+                imageViewType.setBackgroundResource(R.drawable.error_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(title);
+                textViewSubTitle.setText(subtitle);
+                break;
+            case msgWarning:
+                imageViewType.setBackgroundResource(R.drawable.warning_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(getString(R.string.warning, title));
+                textViewSubTitle.setText(subtitle);
+                break;
+            case msgQuestion:
+                imageViewType.setBackgroundResource(R.drawable.question_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(getString(R.string.info, title));
+                textViewSubTitle.setText(subtitle);
+                break;
+            case popUpMsg:
+                imageViewType.setVisibility(View.INVISIBLE);
+                imageViewType.getLayoutParams().height = 0;
+                imageViewType.getLayoutParams().width = 0;
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(title);
+                textViewSubTitle.setText(subtitle);
+                break;
+            default:
+                textViewSubTitle.setText(R.string.error);
+                textViewTitle.setText(R.string.error);
+        }
+
+        dialog.show();
+
+        btnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                FirebaseAuth.getInstance().signOut();
+                //startActivity(new Intent(activity, Inicial.class));
+            }
+        });
+    }
+
+
 
     public boolean AlertDialog(Context context, LayoutInflater inflater, String title, String subtitle, Message msgType, boolean yesNo) {
         final boolean[] bool = new boolean[1];

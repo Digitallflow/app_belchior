@@ -57,6 +57,7 @@ public class CameraFragment extends Fragment {
     BarcodeDetector barcodeDetector;
     CameraSource cameraSource;
     private AlertDialog alert;
+    final boolean[] secondUse = new boolean[1];
 
 
     public CameraFragment() {
@@ -102,6 +103,7 @@ public class CameraFragment extends Fragment {
                 @Override
                 public void receiveDetections(Detector.Detections<Barcode> detections) {
                     final SparseArray<Barcode> qrcodes = detections.getDetectedItems();
+
                     if (qrcodes.size() != 0) {
                         txtResult.post(new Runnable() {
                             @Override
@@ -116,7 +118,8 @@ public class CameraFragment extends Fragment {
                                 HelperAux helper = new HelperAux();
                                 int p = 0;
 
-                                if (tituloMusica != null) {
+                                if (tituloMusica != null && !secondUse[0]) {
+                                    secondUse[0] = true;
                                     alert = helper.AlertDialog(getActivity(), inflater, "essamusica", "identificando musica..", true);
                                     switch (tituloMusica) {
                                         case "numero00":

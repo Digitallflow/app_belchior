@@ -1,5 +1,6 @@
 package com.digitalflow.belchior.appbelchior.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -40,26 +41,35 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 
 public class MainActivity extends HelperAux {
+    public static boolean isVerificate = true;
     private Button AbrirTelaInicial;
     private AudioManager audioManager;
+    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            setContentView(R.layout.activity_main);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_main);
 
-            AbrirTelaInicial = (Button) findViewById(R.id.btnConectar);
+        AbrirTelaInicial = (Button) findViewById(R.id.btnConectar);
 
-            findViewById(R.id.btnConectar).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    openActivity(Inicial.class);
-                }
-            });
+
+        findViewById(R.id.btnConectar).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openActivity(Inicial.class);
+            }
+        });
+
+        if (!isVerificate) {
+            AlertDialogLogout(context, null, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), HelperAux.Message.msgError, false);
+        } else {
+            FirebaseAuth.getInstance().signOut();
+        }
     }
 
     @Override

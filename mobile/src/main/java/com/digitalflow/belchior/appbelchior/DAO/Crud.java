@@ -65,7 +65,7 @@ public class Crud extends Inicial {
             //hashMap.put("Music " + i, false);
         }
         //hashMap.put("uid", user.getId());
-        musics[11] = new Musicas("UID", user.getId());
+        musics[10] = new Musicas("UID", user.getId());
         return musics;
     }
 
