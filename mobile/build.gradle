@@ -33,7 +33,7 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:11.6.2'
     compile 'com.google.firebase:firebase-storage:11.6.2'
     compile 'com.google.android.gms:play-services-auth:11.6.2'
-    compile 'me.dm7.barcodescanner:zxing:1.7'
+    compile 'me.dm7.barcodescanner:zxing:1.9.8'
     compile 'dyanamitechetan.vusikview:vusikview:1.1'
     
 

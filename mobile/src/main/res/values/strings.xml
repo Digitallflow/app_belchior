@@ -106,9 +106,24 @@
     <string name="tituloMusica9">Paralelas (1977)</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="procure_a_proxima">Procure a próxima!</string>
     <string name="parabens">Parabéns</string>
+    <string name="pausado">Pausado:</string>
+    <string name="reproduzindo">Reproduzindo:</string>
+
+    <!-- LINK MUSICAS -->
+    <string name="music0"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/0.mp3?alt=media&token=f9b0268b-01b3-4243-9d88-62449b733a31]]></string>
+    <string name="music1"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/1.mp3?alt=media&token=6c3e732b-afb3-4efb-b938-abf503da9f2b]]></string>
+    <string name="music2"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/2.mp3?alt=media&token=ad453dd5-0a28-4671-95d9-26a21bba7d1d]]></string>
+    <string name="music3"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/3.mp3?alt=media&token=bcf31ee2-1410-4446-a927-a4154efb8b10]]></string>
+    <string name="music4"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/4.mp3?alt=media&token=9a506e9b-cad9-418b-aa60-6c62312e7f8f]]></string>
+    <string name="music5"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/5.mp3?alt=media&token=b21f2eb1-7e68-4222-8eca-e5f559d535a5]]></string>
+    <string name="music6"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/6.mp3?alt=media&token=de85c34e-3b42-47b5-b149-6c0c7aab8919]]></string>
+    <string name="music7"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/7.mp3?alt=media&token=553528d5-ff76-4b2d-8100-53e764c4af8f]]></string>
+    <string name="music8"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/8.mp3?alt=media&token=48016d4d-d0e6-4a0f-af7e-c0ddbf835e25]]></string>
+    <string name="music9"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/9.mp3?alt=media&token=a245e250-3e93-4ddf-897b-d6adff1feea1]]></string>
+    <string name="erro"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/erro.mp3?alt=media&token=15b03f7b-119f-42f0-8e51-d7b2d231c2b9]]></string>
+
 
 
 </resources>

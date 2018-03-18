@@ -28,23 +28,25 @@ import dyanamitechetan.vusikview.VusikView;
 public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletionListener {
     //MediaPlayer.OnBufferingUpdateListener,
 
-    final Handler handler = new Handler();
     private final Usuarios user = Usuarios.getInstance();
     LinearLayout linearLayout;
-    private ImageButton btnPlayPause;
+
+    /* ++++ SLIDING TAB ++++ */
     private Button btnMusicas, btnCamera, button2;
-    private TextView txtTimer;
+    private Context context = this;
+    private SlidingTabLayout slidingTabLayout;
+    private ViewPager viewPager;
+    /* +++++++++++++++++++++ */
+
+    /* ++++ MUSIC VIEW ++++ */
     private SeekBar seekBar;
     private VusikView musicView;
     private MediaPlayer mediaPlayer;
     private int mediaFileLength;
     private int realtimelength;
-    private HashMap<String, Object> musicas_user;
-    private FirebaseUser users;
-    public AlertDialog processUserDialogs;
-    private Context context = this;
-    private SlidingTabLayout slidingTabLayout;
-    private ViewPager viewPager;
+    private TextView txtTimer;
+    final Handler handler = new Handler();
+    /* +++++++++++++++++++++ */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
         //slidingTabLayout.setDistributeEvenly(true);
         //slidingTabLayout.setSelectedIndicatorColors(ContextCompat.getColor(this, R.color.transparent));
         slidingTabLayout.setViewPager(viewPager);
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -99,12 +102,6 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
             }
         });
 
-
-        mediaPlayer = new MediaPlayer();
-//        mediaPlayer.setOnBufferingUpdateListener(this);
-        mediaPlayer.setOnCompletionListener(this);
-
-
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,8 +112,6 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
         btnMusicas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                FirebaseAuth.getInstance().signOut();
-//                openActivity(MainActivity.class);
                 viewPager.setCurrentItem(0);
             }
         });
@@ -128,151 +123,6 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
                 openActivity(MainActivity.class);
             }
         });
-
-      //  if (Crud.isLogin) {
-
-       // } else {
-           /* processUserDialog = AlertDialog(context, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), true);
-            users = ConfiguracaoFirebase.getFirebaseAuth().getCurrentUser();
-            if (users != null) {
-                if (users.isEmailVerified()) {
-                    final FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    //load user info from database to Singleton
-                    DocumentReference docRefUser = db.collection("users").document(users.getUid());
-                    docRefUser.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            // Usuarios u = Usuarios.getInstance();
-                            Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("Console Log", "Error adding document", e);
-                            Toast.makeText(context, R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                if (task.getResult() != null) {
-                                    DocumentReference docRefMusic = db.collection("musics").document(users.getUid());
-                                    docRefMusic.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                if (task.getResult() != null) {
-                                                    HashMap<String, Object> document = new HashMap<>();
-                                                    Usuarios u = Usuarios.getInstance();
-                                                    u.setMusic((HashMap<String, Object>) task.getResult().getData());
-                                                    Usuarios.setInstance(u);
-                                                    //final Usuarios user = Usuarios.getInstance();
-                                                    Fragment fragment = new MusicFragment();
-                                                    processUserDialog.dismiss();
-
-
-                                                } else {
-                                                    AlertDialog(context, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
-                                                    return;
-                                                }//there is no music documents by this user
-                                            } else {
-                                                AlertDialog(context, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
-                                                return;
-                                            }//failed complete get document of musics
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure
-                                                (@NonNull Exception e) {
-                                            Toast.makeText(context, R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                    });//failed to get requisition
-                                } else {
-                                    AlertDialog(context, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
-                                    return;
-                                }//there is no document by this user
-                            } else {
-                                AlertDialog(context, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
-                                return;
-                            }//failed to get document complete on user
-                        }
-                    });
-                    return;
-                } else {
-                    AlertDialog(this, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), HelperAux.Message.msgError, false);
-                    return;
-                }
-            } else {
-                openActivity(MainActivity.class);
-            }*/
-        //}
-
-
-        /*musicas_user = user.getMusic();
-        linearLayout = new LinearLayout(MusicActivity.this);
-        Log.d("////TESTE///////////", "Valor: " + user.getMusic());
-
-        for (Map.Entry<String, Object> entry : musicas_user.entrySet()) {
-            btnPlayPause.setTag(entry);
-            Log.d("/////TESTE2///////", "VALORES: " + entry.getKey() + " : " + entry.getValue());
-            if (entry.getValue().toString().equals("false")) {
-                btnPlayPause.setBackgroundResource(R.drawable.botao_bloqueado);
-                LinearLayout.LayoutParams teste = new LinearLayout.LayoutParams(40, 40);
-                teste.gravity = Gravity.LEFT;
-                btnPlayPause.setLayoutParams(teste);
-                btnPlayPause.setEnabled(false);
-            } else {
-                btnPlayPause.setBackgroundResource(R.drawable.botao_desbloqueado);
-                btnPlayPause.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        final ProgressDialog mDialog = new ProgressDialog(MusicActivity.this);
-
-                        AsyncTask<String, String, String> mp3Play = new AsyncTask<String, String, String>() {
-
-                            @Override
-                            protected void onPreExecute() {
-                                mDialog.setMessage("Please wait");
-                                mDialog.show();
-                            }
-
-                            @Override
-                            protected String doInBackground(String... params) {
-                                try {
-                                    mediaPlayer.setDataSource(params[0]);
-                                    mediaPlayer.prepare();
-                                } catch (Exception ex) {
-
-                                }
-                                return "";
-                            }
-
-                            @Override
-                            protected void onPostExecute(String s) {
-                                mediaFileLength = mediaPlayer.getDuration();
-                                realtimelength = mediaFileLength;
-                                if (!mediaPlayer.isPlaying()) {
-                                    mediaPlayer.start();
-                                    btnPlayPause.setBackgroundResource(R.drawable.ic_pause);
-                                } else {
-                                    mediaPlayer.pause();
-                                    btnPlayPause.setBackgroundResource(R.drawable.ic_play);
-
-                                }
-
-//                        updateSeekBar();
-                                mDialog.dismiss();
-                            }
-                        };
-
-                        mp3Play.execute("https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/02%20-%20Tudo%20outra%20vez%20(1979).mp3?alt=media&token=a20f39b2-3814-438f-8682-981ce1b833c2"); // direct link mp3 file
-
-                        musicView.start();
-                    }
-                });
-            }
-        }*/
 
     }
 
@@ -302,17 +152,17 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
 //        seekBar.setSecondaryProgress(percent);
 //    }
 
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        btnPlayPause.setBackgroundResource(R.drawable.ic_play);
-        musicView.stopNotesFall();
-
-    }
 
     public void updateUserMusics(){
         //Atualizar a listagem de itens do fragmento MusicFragment
         TabsAdapter newAdapter = (TabsAdapter) viewPager.getAdapter();
         MusicFragment newMusicFragment = (MusicFragment) newAdapter.getFragment(0);
         newMusicFragment.getMusicsByUserLogged();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+       // btnPlayPause.setBackgroundResource(R.drawable.ic_play);
+        musicView.stopNotesFall();
     }
 }

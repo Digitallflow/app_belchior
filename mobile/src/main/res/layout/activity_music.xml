@@ -10,11 +10,6 @@
     tools:layout_editor_absoluteY="25dp">
 
 
-    <dyanamitechetan.vusikview.VusikView
-        android:id="@+id/musicaView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/mainConstraint"
         android:layout_width="match_parent"

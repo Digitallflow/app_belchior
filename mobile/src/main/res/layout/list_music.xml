@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonBool"
+        android:id="@+id/btnPlayMusic"
         android:layout_width="25dp"
         android:layout_height="30dp"
         android:layout_marginEnd="8dp"

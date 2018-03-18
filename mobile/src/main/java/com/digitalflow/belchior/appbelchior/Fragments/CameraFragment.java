@@ -94,6 +94,8 @@ public class CameraFragment extends Fragment {
         /* Se o Fragment esteja visível para o usuario, setar a funcao do barcode
             para detectar o qrcode. */
         if (isVisibleToUser && isResumed()) {
+
+            secondUse[0] = false;
             barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
                 @Override
                 public void release() {

@@ -1,6 +1,7 @@
 package com.digitalflow.belchior.appbelchior.Adapter;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Layout;
@@ -10,12 +11,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digitalflow.belchior.appbelchior.DAO.Crud;
 import com.digitalflow.belchior.appbelchior.Entidades.Musicas;
 import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
+import com.digitalflow.belchior.appbelchior.Helper.HelperAux;
 import com.digitalflow.belchior.appbelchior.R;
 
 import java.lang.reflect.Array;
@@ -42,9 +45,10 @@ public class MusicAdapter extends ArrayAdapter<Musicas> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
+        LayoutInflater inflater = null;
         if (view == null) { //se a view existe não cria novamente
             //Inicializa objeto
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
             //monta o xml pra popular a lista
             view = inflater.inflate(R.layout.list_music, parent, false);
         }
@@ -53,9 +57,9 @@ public class MusicAdapter extends ArrayAdapter<Musicas> {
         if (true) {
             //recuperar dados na tela
             TextView textViewValue = (TextView) view.findViewById(R.id.textViewValue);
-            Button buttonBool = (Button) view.findViewById(R.id.buttonBool);
+            Button btnPlayMusic = (Button) view.findViewById(R.id.btnPlayMusic);
             textViewValue.setText(returnTitleMusic(musics.get(position).getNome()));
-            setImageButton(((Boolean) musics.get(position).getLocked()).booleanValue(), buttonBool, position);
+            setImageButton(((Boolean) musics.get(position).getLocked()).booleanValue(), btnPlayMusic, inflater);
         } else {
             //nao foi criado elementos da view
         }
@@ -89,17 +93,21 @@ public class MusicAdapter extends ArrayAdapter<Musicas> {
         }
     }
 
-    public void setImageButton(Boolean switcher, Button btn, int position) {
+    public void setImageButton(Boolean switcher, Button btn, final LayoutInflater inflater) {
         if ((switcher.toString() == "true") || (switcher.toString() == "false")) {
             if (switcher) {
                 btn.setBackgroundResource(R.drawable.botao_desbloqueado);
-                btn.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context, "reproduzir musica", Toast.LENGTH_LONG).show();
-                    }
-                });
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View parentRow = (View) v.getParent();
+                ListView listView = (ListView) parentRow.getParent();
+                final int position = listView.getPositionForView(parentRow);
+                HelperAux helper = new HelperAux();
+                helper.AlertDialogMusic(context, inflater, Crud.titleMusics[position], position);
+                //Toast.makeText(context, "reproduzir musica "+ position, Toast.LENGTH_LONG).show();
+            }
+        });
             } else {
                 btn.setBackgroundResource(R.drawable.botao_bloqueado);
             }
@@ -109,4 +117,6 @@ public class MusicAdapter extends ArrayAdapter<Musicas> {
         }
 
     }
+
+
 }

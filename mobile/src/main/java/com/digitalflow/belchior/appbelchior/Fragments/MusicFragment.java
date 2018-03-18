@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class MusicFragment extends Fragment {
     private FirebaseUser users;
     private AlertDialog processUserDialog;
     private ProgressBar progressBar4;
+    private Button btnPlayMusic;
     private Context context;
 
     public MusicFragment() {
@@ -72,9 +74,11 @@ public class MusicFragment extends Fragment {
         musics = new ArrayList<Musicas>();
         listViewMusic = (ListView) view.findViewById(R.id.listViewMusic);
         progressBar4 = (ProgressBar) view.findViewById(R.id.progressBar4);
+        //btnPlayMusic = (Button) view.findViewById(R.id.btnPlayMusic);
         progressBar4.setIndeterminate(true);
         adapter = new MusicAdapter(getActivity(), musics);
         listViewMusic.setAdapter(adapter);
+
 
         //recuperar aqui algum dado no firebase ou do usuário logado
 
@@ -89,6 +93,7 @@ public class MusicFragment extends Fragment {
            // FirebaseAuth.getInstance().signOut();
            getUserData(inflater);
         }
+
 
         return view;
 
