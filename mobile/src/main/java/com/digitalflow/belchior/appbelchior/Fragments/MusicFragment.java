@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -65,7 +66,7 @@ public class MusicFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_music, container, false);
@@ -78,7 +79,6 @@ public class MusicFragment extends Fragment {
         progressBar4.setIndeterminate(true);
         adapter = new MusicAdapter(getActivity(), musics);
         listViewMusic.setAdapter(adapter);
-
 
         //recuperar aqui algum dado no firebase ou do usuário logado
 
@@ -93,6 +93,9 @@ public class MusicFragment extends Fragment {
            // FirebaseAuth.getInstance().signOut();
            getUserData(inflater);
         }
+
+
+
 
 
         return view;

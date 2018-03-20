@@ -8,7 +8,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
-        android:layout_height="116dp"
+        android:layout_height="148dp"
         android:background="@drawable/botao_conectar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -16,15 +16,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <dyanamitechetan.vusikview.VusikView
-            android:id="@+id/musicaView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible" />
-
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
-            android:layout_height="88dp"
+            android:layout_height="108dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="32dp"
             android:layout_marginStart="32dp"
@@ -36,70 +30,93 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/textViewRep"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Lorem ipsum "
-                android:textAllCaps="true"
-                android:textColor="@color/patternWhite"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textViewTitleMusic"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
                 android:id="@+id/textViewTitleMusic"
-                android:layout_width="194dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:ellipsize="marquee"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:text="Lorem ipsum dolor sit amet,"
+                android:text="Lorem ipsum"
                 android:textAlignment="center"
+                android:textAllCaps="false"
                 android:textColor="@color/patternWhite"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/textViewRep"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewOwner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Belchior"
+                android:textAllCaps="false"
+                android:textColor="@color/patternWhite"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewTitleMusic" />
 
             <SeekBar
                 android:id="@+id/seekBar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/textViewTimer"
-                app:layout_constraintStart_toEndOf="@+id/btnPlayPause"
-                app:layout_constraintTop_toBottomOf="@+id/textViewTitleMusic" />
+                app:layout_constraintEnd_toStartOf="@+id/textViewTimerFinal"
+                app:layout_constraintStart_toEndOf="@+id/textViewTimerInit"
+                app:layout_constraintTop_toBottomOf="@+id/textViewOwner" />
 
             <Button
                 android:id="@+id/btnPlayPause"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@mipmap/ic_plays"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+            <Button
+                android:id="@+id/btnRepeat"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@mipmap/ic_play"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textViewTimer"
+                android:background="@mipmap/ic_repeat"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btnPlayPause"
+                app:layout_constraintStart_toEndOf="@+id/btnPlayPause" />
+
+            <Button
+                android:id="@+id/btnStop"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@mipmap/ic_stop"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btnPlayPause"
+                app:layout_constraintEnd_toStartOf="@+id/btnPlayPause" />
+
+            <TextView
+                android:id="@+id/textViewTimerInit"
+                android:layout_width="wrap_content"
+                android:layout_height="12dp"
+                android:text="00:00"
+                android:textColor="@color/patternWhite"
+                android:textSize="10sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textViewTimerFinal"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/textViewTimer"
+                android:id="@+id/textViewTimerFinal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="3dp"
                 android:text="00:00"
                 android:textColor="@color/patternWhite"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewRep" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewOwner" />
 
         </android.support.constraint.ConstraintLayout>
 

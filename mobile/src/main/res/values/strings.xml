@@ -105,11 +105,12 @@
     <string name="tituloMusica8">Como Nossos Pais (1976)</string>
     <string name="tituloMusica9">Paralelas (1977)</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="procure_a_proxima">Procure a próxima!</string>
     <string name="parabens">Parabéns</string>
-    <string name="pausado">Pausado:</string>
-    <string name="reproduzindo">Reproduzindo:</string>
+    <string name="pausado"><b>EM PAUSA:</b> %1$s</string>
+    <string name="reproduzindo"><b>REPRODUZINDO:</b> %1$s</string>
+    <string name="a_reproduzir"><b>A REPRODUZIR:</b> %1$s</string>
 
     <!-- LINK MUSICAS -->
     <string name="music0"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/0.mp3?alt=media&token=f9b0268b-01b3-4243-9d88-62449b733a31]]></string>
@@ -123,6 +124,7 @@
     <string name="music8"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/8.mp3?alt=media&token=48016d4d-d0e6-4a0f-af7e-c0ddbf835e25]]></string>
     <string name="music9"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/9.mp3?alt=media&token=a245e250-3e93-4ddf-897b-d6adff1feea1]]></string>
     <string name="erro"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/erro.mp3?alt=media&token=15b03f7b-119f-42f0-8e51-d7b2d231c2b9]]></string>
+    <string name="esta_musica_nao_esta_registrada_na_base_de_dados">Esta musica não está registrada em nossa base de dados! Tente com outro qrcode válido.</string>
 
 
 

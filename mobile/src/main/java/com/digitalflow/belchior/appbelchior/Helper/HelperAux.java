@@ -1,59 +1,56 @@
 package com.digitalflow.belchior.appbelchior.Helper;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.digitalflow.belchior.appbelchior.Activity.HomeActivity;
-import com.digitalflow.belchior.appbelchior.Activity.Inicial;
-import com.digitalflow.belchior.appbelchior.Activity.MusicActivity;
-import com.digitalflow.belchior.appbelchior.Fragments.MusicFragment;
 import com.digitalflow.belchior.appbelchior.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ProviderQueryResult;
 
-import java.util.concurrent.Callable;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
-import dyanamitechetan.vusikview.VusikView;
-
 /**
  * Created by MarllonS on 25/01/2018.
  */
 
 public class HelperAux extends AppCompatActivity {
+    final android.os.Handler handler = new android.os.Handler();
+    Runnable updater;
+    private MediaPlayer mediaPlayer;
+    private int totalDuration;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+
+    }
 
     public void getSupportActionB() {
         if (getSupportActionBar() != null) {
@@ -216,7 +213,6 @@ public class HelperAux extends AppCompatActivity {
         //return dialog;
     }
 
-
     public void AlertDialogLogout(final Context context, LayoutInflater inflater, String title, String subtitle, Message msgType, boolean yesNo) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
         View mView = null;
@@ -345,7 +341,6 @@ public class HelperAux extends AppCompatActivity {
             }
         });
     }
-
 
     public boolean AlertDialog(Context context, LayoutInflater inflater, String title, String subtitle, Message msgType, boolean yesNo) {
         final boolean[] bool = new boolean[1];
@@ -541,34 +536,53 @@ public class HelperAux extends AppCompatActivity {
         });
     }
 
-    public AlertDialog AlertDialogMusic(final Context inContext, LayoutInflater inflater, String titleMusic, final int position) {
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
-        View mView = null;
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public AlertDialog AlertDialogMusic(final Context inContext, LayoutInflater inflater, final String titleMusic, final int position) {
+        final View mView;
         if (inflater == null) {
             mView = getLayoutInflater().inflate(R.layout.aux_playmusic, null);
         } else {
             mView = inflater.inflate(R.layout.aux_playmusic, null);
         }
-        final MediaPlayer mediaPlayer = null;
-        final int[] mediaFileLength = new int[1];
-        final int[] realtimelength = new int[1];
+        //final Context inContext = mView.getContext();
+        final Resources res = inContext.getResources();
+        final AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
         TextView txtTimer;
-        final android.os.Handler handler = new android.os.Handler();
 
-        final TextView textViewRep = (TextView) mView.findViewById(R.id.textViewRep);
-        TextView textViewTitleMusic = (TextView) mView.findViewById(R.id.textViewTitleMusic);
-        TextView textViewTimer = (TextView) mView.findViewById(R.id.textViewTimer);
+        final TextView textViewTitleMusic = (TextView) mView.findViewById(R.id.textViewTitleMusic);
+        final TextView textViewTimerInit = (TextView) mView.findViewById(R.id.textViewTimerInit);
+        final TextView textViewTimerFinal = (TextView) mView.findViewById(R.id.textViewTimerFinal);
+
         final Button btnPlayPause = (Button) mView.findViewById(R.id.btnPlayPause);
-        SeekBar seekBar = (SeekBar) mView.findViewById(R.id.seekBar);
-        final VusikView musicView = (VusikView) mView.findViewById(R.id.musicaView);
+        final Button btnStop = (Button) mView.findViewById(R.id.btnStop);
+        final Button btnRepeat = (Button) mView.findViewById(R.id.btnRepeat);
+
+        final SeekBar seekBar = (SeekBar) mView.findViewById(R.id.seekBar);
+
 
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
         dialog.setCancelable(true);
 
-        textViewTitleMusic.setText(titleMusic);
+        textViewTitleMusic.setText(res.getString(R.string.a_reproduzir, titleMusic));
 
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser){
+                    mediaPlayer.seekTo(seekBar.getProgress());
+                }
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -596,20 +610,20 @@ public class HelperAux extends AppCompatActivity {
 
                     @Override
                     protected void onPostExecute(String s) {
-                        mediaFileLength[0] = mediaPlayer.getDuration();
-                        realtimelength[0] = mediaFileLength[0];
+                        //mediaFileLength = mediaPlayer.getDuration();
+                        //realtimeLength = mediaFileLength;
+                        totalDuration = mediaPlayer.getDuration();
                         if (!mediaPlayer.isPlaying()) {
                             mediaPlayer.start();
-                            textViewRep.setText(R.string.reproduzindo);
-                            btnPlayPause.setBackgroundResource(R.drawable.mr_media_pause_dark);
+                            textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
+                            btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
                         } else {
                             mediaPlayer.pause();
-                            textViewRep.setText(R.string.pausado);
-                            btnPlayPause.setBackgroundResource(R.drawable.mr_media_play_dark);
-
+                            textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
+                            btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
                         }
 
-//                        updateSeekBar();
+                        updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal,totalDuration);
                         mDialog.dismiss();
                     }
                 };
@@ -617,54 +631,90 @@ public class HelperAux extends AppCompatActivity {
 
                 switch (position) {
                     case 0:
-                        mp3Play.execute(getString(R.string.music0));
+                        mp3Play.execute(res.getString(R.string.music0));
                         break;
                     case 1:
-                        mp3Play.execute(getString(R.string.music1));
+                        mp3Play.execute(res.getString(R.string.music1));
                         break;
                     case 2:
-                        mp3Play.execute(getString(R.string.music2));
+                        mp3Play.execute(res.getString(R.string.music2));
                         break;
                     case 3:
-                        mp3Play.execute(getString(R.string.music3));
+                        mp3Play.execute(res.getString(R.string.music3));
                         break;
                     case 4:
-                        mp3Play.execute(getString(R.string.music4));
+                        mp3Play.execute(res.getString(R.string.music4));
                         break;
                     case 5:
-                        mp3Play.execute(getString(R.string.music5));
+                        mp3Play.execute(res.getString(R.string.music5));
                         break;
                     case 6:
-                        mp3Play.execute(getString(R.string.music6));
+                        mp3Play.execute(res.getString(R.string.music6));
                         break;
                     case 7:
-                        mp3Play.execute(getString(R.string.music7));
+                        mp3Play.execute(res.getString(R.string.music7));
                         break;
                     case 8:
-                        mp3Play.execute(getString(R.string.music8));
+                        mp3Play.execute(res.getString(R.string.music8));
                         break;
                     case 9:
-                        mp3Play.execute(getString(R.string.music9));
+                        mp3Play.execute(res.getString(R.string.music9));
                         break;
                     default:
-                        mp3Play.execute(getString(R.string.erro));
+                        mp3Play.execute(res.getString(R.string.erro));
 
                 }
 
-                musicView.start();
+                //musicView.start();
             }
         });
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                seekBar.setMax(mediaPlayer.getDuration()); // 100% (0~99)
+                mediaPlayer.start();
+                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal,totalDuration);
+                btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
+            }
+        });
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
+                //musicView.stopNotesFall();
+            }
+        });
+
+        mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+            @Override
+            public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                seekBar.setSecondaryProgress(percent);
+            }
+        });
+
+        updater = new Runnable() {
+            @Override
+            public void run() {
+                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
+            }
+
+        };
 
         dialog.show();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                musicView.stopNotesFall();
+                // musicView.stopNotesFall();
                 mediaPlayer.stop();
             }
         });
+
         return dialog;
     }
+
 
     public boolean isEmpty(EditText[] editTextList, Context context) {
         boolean bool = false;
@@ -676,6 +726,43 @@ public class HelperAux extends AppCompatActivity {
             }
         }
         return bool;
+    }
+
+    private void updateSeekBar(final MediaPlayer mp, final SeekBar seekBar, final TextView textViewInit, final TextView textViewFinal, int totalDuration) {
+        seekBar.setProgress(mp.getCurrentPosition());
+        textViewInit.setText(milliSecondsToTimer(mp.getCurrentPosition()));
+        totalDuration -= 1000;
+        textViewFinal.setText(milliSecondsToTimer(totalDuration));
+        handler.postDelayed(updater, 1000);
+    }
+//    private void decreaseFinalTime(final TextView textViewFinal, int totalDuration){
+//        decreaseFinalTime(textViewFinal,totalDuration)
+//    }
+
+    private String milliSecondsToTimer(long milliseconds) {
+        String finalTimerString = "";
+        String secondsString = "";
+
+        // Convert total duration into time
+        int hours = (int) (milliseconds / (1000 * 60 * 60));
+        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+        // Add hours if there
+        if (hours > 0) {
+            finalTimerString = hours + ":";
+        }
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
     }
 
     public enum Message {

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +20,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,18 +52,20 @@ import java.util.HashMap;
 public class CameraFragment extends Fragment {
 
     final int RequestCameraPermissionID = 1001;
+    final boolean[] secondUse = new boolean[1];
     protected boolean onCreateViewCalled = false;
     LayoutInflater inflater;
-    SurfaceView cameraPreview;
+    SurfaceView cameraPreview = null;
     TextView txtResult;
-    BarcodeDetector barcodeDetector;
-    CameraSource cameraSource;
+    BarcodeDetector barcodeDetector = null;
+    CameraSource cameraSource = null;
+    //double scaleCamera;
     private AlertDialog alert;
-    final boolean[] secondUse = new boolean[1];
 
 
     public CameraFragment() {
         // Required empty public constructor
+        // scaleCamera = this.getResources().getDisplayMetrics().density;
     }
 
     public boolean onCreateViewBeenCalled() {
@@ -94,7 +98,6 @@ public class CameraFragment extends Fragment {
         /* Se o Fragment esteja visível para o usuario, setar a funcao do barcode
             para detectar o qrcode. */
         if (isVisibleToUser && isResumed()) {
-
             secondUse[0] = false;
             barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
                 @Override
@@ -110,24 +113,23 @@ public class CameraFragment extends Fragment {
                         txtResult.post(new Runnable() {
                             @Override
                             public void run() {
-                                Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                                vibrator.vibrate(1000);
                                 txtResult.setText(qrcodes.valueAt(0).displayValue);
-
-                                Usuarios user = Usuarios.getInstance();
-
                                 String tituloMusica = txtResult.getText().toString();
+                                Usuarios user = Usuarios.getInstance();
                                 HelperAux helper = new HelperAux();
-                                int p = 0;
+                                int p;
 
                                 if (tituloMusica != null && !secondUse[0]) {
-                                    secondUse[0] = true;
                                     alert = helper.AlertDialog(getActivity(), inflater, "essamusica", "identificando musica..", true);
+                                    Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                                    vibrator.vibrate(1000);
+                                    secondUse[0] = true;
                                     switch (tituloMusica) {
                                         case "numero00":
                                             p = 0;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
                                                 Musicas music = new Musicas("Music 0", true);
@@ -138,9 +140,9 @@ public class CameraFragment extends Fragment {
                                             p = 1;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
-
                                                 Musicas music = new Musicas("Music 1", true);
                                                 setFirMusic(user, music, p, helper, alert, inflater);
                                             }
@@ -149,6 +151,7 @@ public class CameraFragment extends Fragment {
                                             p = 2;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
                                                 Musicas music = new Musicas("Music 2", true);
@@ -159,6 +162,7 @@ public class CameraFragment extends Fragment {
                                             p = 3;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
                                                 Musicas music = new Musicas("Music 3", true);
@@ -169,6 +173,7 @@ public class CameraFragment extends Fragment {
                                             p = 4;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
                                                 Musicas music = new Musicas("Music 4", true);
@@ -179,6 +184,7 @@ public class CameraFragment extends Fragment {
                                             p = 5;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
                                                 Musicas music = new Musicas("Music 5", true);
@@ -189,6 +195,7 @@ public class CameraFragment extends Fragment {
                                             p = 6;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
                                                 Musicas music = new Musicas("Music 6", true);
@@ -199,6 +206,7 @@ public class CameraFragment extends Fragment {
                                             p = 7;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
                                                 Musicas music = new Musicas("Music 7", true);
@@ -209,6 +217,7 @@ public class CameraFragment extends Fragment {
                                             p = 8;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
                                                 Musicas music = new Musicas("Music 8", true);
@@ -219,6 +228,7 @@ public class CameraFragment extends Fragment {
                                             p = 9;
                                             if (isUnlocked(user, p)) {
                                                 alert.dismiss();
+                                                slideToMusicFragment();
                                                 helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
                                             } else {
                                                 Musicas music = new Musicas("Music 9", true);
@@ -226,7 +236,9 @@ public class CameraFragment extends Fragment {
                                             }
                                             break;
                                         default:
-                                            Toast.makeText(getActivity(), "Código inválido", Toast.LENGTH_SHORT).show();
+                                            alert.dismiss();
+                                            slideToMusicFragment();
+                                            Toast.makeText(getActivity(), R.string.esta_musica_nao_esta_registrada_na_base_de_dados, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -239,17 +251,7 @@ public class CameraFragment extends Fragment {
             /* Se o Fragment estiver invisível e o método createView ja foi chamado, então sobreescrever o barcode para não
             /  detectar o qrcode com o Fragment invisível */
             if (onCreateViewBeenCalled()) {
-                barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
-                    @Override
-                    public void release() {
-
-                    }
-
-                    @Override
-                    public void receiveDetections(Detector.Detections<Barcode> detections) {
-
-                    }
-                });
+                barcodeDetector.setProcessor(null);
             }
         }
     }
@@ -278,49 +280,50 @@ public class CameraFragment extends Fragment {
                 .setBarcodeFormats(Barcode.QR_CODE)
                 .build();
 
-        cameraSource = new CameraSource
-                .Builder(getActivity(), barcodeDetector)
-                .setRequestedPreviewSize(640, 480)
-                .build();
-
-        cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
+        cameraPreview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, RequestCameraPermissionID);
-                    return;
-                }
-                try {
-                    cameraSource.start(cameraPreview.getHolder());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            public void onGlobalLayout() {
+                setUserVisibleHint(false);
+                cameraSource = new CameraSource
+                        .Builder(getActivity(), barcodeDetector)
+                        .setRequestedPreviewSize(640, 480)
+                        .setAutoFocusEnabled(true)
+                        .build();
+                cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
+                    @Override
+                    public void surfaceCreated(SurfaceHolder surfaceHolder) {
+                        try {
+                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, RequestCameraPermissionID);
+                                return;
+                            } else if (cameraSource != null && cameraPreview != null){
+                                cameraSource.start(cameraPreview.getHolder());
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-            @Override
-            public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+                    @Override
+                    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
 
-            }
+                    }
 
-            @Override
-            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                cameraSource.stop();
+                    @Override
+                    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+                        try {
+                            if (cameraSource != null) {
+                                cameraSource.stop();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
 
         return view;
-    }
-
-    public void updateUserMusics(HelperAux helper, AlertDialog alert, int position) {
-        //Atualizar a listagem de itens do fragmento MusicFragment
-        alert.dismiss();
-        helper.AlertDialog(getActivity(), inflater, getString(R.string.parabens), getString(R.string.voce_desbloqueou_a_musica, Crud.titleMusics[position]), false);
-        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewPagerMain);
-        Button btnMusicas = (Button) getActivity().findViewById(R.id.btnMusicas);
-        TabsAdapter newAdapter = (TabsAdapter) viewPager.getAdapter();
-        MusicFragment newMusicFragment = (MusicFragment) newAdapter.getFragment(0);
-        newMusicFragment.getMusicsByUserLogged();
-        btnMusicas.callOnClick();
     }
 
     public boolean isUnlocked(Usuarios user, int position) {
@@ -364,4 +367,19 @@ public class CameraFragment extends Fragment {
         });
     }
 
+    public void updateUserMusics(HelperAux helper, AlertDialog alert, int position) {
+        //Atualizar a listagem de itens do fragmento MusicFragment
+        alert.dismiss();
+        helper.AlertDialog(getActivity(), inflater, getString(R.string.parabens), getString(R.string.voce_desbloqueou_a_musica, Crud.titleMusics[position]), false);
+        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewPagerMain);
+        TabsAdapter newAdapter = (TabsAdapter) viewPager.getAdapter();
+        MusicFragment newMusicFragment = (MusicFragment) newAdapter.getFragment(0);
+        newMusicFragment.getMusicsByUserLogged();
+        slideToMusicFragment();
+    }
+
+    public void slideToMusicFragment(){
+        Button btnMusicas = (Button) getActivity().findViewById(R.id.btnMusicas);
+        btnMusicas.callOnClick();
+    }
 }

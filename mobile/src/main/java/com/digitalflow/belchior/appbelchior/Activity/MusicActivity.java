@@ -29,7 +29,6 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
     //MediaPlayer.OnBufferingUpdateListener,
 
     private final Usuarios user = Usuarios.getInstance();
-    LinearLayout linearLayout;
 
     /* ++++ SLIDING TAB ++++ */
     private Button btnMusicas, btnCamera, button2;
@@ -39,13 +38,7 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
     /* +++++++++++++++++++++ */
 
     /* ++++ MUSIC VIEW ++++ */
-    private SeekBar seekBar;
-    private VusikView musicView;
-    private MediaPlayer mediaPlayer;
-    private int mediaFileLength;
-    private int realtimelength;
-    private TextView txtTimer;
-    final Handler handler = new Handler();
+
     /* +++++++++++++++++++++ */
 
     @Override
@@ -58,7 +51,7 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
         button2 = (Button) findViewById(R.id.button2);
 //        txtTimer = (TextView) findViewById(R.id.txtTimer);
 //        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        musicView = (VusikView) findViewById(R.id.musicaView);
+        //musicView = (VusikView) findViewById(R.id.musicaView);
 
         //abas
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.slidingTabMain);
@@ -163,6 +156,6 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
     @Override
     public void onCompletion(MediaPlayer mp) {
        // btnPlayPause.setBackgroundResource(R.drawable.ic_play);
-        musicView.stopNotesFall();
+       // musicView.stopNotesFall();
     }
 }
