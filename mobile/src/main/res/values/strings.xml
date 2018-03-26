@@ -125,7 +125,7 @@
     <string name="music9"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/9.mp3?alt=media&token=a245e250-3e93-4ddf-897b-d6adff1feea1]]></string>
     <string name="erro"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/erro.mp3?alt=media&token=15b03f7b-119f-42f0-8e51-d7b2d231c2b9]]></string>
     <string name="esta_musica_nao_esta_registrada_na_base_de_dados">Esta musica não está registrada em nossa base de dados! Tente com outro qrcode válido.</string>
-
+    <string name="carregando_musica">Carregando musica...</string>
 
 
 </resources>

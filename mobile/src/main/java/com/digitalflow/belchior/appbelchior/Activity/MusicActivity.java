@@ -1,10 +1,13 @@
 package com.digitalflow.belchior.appbelchior.Activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -22,24 +25,29 @@ import com.digitalflow.belchior.appbelchior.R;
 import com.digitalflow.belchior.appbelchior.Util.SlidingTabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import java.util.HashMap;
+
 import dyanamitechetan.vusikview.VusikView;
 
-public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletionListener {
+public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletionListener, HelperAux.BtnYes {
     //MediaPlayer.OnBufferingUpdateListener,
 
     private final Usuarios user = Usuarios.getInstance();
 
     /* ++++ SLIDING TAB ++++ */
-    private Button btnMusicas, btnCamera, button2;
+    private Button btnMusicas, btnCamera, button2, btnLogout;
     private Context context = this;
     private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
+    public ConstraintLayout tabConstraintLayout;
     /* +++++++++++++++++++++ */
 
-    /* ++++ MUSIC VIEW ++++ */
-
-    /* +++++++++++++++++++++ */
+    @Override
+    public void actionBtnYes(Context c) {
+        FirebaseAuth.getInstance().signOut();
+        c.startActivity(new Intent(c, MainActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +55,9 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
         setContentView(R.layout.activity_music);
         btnCamera = (Button) findViewById(R.id.btnCamera);
         btnMusicas = (Button) findViewById(R.id.btnMusicas);
-        //btnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
+        btnLogout = (Button) findViewById(R.id.btnLogout);
         button2 = (Button) findViewById(R.id.button2);
-//        txtTimer = (TextView) findViewById(R.id.txtTimer);
-//        seekBar = (SeekBar) findViewById(R.id.seekBar);
-        //musicView = (VusikView) findViewById(R.id.musicaView);
+        tabConstraintLayout = (ConstraintLayout) findViewById(R.id.tabConstraintLayout);
 
         //abas
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.slidingTabMain);
@@ -109,6 +115,14 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
             }
         });
 
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BtnYes acBtn = new MusicActivity();
+                AlertDialogActivity(context,null, tabConstraintLayout, "Logout","Deseja sair mesmo carai?", Message.msgInfo, true, acBtn);
+            }
+        });
+
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +160,7 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
 //    }
 
 
-    public void updateUserMusics(){
+    public void updateUserMusics() {
         //Atualizar a listagem de itens do fragmento MusicFragment
         TabsAdapter newAdapter = (TabsAdapter) viewPager.getAdapter();
         MusicFragment newMusicFragment = (MusicFragment) newAdapter.getFragment(0);
@@ -155,7 +169,7 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-       // btnPlayPause.setBackgroundResource(R.drawable.ic_play);
-       // musicView.stopNotesFall();
+        // btnPlayPause.setBackgroundResource(R.drawable.ic_play);
+        // musicView.stopNotesFall();
     }
 }

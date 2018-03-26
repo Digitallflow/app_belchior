@@ -1,6 +1,9 @@
 package com.digitalflow.belchior.appbelchior.Helper;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.app.Notification;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,14 +13,17 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -31,11 +37,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digitalflow.belchior.appbelchior.Activity.MusicActivity;
+import com.digitalflow.belchior.appbelchior.MediaService.NotificationGenerator;
 import com.digitalflow.belchior.appbelchior.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ProviderQueryResult;
+
+import java.io.File;
 
 /**
  * Created by MarllonS on 25/01/2018.
@@ -46,18 +56,6 @@ public class HelperAux extends AppCompatActivity {
     Runnable updater;
     private MediaPlayer mediaPlayer;
     private int totalDuration;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-
-    }
-
-    public void getSupportActionB() {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-    }
 
     public void openActivity(Class<?> cls, AlertDialog dialog) {
         Intent intent = new Intent(getApplicationContext(), cls);
@@ -342,6 +340,147 @@ public class HelperAux extends AppCompatActivity {
         });
     }
 
+    public void AlertDialogActivity(final Context context, LayoutInflater inflater, final ConstraintLayout constraintLayout, String title, String subtitle, Message msgType, boolean yesNo, final BtnYes btn) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+        View mView = null;
+        if (inflater == null) {
+            mView = getLayoutInflater().inflate(R.layout.aux_helper, null);
+        } else {
+            mView = inflater.inflate(R.layout.aux_helper, null);
+        }
+
+        TextView textViewTitle = (TextView) mView.findViewById(R.id.textViewTitle);
+        TextView textViewSubTitle = (TextView) mView.findViewById(R.id.textViewSubTitle);
+        Button btnYes = (Button) mView.findViewById(R.id.btnYes);
+        Button btnNo = (Button) mView.findViewById(R.id.btnNo);
+        ImageView imageViewType = (ImageView) mView.findViewById(R.id.imageViewType);
+        mBuilder.setView(mView);
+
+        constraintLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out));
+        constraintLayout.setVisibility(View.INVISIBLE);
+
+        final AlertDialog dialog = mBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
+        dialog.setCancelable(false);
+        switch (msgType) {
+            case msgDone:
+                imageViewType.setBackgroundResource(R.drawable.done_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(getString(R.string.sucesso, title));
+                textViewSubTitle.setText(subtitle);
+                break;
+            case msgInfo:
+                imageViewType.setBackgroundResource(R.drawable.info_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(getString(R.string.info, title));
+                textViewSubTitle.setText(subtitle);
+                break;
+            case msgError:
+                imageViewType.setBackgroundResource(R.drawable.error_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(title);
+                textViewSubTitle.setText(subtitle);
+                break;
+            case msgWarning:
+                imageViewType.setBackgroundResource(R.drawable.warning_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(getString(R.string.warning, title));
+                textViewSubTitle.setText(subtitle);
+                break;
+            case msgQuestion:
+                imageViewType.setBackgroundResource(R.drawable.question_white);
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(getString(R.string.info, title));
+                textViewSubTitle.setText(subtitle);
+                break;
+            case popUpMsg:
+                imageViewType.setVisibility(View.INVISIBLE);
+                imageViewType.getLayoutParams().height = 0;
+                imageViewType.getLayoutParams().width = 0;
+                if (yesNo) {
+                    btnYes.setVisibility(View.VISIBLE);
+                    btnNo.setVisibility(View.VISIBLE);
+                    btnYes.setText(R.string.yes);
+                    btnNo.setText(R.string.no);
+                } else {
+                    btnYes.setVisibility(View.INVISIBLE);
+                    btnNo.setText(R.string.ok);
+                }
+                textViewTitle.setText(title);
+                textViewSubTitle.setText(subtitle);
+                break;
+            default:
+                textViewSubTitle.setText(R.string.error);
+                textViewTitle.setText(R.string.error);
+        }
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                constraintLayout.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in));
+                constraintLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                btn.actionBtnYes(context);
+            }
+
+        });
+
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
     public boolean AlertDialog(Context context, LayoutInflater inflater, String title, String subtitle, Message msgType, boolean yesNo) {
         final boolean[] bool = new boolean[1];
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
@@ -461,6 +600,7 @@ public class HelperAux extends AppCompatActivity {
                 bool[0] = true;
                 dialog.dismiss();
             }
+
         });
 
         btnNo.setOnClickListener(new View.OnClickListener() {
@@ -470,7 +610,6 @@ public class HelperAux extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-
         return bool[0];
     }
 
@@ -547,11 +686,17 @@ public class HelperAux extends AppCompatActivity {
         //final Context inContext = mView.getContext();
         final Resources res = inContext.getResources();
         final AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
-        TextView txtTimer;
+        final boolean[] a = new boolean[1];
+        final String[] fileName = new String[1];
+        final boolean[] isFirst = new boolean[1];
 
         final TextView textViewTitleMusic = (TextView) mView.findViewById(R.id.textViewTitleMusic);
         final TextView textViewTimerInit = (TextView) mView.findViewById(R.id.textViewTimerInit);
         final TextView textViewTimerFinal = (TextView) mView.findViewById(R.id.textViewTimerFinal);
+
+        final ProgressBar progressBarLoadMusic = (ProgressBar) mView.findViewById(R.id.progressBarLoadingMusic);
+        final ConstraintLayout constraintLoading = (ConstraintLayout) mView.findViewById(R.id.constraintLoading);
+        final TextView textViewLoadMusic = (TextView) mView.findViewById(R.id.textViewLoadingMusic);
 
         final Button btnPlayPause = (Button) mView.findViewById(R.id.btnPlayPause);
         final Button btnStop = (Button) mView.findViewById(R.id.btnStop);
@@ -567,39 +712,72 @@ public class HelperAux extends AppCompatActivity {
 
         textViewTitleMusic.setText(res.getString(R.string.a_reproduzir, titleMusic));
 
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser){
+                if (fromUser) {
                     mediaPlayer.seekTo(seekBar.getProgress());
                 }
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
 
             }
+
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
         });
 
+        btnRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (a[0]) {
+                    btnRepeat.setBackgroundResource(R.mipmap.ic_not_repeat);
+                    a[0] = false;
+                } else {
+                    btnRepeat.setBackgroundResource(R.mipmap.ic_repeat);
+                    a[0] = true;
+                }
+            }
+        });
+
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mediaPlayer.pause();
+                mediaPlayer.seekTo(0);
+                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
+                btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
+            }
+        });
+
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog mDialog = new ProgressDialog(inContext);
-
                 AsyncTask<String, String, String> mp3Play = new AsyncTask<String, String, String>() {
 
                     @Override
                     protected void onPreExecute() {
-                        mDialog.setMessage("Please wait");
-                        mDialog.show();
+                        if (!isFirst[0]) {
+                            textViewLoadMusic.setText(R.string.carregando_musica);
+                            progressBarLoadMusic.setIndeterminate(true);
+                            constraintLoading.setVisibility(View.VISIBLE);
+                            btnPlayPause.setVisibility(View.INVISIBLE);
+                            btnStop.setVisibility(View.INVISIBLE);
+                            btnRepeat.setVisibility(View.INVISIBLE);
+                            seekBar.setEnabled(false);
+                        }
+                        btnStop.setEnabled(true);
                     }
 
                     @Override
                     protected String doInBackground(String... params) {
                         try {
+                            // String path = downloadMusic(params[0], fileName[0]);
                             mediaPlayer.setDataSource(params[0]);
                             mediaPlayer.prepare();
                         } catch (Exception ex) {
@@ -610,21 +788,37 @@ public class HelperAux extends AppCompatActivity {
 
                     @Override
                     protected void onPostExecute(String s) {
-                        //mediaFileLength = mediaPlayer.getDuration();
-                        //realtimeLength = mediaFileLength;
-                        totalDuration = mediaPlayer.getDuration();
-                        if (!mediaPlayer.isPlaying()) {
+                        if (!isFirst[0]) {
+                            constraintLoading.setVisibility(View.INVISIBLE);
+                            btnPlayPause.setVisibility(View.VISIBLE);
+                            btnStop.setVisibility(View.VISIBLE);
+                            btnRepeat.setVisibility(View.VISIBLE);
+                            seekBar.setEnabled(true);
+                            isFirst[0] = true;
                             mediaPlayer.start();
                             textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
                             btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
+
                         } else {
-                            mediaPlayer.pause();
-                            textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
-                            btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
+                            if (!mediaPlayer.isPlaying()) {
+                                mediaPlayer.start();
+                                textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
+                                btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
+                            } else {
+                                mediaPlayer.pause();
+                                textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
+                                btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
+                            }
                         }
 
-                        updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal,totalDuration);
-                        mDialog.dismiss();
+                        updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
+                        NotificationGenerator.customBigNotification(inContext, R.drawable.icon_belchior_laucher, titleMusic, titleMusic, titleMusic, new NotificationGenerator.IntentNotification() {
+                            @Override
+                            public Intent setIntent() {
+                                Intent intent = new Intent(inContext, MusicActivity.class);
+                                return intent;
+                            }
+                        });
                     }
                 };
 
@@ -662,10 +856,10 @@ public class HelperAux extends AppCompatActivity {
                         break;
                     default:
                         mp3Play.execute(res.getString(R.string.erro));
-
+                        break;
                 }
+                fileName[0] = Integer.toString(position);
 
-                //musicView.start();
             }
         });
 
@@ -675,16 +869,22 @@ public class HelperAux extends AppCompatActivity {
             public void onPrepared(MediaPlayer mp) {
                 seekBar.setMax(mediaPlayer.getDuration()); // 100% (0~99)
                 mediaPlayer.start();
-                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal,totalDuration);
+                totalDuration = mediaPlayer.getDuration();
+                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
                 btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
             }
         });
+
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
-                //musicView.stopNotesFall();
+                if (a[0]) {
+                    mediaPlayer.seekTo(0);
+                    mediaPlayer.start();
+                    btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
+                }
             }
         });
 
@@ -694,6 +894,8 @@ public class HelperAux extends AppCompatActivity {
                 seekBar.setSecondaryProgress(percent);
             }
         });
+        mediaPlayer.setLooping(false);
+        a[0] = false;
 
         updater = new Runnable() {
             @Override
@@ -707,14 +909,12 @@ public class HelperAux extends AppCompatActivity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                // musicView.stopNotesFall();
                 mediaPlayer.stop();
             }
         });
 
         return dialog;
     }
-
 
     public boolean isEmpty(EditText[] editTextList, Context context) {
         boolean bool = false;
@@ -731,13 +931,10 @@ public class HelperAux extends AppCompatActivity {
     private void updateSeekBar(final MediaPlayer mp, final SeekBar seekBar, final TextView textViewInit, final TextView textViewFinal, int totalDuration) {
         seekBar.setProgress(mp.getCurrentPosition());
         textViewInit.setText(milliSecondsToTimer(mp.getCurrentPosition()));
-        totalDuration -= 1000;
-        textViewFinal.setText(milliSecondsToTimer(totalDuration));
+        String remainDuration = milliSecondsToTimer(mp.getDuration() - mp.getCurrentPosition());
+        textViewFinal.setText(remainDuration != "0:00" ? "-" + remainDuration : remainDuration);
         handler.postDelayed(updater, 1000);
     }
-//    private void decreaseFinalTime(final TextView textViewFinal, int totalDuration){
-//        decreaseFinalTime(textViewFinal,totalDuration)
-//    }
 
     private String milliSecondsToTimer(long milliseconds) {
         String finalTimerString = "";
@@ -765,6 +962,34 @@ public class HelperAux extends AppCompatActivity {
         return finalTimerString;
     }
 
+    private String downloadMusic(String urlFile, String nameFile) {
+        try {
+            File root = Environment.getExternalStorageDirectory();
+            File dir = new File(root + "/Folder");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File music = new File(root + "/" + nameFile + ".mp3");
+            if (!music.exists()) {
+                DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                Uri downloadUri = Uri.parse(urlFile);
+                DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+                request.setAllowedOverRoaming(false);
+                request.setTitle(nameFile);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC, nameFile);
+                request.allowScanningByMediaScanner();
+                return root + "/" + nameFile + ".mp3";
+            } else {
+                return "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public enum Message {
         msgError(0), msgWarning(1), msgInfo(2), msgQuestion(3), msgDone(4), popUpMsg(5);
 
@@ -773,5 +998,9 @@ public class HelperAux extends AppCompatActivity {
         Message(int result) {
             this.result = result;
         }
+    }
+
+    public interface BtnYes {
+        void actionBtnYes(Context context);
     }
 }
