@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -19,12 +22,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,10 +58,102 @@ import java.io.File;
  */
 
 public class HelperAux extends AppCompatActivity {
-    final android.os.Handler handler = new android.os.Handler();
-    Runnable updater;
-    private MediaPlayer mediaPlayer;
+    static final android.os.Handler handler = new android.os.Handler();
+    public static MediaPlayer mediaPlayer;
+    public static View rootView;
+    public static Context inContext;
+    public static String titleMusic;
+    static Runnable updater;
+    private static volatile boolean stopUpdater;
+    private static NotificationManager notification;
+    private final boolean[] repeat = new boolean[1];
     private int totalDuration;
+
+    public static void updateBigNotification(boolean songPaused) {
+        if (songPaused) {
+            notification = NotificationGenerator.customBigNotification(inContext, R.drawable.icon_belchior_notification, R.drawable.icon_belchior_laucher, titleMusic, titleMusic, titleMusic, mediaPlayer, true,
+                    new NotificationGenerator.IntentNotification() {
+                        @Override
+                        public Intent setIntent() {
+                            Intent intent = new Intent(inContext, MusicActivity.class);
+                            return intent;
+                        }
+                    }, new NotificationGenerator.OnGoingNotification() {
+                        @Override
+                        public int setNotificationOnGoing(MediaPlayer mediaPlayer) {
+                            if (mediaPlayer.isPlaying()) {
+                                return Notification.FLAG_NO_CLEAR;
+                            } else {
+                                return Notification.FLAG_AUTO_CANCEL;
+                            }
+                        }
+                    });
+        } else {
+            notification = NotificationGenerator.customBigNotification(inContext, R.drawable.icon_belchior_notification, R.drawable.icon_belchior_laucher, titleMusic, titleMusic, titleMusic, mediaPlayer, false,
+                    new NotificationGenerator.IntentNotification() {
+                        @Override
+                        public Intent setIntent() {
+                            Intent intent = new Intent(inContext, MusicActivity.class);
+                            return intent;
+                        }
+                    }, new NotificationGenerator.OnGoingNotification() {
+                        @Override
+                        public int setNotificationOnGoing(MediaPlayer mediaPlayer) {
+                            if (mediaPlayer.isPlaying()) {
+                                return Notification.FLAG_NO_CLEAR;
+                            } else {
+                                return Notification.FLAG_AUTO_CANCEL;
+                            }
+                        }
+                    });
+        }
+    }
+
+    private static void runThread(Runnable updater, final Resources res, final boolean stopUpdater, final MediaPlayer mediaPlayer, final SeekBar seekBar, final TextView textViewTimerInit, final TextView textViewTimerFinal, final TextView textViewTitleMusic, final int totalDuration) {
+
+    }
+
+    private static void stopThread() {
+        stopUpdater = true;
+    }
+
+    private static void reRunThread() {
+        stopUpdater = false;
+    }
+
+    private static void updateSeekBar(final MediaPlayer mp, final SeekBar seekBar, final TextView textViewInit, final TextView textViewFinal, int totalDuration) {
+        seekBar.setProgress(mp.getCurrentPosition());
+        textViewInit.setText(milliSecondsToTimer(mp.getCurrentPosition()));
+        String remainDuration = milliSecondsToTimer(mp.getDuration() - mp.getCurrentPosition());
+        textViewFinal.setText(remainDuration != "0:00" ? "-" + remainDuration : remainDuration);
+        handler.postDelayed(updater, 1000);
+    }
+
+    private static String milliSecondsToTimer(long milliseconds) {
+        String finalTimerString = "";
+        String secondsString = "";
+
+        // Convert total duration into time
+        int hours = (int) (milliseconds / (1000 * 60 * 60));
+        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+        // Add hours if there
+        if (hours > 0) {
+            finalTimerString = hours + ":";
+        }
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
+    }
 
     public void openActivity(Class<?> cls, AlertDialog dialog) {
         Intent intent = new Intent(getApplicationContext(), cls);
@@ -675,7 +773,7 @@ public class HelperAux extends AppCompatActivity {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    //    RequiresApi(api = Build.VERSION_CODES.N)
     public AlertDialog AlertDialogMusic(final Context inContext, LayoutInflater inflater, final String titleMusic, final int position) {
         final View mView;
         if (inflater == null) {
@@ -683,10 +781,13 @@ public class HelperAux extends AppCompatActivity {
         } else {
             mView = inflater.inflate(R.layout.aux_playmusic, null);
         }
-        //final Context inContext = mView.getContext();
+        rootView = mView;
+        this.inContext = inContext;
+        this.titleMusic = titleMusic;
+
+
         final Resources res = inContext.getResources();
         final AlertDialog.Builder mBuilder = new AlertDialog.Builder(inContext);
-        final boolean[] a = new boolean[1];
         final String[] fileName = new String[1];
         final boolean[] isFirst = new boolean[1];
 
@@ -704,14 +805,12 @@ public class HelperAux extends AppCompatActivity {
 
         final SeekBar seekBar = (SeekBar) mView.findViewById(R.id.seekBar);
 
-
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
         dialog.setCancelable(true);
 
         textViewTitleMusic.setText(res.getString(R.string.a_reproduzir, titleMusic));
-
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -735,12 +834,12 @@ public class HelperAux extends AppCompatActivity {
         btnRepeat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (a[0]) {
+                if (repeat[0]) {
                     btnRepeat.setBackgroundResource(R.mipmap.ic_not_repeat);
-                    a[0] = false;
+                    repeat[0] = false;
                 } else {
                     btnRepeat.setBackgroundResource(R.mipmap.ic_repeat);
-                    a[0] = true;
+                    repeat[0] = true;
                 }
             }
         });
@@ -748,10 +847,12 @@ public class HelperAux extends AppCompatActivity {
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
+                textViewTitleMusic.setText(res.getString(R.string.parado, titleMusic));
                 mediaPlayer.pause();
                 mediaPlayer.seekTo(0);
                 updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
-                btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
+                notification.cancel(8);
             }
         });
 
@@ -796,33 +897,25 @@ public class HelperAux extends AppCompatActivity {
                             seekBar.setEnabled(true);
                             isFirst[0] = true;
                             mediaPlayer.start();
-                            textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
+                            //textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
                             btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
-
                         } else {
                             if (!mediaPlayer.isPlaying()) {
                                 mediaPlayer.start();
-                                textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
+                                //textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
                                 btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
+                                updateBigNotification(false);
                             } else {
                                 mediaPlayer.pause();
-                                textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
+                                //textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
                                 btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
+                                updateBigNotification(true);
                             }
                         }
 
                         updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
-                        NotificationGenerator.customBigNotification(inContext, R.drawable.icon_belchior_laucher, titleMusic, titleMusic, titleMusic, new NotificationGenerator.IntentNotification() {
-                            @Override
-                            public Intent setIntent() {
-                                Intent intent = new Intent(inContext, MusicActivity.class);
-                                return intent;
-                            }
-                        });
                     }
                 };
-
-
                 switch (position) {
                     case 0:
                         mp3Play.execute(res.getString(R.string.music0));
@@ -859,7 +952,6 @@ public class HelperAux extends AppCompatActivity {
                         break;
                 }
                 fileName[0] = Integer.toString(position);
-
             }
         });
 
@@ -880,10 +972,11 @@ public class HelperAux extends AppCompatActivity {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
-                if (a[0]) {
+                //textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
+                updateBigNotification(true);
+                if (repeat[0]) {
                     mediaPlayer.seekTo(0);
-                    mediaPlayer.start();
-                    btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
+                    btnPlayPause.callOnClick();
                 }
             }
         });
@@ -895,21 +988,34 @@ public class HelperAux extends AppCompatActivity {
             }
         });
         mediaPlayer.setLooping(false);
-        a[0] = false;
+        repeat[0] = false;
 
+        reRunThread();
         updater = new Runnable() {
             @Override
             public void run() {
-                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
+                if (!stopUpdater) {
+                    updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
+                    if (mediaPlayer.isPlaying()) {
+                        textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
+                    } else {
+                        textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
+                    }
+                }
             }
-
         };
 
         dialog.show();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                mediaPlayer.stop();
+                if (isFirst[0]) {
+                    mediaPlayer.stop();
+                    if (notification != null) {
+                        updateBigNotification(true); //ativa a notificação por questoes de segurança
+                        notification.cancel(8);
+                    }
+                }
             }
         });
 
@@ -926,40 +1032,6 @@ public class HelperAux extends AppCompatActivity {
             }
         }
         return bool;
-    }
-
-    private void updateSeekBar(final MediaPlayer mp, final SeekBar seekBar, final TextView textViewInit, final TextView textViewFinal, int totalDuration) {
-        seekBar.setProgress(mp.getCurrentPosition());
-        textViewInit.setText(milliSecondsToTimer(mp.getCurrentPosition()));
-        String remainDuration = milliSecondsToTimer(mp.getDuration() - mp.getCurrentPosition());
-        textViewFinal.setText(remainDuration != "0:00" ? "-" + remainDuration : remainDuration);
-        handler.postDelayed(updater, 1000);
-    }
-
-    private String milliSecondsToTimer(long milliseconds) {
-        String finalTimerString = "";
-        String secondsString = "";
-
-        // Convert total duration into time
-        int hours = (int) (milliseconds / (1000 * 60 * 60));
-        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
-        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
-        // Add hours if there
-        if (hours > 0) {
-            finalTimerString = hours + ":";
-        }
-
-        // Prepending 0 to seconds if it is one digit
-        if (seconds < 10) {
-            secondsString = "0" + seconds;
-        } else {
-            secondsString = "" + seconds;
-        }
-
-        finalTimerString = finalTimerString + minutes + ":" + secondsString;
-
-        // return timer string
-        return finalTimerString;
     }
 
     private String downloadMusic(String urlFile, String nameFile) {
@@ -1002,5 +1074,39 @@ public class HelperAux extends AppCompatActivity {
 
     public interface BtnYes {
         void actionBtnYes(Context context);
+    }
+
+    public static class NotificationBroadcast extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Button btnPause = (Button)  ((Activity) c).findViewById(R.id.btnPause);
+            Button btnPlayPause = (Button) rootView.findViewById(R.id.btnPlayPause);
+            if (intent.getAction().equals(NotificationGenerator.NOTIFY_PLAY)) {
+                if (!mediaPlayer.isPlaying()) {
+                    HelperAux.mediaPlayer.start();
+                    btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
+                    HelperAux.updateBigNotification(false);
+                }
+            } else if (intent.getAction().equals(NotificationGenerator.NOTIFY_PAUSE)) {
+                if (mediaPlayer.isPlaying()) {
+                    HelperAux.mediaPlayer.pause();
+                    btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
+                    HelperAux.updateBigNotification(true);
+                }
+            } else if (intent.getAction().equals(NotificationGenerator.NOTIFY_NEXT)) {
+                //repeat
+            } else if (intent.getAction().equals(NotificationGenerator.NOTIFY_DELETE)) {
+                mediaPlayer.stop();
+                if (notification != null) {
+                    HelperAux.updateBigNotification(true); //ativa a notificação por questoes de segurança
+                    notification.cancel(8);
+                }
+            } else if (intent.getAction().equals(NotificationGenerator.NOTIFY_PREVIOUS)) {
+                mediaPlayer.pause();
+                mediaPlayer.seekTo(0);
+                stopThread();
+
+            }
+        }
     }
 }

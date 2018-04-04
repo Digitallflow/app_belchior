@@ -37,6 +37,7 @@ public class MusicAdapter extends ArrayAdapter<Musicas> {
 
     private Context context, cocontext;
     private ArrayList<Musicas> musics;
+    private HelperAux helper = new HelperAux();
 
     public MusicAdapter(@NonNull Context c, @NonNull ArrayList<Musicas> musics) {
         super(c, 0, musics);
@@ -107,7 +108,6 @@ public class MusicAdapter extends ArrayAdapter<Musicas> {
                         View parentRow = (View) v.getParent();
                         ListView listView = (ListView) parentRow.getParent();
                         final int position = listView.getPositionForView(parentRow);
-                        HelperAux helper = new HelperAux();
                         helper.AlertDialogMusic(listView.getContext(), inflater, Crud.titleMusics[position], position);
 //                        Toast.makeText(context, "reproduzir musica "+ position, Toast.LENGTH_LONG).show();
                     }

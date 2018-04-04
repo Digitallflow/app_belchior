@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digitalflow.belchior.appbelchior.Activity.HomeActivity;
+import com.digitalflow.belchior.appbelchior.Activity.MusicActivity;
 import com.digitalflow.belchior.appbelchior.Adapter.TabsAdapter;
 import com.digitalflow.belchior.appbelchior.DAO.Crud;
 import com.digitalflow.belchior.appbelchior.Entidades.Musicas;
@@ -46,26 +48,81 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.IOException;
 import java.util.HashMap;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class CameraFragment extends Fragment {
 
     final int RequestCameraPermissionID = 1001;
     final boolean[] secondUse = new boolean[1];
     protected boolean onCreateViewCalled = false;
+    protected boolean firstTimeInitCameraCalled;
     LayoutInflater inflater;
     SurfaceView cameraPreview = null;
     TextView txtResult;
     BarcodeDetector barcodeDetector = null;
     CameraSource cameraSource = null;
+    private boolean cameraRunning = false;
     //double scaleCamera;
     private AlertDialog alert;
+    //Callback Surface
+    private SurfaceHolder.Callback surfaceHolderCallback = new SurfaceHolder.Callback() {
+        @Override
+        public void surfaceCreated(SurfaceHolder surfaceHolder) {
+            startCameraView(getContext(), cameraSource, cameraPreview);
+        }
 
+        @Override
+        public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+            stopCamera();
+        }
+    };
 
     public CameraFragment() {
         // Required empty public constructor
         // scaleCamera = this.getResources().getDisplayMetrics().density;
+    }
+
+    /**
+     * onCreateView
+     */
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        onCreateViewCalled = true; // importante
+
+        View view = inflater.inflate(R.layout.fragment_camera, container, false);
+        this.inflater = inflater;
+
+        cameraPreview = (SurfaceView) view.findViewById(R.id.cameraPreview);
+        txtResult = (TextView) view.findViewById(R.id.txtResult);
+        firstTimeInitCameraCalled = true;
+
+        initCamera();
+
+        return view;
+    }
+    /**
+     * Função para detectar se o fragment da câmera está visível para o usuário
+     */
+
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        if (menuVisible && onCreateViewCalled) {
+            firstTimeInitCameraCalled = false;
+            initCamera();
+            startCameraView(getContext(), cameraSource, cameraPreview);
+        } else if (!menuVisible && onCreateViewCalled) {
+            cameraSource.stop();
+            cameraRunning = false;
+            firstTimeInitCameraCalled = true;
+            barcodeDetector = null;
+            cameraSource = null;
+        }
+
+        super.setMenuVisibility(menuVisible);
     }
 
     public boolean onCreateViewBeenCalled() {
@@ -91,239 +148,240 @@ public class CameraFragment extends Fragment {
         }
     }
 
-    // Função para detectar se o fragment da câmera está visível para o usuário
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        /* Se o Fragment esteja visível para o usuario, setar a funcao do barcode
-            para detectar o qrcode. */
-        if (isVisibleToUser && isResumed()) {
-            secondUse[0] = false;
-            barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
-                @Override
-                public void release() {
-
-                }
-
-                @Override
-                public void receiveDetections(Detector.Detections<Barcode> detections) {
-                    final SparseArray<Barcode> qrcodes = detections.getDetectedItems();
-
-                    if (qrcodes.size() != 0) {
-                        txtResult.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                txtResult.setText(qrcodes.valueAt(0).displayValue);
-                                String tituloMusica = txtResult.getText().toString();
-                                Usuarios user = Usuarios.getInstance();
-                                HelperAux helper = new HelperAux();
-                                int p;
-
-                                if (tituloMusica != null && !secondUse[0]) {
-                                    alert = helper.AlertDialog(getActivity(), inflater, "essamusica", "identificando musica..", true);
-                                    Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                                    vibrator.vibrate(1000);
-                                    secondUse[0] = true;
-                                    switch (tituloMusica) {
-                                        case "numero00":
-                                            p = 0;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 0", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        case "numero01":
-                                            p = 1;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 1", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        case "numero02":
-                                            p = 2;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 2", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        case "numero03":
-                                            p = 3;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 3", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        case "numero04":
-                                            p = 4;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 4", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        case "numero05":
-                                            p = 5;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 5", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        case "numero06":
-                                            p = 6;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 6", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        case "numero07":
-                                            p = 7;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 7", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        case "numero08":
-                                            p = 8;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 8", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        case "numero09":
-                                            p = 9;
-                                            if (isUnlocked(user, p)) {
-                                                alert.dismiss();
-                                                slideToMusicFragment();
-                                                helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
-                                            } else {
-                                                Musicas music = new Musicas("Music 9", true);
-                                                setFirMusic(user, music, p, helper, alert, inflater);
-                                            }
-                                            break;
-                                        default:
-                                            alert.dismiss();
-                                            slideToMusicFragment();
-                                            Toast.makeText(getActivity(), R.string.esta_musica_nao_esta_registrada_na_base_de_dados, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-            onResume();
-        } else {
-            /* Se o Fragment estiver invisível e o método createView ja foi chamado, então sobreescrever o barcode para não
-            /  detectar o qrcode com o Fragment invisível */
-            if (onCreateViewBeenCalled()) {
-                barcodeDetector.setProcessor(null);
-            }
-        }
-    }
-
-    //Função auxiliar da função acima para saber se a view não está pausada.
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!getUserVisibleHint()) {
-            return;
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        onCreateViewCalled = true; // importante
-
-        View view = inflater.inflate(R.layout.fragment_camera, container, false);
-        this.inflater = inflater;
-
-        cameraPreview = (SurfaceView) view.findViewById(R.id.cameraPreview);
-        txtResult = (TextView) view.findViewById(R.id.txtResult);
-
+    /**
+     * Init Camera
+     */
+    public void initCamera() {
+        // if (barcodeDetector == null) {
         barcodeDetector = new BarcodeDetector.Builder(getActivity())
                 .setBarcodeFormats(Barcode.QR_CODE)
                 .build();
 
-        cameraPreview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                setUserVisibleHint(false);
-                cameraSource = new CameraSource
-                        .Builder(getActivity(), barcodeDetector)
-                        .setRequestedPreviewSize(640, 480)
-                        .setAutoFocusEnabled(true)
-                        .build();
-                cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
-                    @Override
-                    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                        try {
-                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, RequestCameraPermissionID);
-                                return;
-                            } else if (cameraSource != null && cameraPreview != null){
-                                cameraSource.start(cameraPreview.getHolder());
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
+        if (barcodeDetector.isOperational()) {
+            secondUse[0] = false;
+            barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
+                @Override
+                public void release() {
+                }
+
+                @Override
+                public void receiveDetections(Detector.Detections<Barcode> detections) {
+                    if (!firstTimeInitCameraCalled) {
+                        final SparseArray<Barcode> qrcodes = detections.getDetectedItems();
+
+                        if (qrcodes.size() != 0) {
+                            txtResult.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    txtResult.setText(qrcodes.valueAt(0).displayValue);
+                                    String tituloMusica = txtResult.getText().toString();
+                                    Usuarios user = Usuarios.getInstance();
+                                    HelperAux helper = new HelperAux();
+                                    int p;
+
+                                    if (tituloMusica != null && !secondUse[0]) {
+                                        alert = helper.AlertDialog(getActivity(), inflater, "essamusica", "identificando musica..", true);
+                                        Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                                        vibrator.vibrate(1000);
+                                        secondUse[0] = true;
+                                        switch (tituloMusica) {
+                                            case "numero00":
+                                                p = 0;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 0", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            case "numero01":
+                                                p = 1;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 1", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            case "numero02":
+                                                p = 2;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 2", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            case "numero03":
+                                                p = 3;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 3", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            case "numero04":
+                                                p = 4;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 4", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            case "numero05":
+                                                p = 5;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 5", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            case "numero06":
+                                                p = 6;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 6", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            case "numero07":
+                                                p = 7;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 7", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            case "numero08":
+                                                p = 8;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 8", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            case "numero09":
+                                                p = 9;
+                                                if (isUnlocked(user, p)) {
+                                                    alert.dismiss();
+                                                    slideToMusicFragment();
+                                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.procure_a_proxima), getString(R.string.a_musica_ja_foi_desbloqueada, Crud.titleMusics[p]), false);
+                                                } else {
+                                                    Musicas music = new Musicas("Music 9", true);
+                                                    setFirMusic(user, music, p, helper, alert, inflater);
+                                                }
+                                                break;
+                                            default:
+                                                alert.dismiss();
+                                                slideToMusicFragment();
+                                                Toast.makeText(getActivity(), R.string.esta_musica_nao_esta_registrada_na_base_de_dados, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                            });
                         }
                     }
+                }
+            });
+        }
 
-                    @Override
-                    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+        // }
 
-                    }
+        // if (cameraSource == null) {
+        cameraSource = new CameraSource
+                .Builder(getActivity(), barcodeDetector)
+                .setRequestedPreviewSize(640, 480)
+                .setAutoFocusEnabled(true)
+                .build();
 
-                    @Override
-                    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                        try {
-                            if (cameraSource != null) {
-                                cameraSource.stop();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+        //  }
+
+    }
+
+    /**
+     * Start Camera
+     */
+    public void startCamera() {
+        if (cameraPreview != null && surfaceHolderCallback != null) {
+            cameraPreview.getHolder().addCallback(surfaceHolderCallback);
+        }
+    }
+
+    /**
+     * Função para detectar o start da camera e permissão no celular
+     */
+    private void startCameraView(Context context, CameraSource cameraSource,
+                                 SurfaceView surfaceView) {
+        try {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return;
+            } else if (!cameraRunning && cameraSource != null && surfaceView != null) {
+                cameraSource.start(surfaceView.getHolder());
+                Log.e("start", "started camera");
+                cameraRunning = true;
             }
-        });
+        } catch (IOException ie) {
+            //Log.e(TAG, ie.getMessage());
+            ie.printStackTrace();
+        }
+    }
 
-        return view;
+    /**
+     * Stop Camera
+     */
+    public void stopCamera() {
+        try {
+            if (cameraPreview != null && surfaceHolderCallback != null) {
+                cameraPreview.getHolder().removeCallback(surfaceHolderCallback);
+            }
+            if (cameraRunning && cameraSource != null) {
+                cameraSource.stop();
+                cameraRunning = false;
+            }
+            Log.e("rem", "removed callback");
+        } catch (Exception ie) {
+            //Log.e(TAG, ie.getMessage());
+            ie.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Release and cleanup Camera.
+     */
+    public void releaseAndCleanup() {
+        if (cameraRunning) {
+            stopCamera();
+            if (cameraSource != null) {
+                cameraSource.release();
+                cameraSource = null;
+            }
+        }
     }
 
     public boolean isUnlocked(Usuarios user, int position) {
@@ -335,7 +393,9 @@ public class CameraFragment extends Fragment {
         }
     }
 
-    public void setFirMusic(final Usuarios user, final Musicas music, final int position, final HelperAux helper, final AlertDialog alert, final LayoutInflater inflater) {
+    public void setFirMusic(final Usuarios user, final Musicas music,
+                            final int position, final HelperAux helper, final AlertDialog alert,
+                            final LayoutInflater inflater) {
         HashMap<String, Object> hashMap = new HashMap<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         hashMap.put(music.getNome(), music.getLocked());
@@ -378,7 +438,7 @@ public class CameraFragment extends Fragment {
         slideToMusicFragment();
     }
 
-    public void slideToMusicFragment(){
+    public void slideToMusicFragment() {
         Button btnMusicas = (Button) getActivity().findViewById(R.id.btnMusicas);
         btnMusicas.callOnClick();
     }

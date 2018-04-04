@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.digitalflow.belchior.appbelchior.Adapter.TabsAdapter;
 import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
+import com.digitalflow.belchior.appbelchior.Fragments.CameraFragment;
 import com.digitalflow.belchior.appbelchior.Fragments.MusicFragment;
 import com.digitalflow.belchior.appbelchior.Helper.HelperAux;
 import com.digitalflow.belchior.appbelchior.R;
@@ -35,12 +36,15 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
 
     private final Usuarios user = Usuarios.getInstance();
 
-    /* ++++ SLIDING TAB ++++ */
-    private Button btnMusicas, btnCamera, button2, btnLogout;
+    private Button btnMusicas, btnCamera, btnLogout;
     private Context context = this;
+    public ConstraintLayout tabConstraintLayout;
+    public static boolean str;
+    public static Runnable thrCallCamera;
+
+    /* ++++ SLIDING TAB ++++ */
     private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
-    public ConstraintLayout tabConstraintLayout;
     /* +++++++++++++++++++++ */
 
     @Override
@@ -56,7 +60,6 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
         btnCamera = (Button) findViewById(R.id.btnCamera);
         btnMusicas = (Button) findViewById(R.id.btnMusicas);
         btnLogout = (Button) findViewById(R.id.btnLogout);
-        button2 = (Button) findViewById(R.id.button2);
         tabConstraintLayout = (ConstraintLayout) findViewById(R.id.tabConstraintLayout);
 
         //abas
@@ -119,15 +122,7 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
             @Override
             public void onClick(View v) {
                 BtnYes acBtn = new MusicActivity();
-                AlertDialogActivity(context,null, tabConstraintLayout, "Logout","Deseja sair mesmo carai?", Message.msgInfo, true, acBtn);
-            }
-        });
-
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                openActivity(MainActivity.class);
+                AlertDialogActivity(context,null, tabConstraintLayout, "Logout","Você tem certeza que deseja realizar logout?", Message.msgInfo, true, acBtn);
             }
         });
 

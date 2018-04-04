@@ -1,14 +1,20 @@
 package com.digitalflow.belchior.appbelchior.MediaService;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.support.v4.app.NotificationCompat;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.digitalflow.belchior.appbelchior.R;
 
@@ -181,11 +187,6 @@ public class NotificationGenerator {
         nm.notify(NOTIFICATION_ID_CHAT, nc.build());
     }
 
-    private interface setPendingIntent{
-        PendingIntent Intent1();
-        PendingIntent Intent2();
-    }
-
     public static void actionButtonNotification(Context context,
                                                 int iconSmall,
                                                 boolean setAutoCancel,
@@ -217,10 +218,6 @@ public class NotificationGenerator {
         nm.notify(NOTIFICATION_ID_ACTION_BUTTON, nc.build());
     }
 
-    public interface IntentNotification {
-        Intent setIntent();
-    }
-
     public static void customSimpleNotification(Context context,
                                                 int iconSmall,
                                                 String contentTitle,
@@ -249,35 +246,85 @@ public class NotificationGenerator {
     }
 
     @SuppressLint("NewApi")
-    public static void customBigNotification(Context context,
-                                             int iconSmall,
-                                             String contentTitle,
-                                             String songName,
-                                             String albumName,
-                                             IntentNotification in) {
+    public static NotificationManager customBigNotification(Context context,
+                                                            int iconSmall,
+                                                            int albumIcon,
+                                                            String contentTitle,
+                                                            String songName,
+                                                            String albumName,
+                                                            MediaPlayer mediaPlayer,
+                                                            boolean songPaused,
+                                                            IntentNotification in,
+                                                            OnGoingNotification og) {
+        //RemoteViews expandedView = new RemoteViews(context.getPackageName(), R.layout.big_notification);
+
+        RemoteViews simpleContentView = new RemoteViews(context.getPackageName(), R.layout.custom_notification);
         RemoteViews expandedView = new RemoteViews(context.getPackageName(), R.layout.big_notification);
+
         // Creates an Intent for the Activity
         Intent notifyIntent = in.setIntent();
         // Sets the Activity to start in a new, empty task
-        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         // Creates the PendingIntent
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder nc = new NotificationCompat.Builder(context, "CUSTOM_BIG");
+        nc.setSmallIcon(iconSmall);
+        nc.setContentTitle(contentTitle);
+        nc.setContentIntent(pendingIntent);
+        //nc.setOngoing();
+        nc.setPriority(Notification.PRIORITY_MAX);
+        //nc.setAutoCancel(og.setNotificationOnGoing());
 
-        Notification notification = new NotificationCompat.Builder(context, "CUSTOM_BIG")
-                .setSmallIcon(iconSmall)
-                .setContentTitle(contentTitle)
-                .setContentIntent(pendingIntent)
-                .build();
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notification.bigContentView = expandedView;
-        notification.bigContentView.setTextViewText(R.id.textSongName, songName);
-        notification.bigContentView.setTextViewText(R.id.textAlbumName, albumName);
+        Notification notification = nc.build();
+        notification.flags |= og.setNotificationOnGoing(mediaPlayer);
+
+        try {
+            if (currentVersionSupportBigNotification()) {
+                notification.bigContentView = expandedView;
+                notification.bigContentView.setTextViewText(R.id.textSongName, songName);
+                notification.bigContentView.setTextViewText(R.id.textAlbumName, albumName);
+                notification.bigContentView.setImageViewResource(R.id.imageViewAlbumArt, albumIcon);
+            } else {
+                notification.contentView = simpleContentView;
+                notification.contentView.setTextViewText(R.id.textSongName, songName);
+                notification.contentView.setTextViewText(R.id.textAlbumName, albumName);
+                notification.contentView.setImageViewResource(R.id.imageViewAlbumArt, albumIcon);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         setListeners(expandedView, context);
+        setListeners(simpleContentView, context);
 
+        if (songPaused) {
+            if (currentVersionSupportBigNotification()) {
+                notification.bigContentView.setViewVisibility(R.id.btnPause, View.GONE);
+                notification.bigContentView.setViewVisibility(R.id.btnPlay, View.VISIBLE);
+            } else {
+                notification.contentView.setViewVisibility(R.id.btnPause, View.GONE);
+                notification.contentView.setViewVisibility(R.id.btnPlay, View.VISIBLE);
+            }
+        } else {
+            if (currentVersionSupportBigNotification()) {
+                notification.bigContentView.setViewVisibility(R.id.btnPause, View.VISIBLE);
+                notification.bigContentView.setViewVisibility(R.id.btnPlay, View.GONE);
+            } else {
+                notification.contentView.setViewVisibility(R.id.btnPause, View.VISIBLE);
+                notification.contentView.setViewVisibility(R.id.btnPlay, View.GONE);
+            }
+        }
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(NOTIFICATION_ID_CUSTOM_BIG, notification);
+        return nm;
+    }
+
+    public static boolean currentVersionSupportBigNotification() {
+        int sdkVersion = android.os.Build.VERSION.SDK_INT;
+        if (sdkVersion >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            return true;
+        }
+        return false;
     }
 
     private static void setListeners(RemoteViews view, Context context) {
@@ -302,4 +349,21 @@ public class NotificationGenerator {
         PendingIntent pPlay = PendingIntent.getBroadcast(context, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.btnPlay, pPlay);
     }
+
+    private interface setPendingIntent {
+        PendingIntent Intent1();
+
+        PendingIntent Intent2();
+    }
+
+    public interface IntentNotification {
+        Intent setIntent();
+    }
+
+    public interface OnGoingNotification {
+        int setNotificationOnGoing(MediaPlayer mediaPlayer);
+    }
+
 }
+
+

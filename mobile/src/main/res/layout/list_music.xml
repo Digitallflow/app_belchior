@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="14dp"
         android:text="TextView"
         android:textColor="@color/patternWhite"
         android:textSize="14sp"
@@ -22,12 +22,11 @@
         android:id="@+id/btnPlayMusic"
         android:layout_width="25dp"
         android:layout_height="30dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/botao_bloqueado"
         app:layout_constraintBaseline_toBaselineOf="@+id/textViewValue"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.97"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/textViewValue" />
 
 </android.support.constraint.ConstraintLayout>

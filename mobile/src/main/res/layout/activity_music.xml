@@ -68,21 +68,11 @@
 
             </android.support.constraint.ConstraintLayout>
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="104dp"
-                android:layout_marginTop="16dp"
-                android:text="Button"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="22dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -118,6 +108,7 @@
                     android:id="@+id/btnCamera"
                     android:layout_width="80dp"
                     android:layout_height="77dp"
+                    android:layout_marginStart="1dp"
                     android:background="@drawable/botao_camera_blue"
                     android:visibility="visible"
                     app:layout_constraintBaseline_toBaselineOf="@+id/btnMusicas"
@@ -138,6 +129,7 @@
                     android:id="@+id/btnMusicas"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:layout_marginStart="1dp"
                     android:background="@drawable/botao_musicas"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
