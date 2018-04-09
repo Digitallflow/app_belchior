@@ -137,6 +137,19 @@
 
             </android.support.constraint.ConstraintLayout>
 
+            <com.varunest.sparkbutton.SparkButton
+                android:id="@+id/spark_button"
+                android:layout_width="105dp"
+                android:layout_height="99dp"
+                app:sparkbutton_activeImage="@drawable/botao_desbloqueado"
+                app:sparkbutton_iconSize="40dp"
+                app:sparkbutton_inActiveImage="@drawable/botao_bloqueado"
+                app:sparkbutton_primaryColor="@color/colorAccent"
+                app:sparkbutton_secondaryColor="@color/colorPrimary"
+                tools:layout_editor_absoluteX="175dp"
+                tools:layout_editor_absoluteY="80dp"
+                tools:sparkbutton_inActiveImage="@drawable/botao_bloqueado" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>

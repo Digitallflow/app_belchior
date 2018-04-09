@@ -11,11 +11,18 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp">
 
+
         <TextView
             android:id="@+id/txtResult"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <SurfaceView
             android:id="@+id/cameraPreview"
@@ -28,13 +35,10 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:src="@drawable/foco_camera"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:src="@drawable/foco_camera" />
 
         <ProgressBar
             android:id="@+id/progressBarCamera"
