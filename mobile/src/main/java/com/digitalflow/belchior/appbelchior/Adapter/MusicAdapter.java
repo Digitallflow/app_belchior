@@ -56,6 +56,8 @@ public class MusicAdapter extends ArrayAdapter<Musicas> {
             cocontext = parent.getContext();
             // /monta o xml pra popular a lista
             view = inflater.inflate(R.layout.list_music, parent, false);
+        } else {
+            inflater = (LayoutInflater) parent.getContext().getSystemService(context.LAYOUT_INFLATER_SERVICE);
         }
 
         //verificar se foi criado elementos
@@ -120,8 +122,5 @@ public class MusicAdapter extends ArrayAdapter<Musicas> {
         }
 
     }
-
-
-
 
 }

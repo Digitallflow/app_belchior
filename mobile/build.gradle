@@ -35,7 +35,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:11.6.2'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
     implementation 'dyanamitechetan.vusikview:vusikview:1.1'
-    
+    implementation 'com.github.varunest:sparkbutton:1.0.5'
 
     implementation 'com.facebook.android:facebook-android-sdk:4.+'
     implementation 'com.google.android.gms:play-services:11.6.2'

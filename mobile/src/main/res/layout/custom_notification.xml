@@ -70,7 +70,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_margin="5dp"
-                android:background="@drawable/cast_ic_mini_controller_skip_next" />
+                android:background="@mipmap/ic_no_repeat_gray" />
         </LinearLayout>
 
         <Button

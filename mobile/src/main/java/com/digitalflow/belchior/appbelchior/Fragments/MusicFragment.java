@@ -54,6 +54,7 @@ public class MusicFragment extends Fragment {
     private ProgressBar progressBar4;
     private Button btnPlayMusic;
     private Context context;
+    final HelperAux helper = new HelperAux();
 
     public MusicFragment() {
         // Required empty public constructor
@@ -82,28 +83,25 @@ public class MusicFragment extends Fragment {
 
         //recuperar aqui algum dado no firebase ou do usuário logado
 
-        if(Crud.isLogin){
+        if(Crud.isLogin){ //se o login é feito
             //exibir aqui os dados ja armazenados nas classes locais
             Usuarios user = Usuarios.getInstance();
             musics.clear();
             Collections.addAll(musics,user.getMusic());
             progressBar4.setVisibility(View.INVISIBLE);
-            //adapter.notifyDataSetChanged();
-        } else {
+            adapter.notifyDataSetChanged();
+        } else { //se ja esta logado
            // FirebaseAuth.getInstance().signOut();
-           getUserData(inflater);
+            getUserData(inflater);
         }
-
-
-
-
-
         return view;
-
     }
 
-    private void getUserData(LayoutInflater inflater) {
-        final HelperAux helper = new HelperAux();
+    private void getUserData(final LayoutInflater inflater) {
+//        if (helper.checkConnection(getActivity())){
+//            //startActivity(new Intent(getActivity(),MainActivity.class));
+//            return;
+//        }
         users = ConfiguracaoFirebase.getFirebaseAuth().getCurrentUser();
         if (users != null) {
             processUserDialog = helper.AlertDialog(getActivity(), inflater, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), true);
@@ -114,7 +112,19 @@ public class MusicFragment extends Fragment {
                 docRefUser.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+                        if (documentSnapshot.exists()) {
+                            Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+                        } else {
+                            helper.AlertDialogLogout(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                                @Override
+                                public void logoutFirebase(AlertDialog dialog) {
+                                    dialog.dismiss();
+                                    FirebaseAuth.getInstance().signOut();
+                                    startActivity(new Intent(getActivity(), MainActivity.class));
+                                    getActivity().finish();
+                                }
+                            });
+                        }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -128,30 +138,49 @@ public class MusicFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
-                            if (task.getResult() != null) {
+                            if (task.getResult().exists()) {
                                 processUserDialog.dismiss();
                                 DocumentReference docRefMusic = db.collection("musics").document(users.getUid());
                                 docRefMusic.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                         if (task.isSuccessful()) {
-                                            if (task.getResult() != null) {
+                                            if (task.getResult().exists()) {
                                                 Usuarios user = Usuarios.getInstance();
-                                                HashMap<String, Object> document =  (HashMap<String, Object>) task.getResult().getData();
-                                                Musicas[] arrayMusicas = Crud.hashMaptoArrayMusics(document);
-                                                user.setMusic(arrayMusicas);
-                                                Usuarios.setInstance(user);
-                                                musics.clear();
-                                                Collections.addAll(musics, arrayMusicas);
-                                                progressBar4.setVisibility(View.INVISIBLE);
-                                                adapter.notifyDataSetChanged();
+                                                if (task.getResult().exists()) {
+                                                    HashMap<String, Object> document =  (HashMap<String, Object>) task.getResult().getData();
+                                                    Musicas[] arrayMusicas = Crud.hashMaptoArrayMusics(document);
+                                                    user.setMusic(arrayMusicas);
+                                                    Usuarios.setInstance(user);
+                                                    musics.clear();
+                                                    Collections.addAll(musics, arrayMusicas);
+                                                    progressBar4.setVisibility(View.INVISIBLE);
+                                                    adapter.notifyDataSetChanged();
+                                                } else {
+                                                    helper.AlertDialogLogout(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                                                        @Override
+                                                        public void logoutFirebase(AlertDialog dialog) {
+                                                            dialog.dismiss();
+                                                            FirebaseAuth.getInstance().signOut();
+                                                            startActivity(new Intent(getActivity(), MainActivity.class));
+                                                            getActivity().finish();
+                                                        }
+                                                    });
+                                                }
                                             } else {
-                                                helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
-                                                return;
+                                                helper.AlertDialogLogout(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                                                    @Override
+                                                    public void logoutFirebase(AlertDialog dialog) {
+                                                        dialog.dismiss();
+                                                        FirebaseAuth.getInstance().signOut();
+                                                        startActivity(new Intent(getActivity(), MainActivity.class));
+                                                        getActivity().finish();
+                                                    }
+                                                });
                                             }//there is no music documents by this user
                                         } else {
                                             processUserDialog.dismiss();
-                                            helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                                            helper.AlertDialog(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
                                             return;
                                         }//failed complete get document of musics
                                     }
@@ -164,13 +193,19 @@ public class MusicFragment extends Fragment {
                                     }
                                 });//failed to get requisition
                             } else {
-                                processUserDialog.dismiss();
-                                helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
-                                return;
+                                helper.AlertDialogLogout(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                                    @Override
+                                    public void logoutFirebase(AlertDialog dialog) {
+                                        dialog.dismiss();
+                                        FirebaseAuth.getInstance().signOut();
+                                        startActivity(new Intent(getActivity(), MainActivity.class));
+                                        getActivity().finish();
+                                    }
+                                });
                             }//there is no document by this user
                         } else {
                             processUserDialog.dismiss();
-                            helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                            helper.AlertDialog(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
                             return;
                         }//failed to get document complete on user
                     }
@@ -178,14 +213,22 @@ public class MusicFragment extends Fragment {
             } else {
                 processUserDialog.dismiss();
                 MainActivity.isVerificate = false;
+                FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(getActivity(), MainActivity.class));
+                getActivity().finish();
             }
         } else {
+            FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getActivity(), MainActivity.class));
+            getActivity().finish();
         }
     }
 
-    public void getMusicsByUserLogged(){
+    public void getMusicsByUserLogged(final LayoutInflater inflater){
+        if (helper.checkConnection(getActivity())){
+            return;
+        }
+        users = ConfiguracaoFirebase.getFirebaseAuth().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final HelperAux helper = new HelperAux();
         //load user info from database to Singleton
@@ -193,27 +236,39 @@ public class MusicFragment extends Fragment {
         docRefUser.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+                if (documentSnapshot.exists()) {
+                    Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+                } else {
+                    helper.AlertDialogLogout(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                        @Override
+                        public void logoutFirebase(AlertDialog dialog) {
+                            dialog.dismiss();
+                            FirebaseAuth.getInstance().signOut();
+                            startActivity(new Intent(getActivity(), MainActivity.class));
+                            getActivity().finish();
+                        }
+                    });
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w("Console Log", "Error adding document", e);
-                processUserDialog.dismiss();
+                //processUserDialog.dismiss();
                 Toast.makeText(getActivity().getApplicationContext(), R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
             }
         }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    if (task.getResult() != null) {
-                        processUserDialog.dismiss();
+                    if (task.getResult().exists()) {
+                       // processUserDialog.dismiss();
                         DocumentReference docRefMusic = db.collection("musics").document(users.getUid());
                         docRefMusic.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    if (task.getResult() != null) {
+                                    if (task.getResult().exists()) {
                                         Usuarios user = Usuarios.getInstance();
                                         HashMap<String, Object> document =  (HashMap<String, Object>) task.getResult().getData();
                                         Musicas[] arrayMusicas = Crud.hashMaptoArrayMusics(document);
@@ -224,10 +279,18 @@ public class MusicFragment extends Fragment {
                                         progressBar4.setVisibility(View.INVISIBLE);
                                         adapter.notifyDataSetChanged();
                                     } else {
-                                        helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
+                                        helper.AlertDialogLogout(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                                            @Override
+                                            public void logoutFirebase(AlertDialog dialog) {
+                                                dialog.dismiss();
+                                                FirebaseAuth.getInstance().signOut();
+                                                startActivity(new Intent(getActivity(), MainActivity.class));
+                                                getActivity().finish();
+                                            }
+                                        });
                                     }//there is no music documents by this user
                                 } else {
-                                    helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                                    helper.AlertDialog(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
                                 }//failed complete get document of musics
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -238,10 +301,18 @@ public class MusicFragment extends Fragment {
                             }
                         });//failed to get requisition
                     } else {
-                        helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
+                        helper.AlertDialogLogout(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                            @Override
+                            public void logoutFirebase(AlertDialog dialog) {
+                                dialog.dismiss();
+                                FirebaseAuth.getInstance().signOut();
+                                startActivity(new Intent(getActivity(), MainActivity.class));
+                                getActivity().finish();
+                            }
+                        });
                     }//there is no document by this user
                 } else {
-                    helper.AlertDialog(getActivity(), null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                    helper.AlertDialog(getActivity(), inflater, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
                 }//failed to get document complete on user
             }
         });

@@ -25,6 +25,7 @@ import com.digitalflow.belchior.appbelchior.Helper.Base64Custom;
 import com.digitalflow.belchior.appbelchior.Helper.HelperAux;
 import com.digitalflow.belchior.appbelchior.Helper.Preferencias;
 import com.digitalflow.belchior.appbelchior.R;
+import com.digitalflow.belchior.appbelchior.Util.MaskEditUtil;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
@@ -72,13 +73,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
 
-
 public class Inicial extends HelperAux {
     private static final int SIGN_IN_CODE = 777;
+    private final Usuarios user = Usuarios.getInstance();
     public AlertDialog dialogLogin, dialogCadastro;
     public AlertDialog processFbDialog;
     public AlertDialog processGDialog;
@@ -97,7 +99,7 @@ public class Inicial extends HelperAux {
     private CallbackManager mCallbackManager;
     private GoogleApiClient googleApiClient;
     private Context context = this;
-    private final Usuarios user = Usuarios.getInstance();;
+    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +110,7 @@ public class Inicial extends HelperAux {
         /* +++++++++++ FIREBASE CONFIGURATION +++++++++++ */
         auth = ConfiguracaoFirebase.getFirebaseAuth();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        
+
         /* ++++++++++++++++++++++++++++++++++++++++++++++ */
 
         /* +++++++++++ LOGIN WITH GOOGLE +++++++++++ */
@@ -144,6 +146,7 @@ public class Inicial extends HelperAux {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //openActivity(MainActivity.class);
                 finish();
             }
         });
@@ -170,6 +173,9 @@ public class Inicial extends HelperAux {
         btnCustomFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (checkConnection(context)) {
+                    return;
+                }
                 LoginManager.getInstance().logInWithReadPermissions(Inicial.this, Arrays.asList("public_profile", "email", "user_friends"));
             }
         });
@@ -194,11 +200,15 @@ public class Inicial extends HelperAux {
                 btnLogin.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (checkConnection(context)) {
+                            return;
+                        }
+
                         ((InputMethodManager) getSystemService(context.INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(edtSenha.getWindowToken(), 0);
                         ((InputMethodManager) getSystemService(context.INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(edtEmail.getWindowToken(), 0);
-                        processDialog = AlertDialog(context,null, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), true);
+                        processDialog = AlertDialog(context, null, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), true);
 
                         if (!edtEmail.getText().toString().equals("") && !edtSenha.getText().toString().equals("")) {
                             auth.signInWithEmailAndPassword(edtEmail.getText().toString(), edtSenha.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -210,8 +220,20 @@ public class Inicial extends HelperAux {
                                             docRefUser.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                   // Usuarios user = Usuarios.getInstance();
-                                                    Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+                                                    // Usuarios user = Usuarios.getInstance();
+                                                    if(documentSnapshot.exists()) {
+                                                        Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
+                                                    } else {
+                                                        AlertDialogLogout(context, null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                                                            @Override
+                                                            public void logoutFirebase(AlertDialog dialog) {
+                                                                dialog.dismiss();
+                                                                FirebaseAuth.getInstance().signOut();
+                                                                startActivity(new Intent(context, MainActivity.class));
+                                                                finish();
+                                                            }
+                                                        });
+                                                    }
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
@@ -225,13 +247,13 @@ public class Inicial extends HelperAux {
                                                 @Override
                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                     if (task.isSuccessful()) {
-                                                        if (task.getResult() != null) {
+                                                        if (task.getResult().exists()) {
                                                             DocumentReference docRefMusic = db.collection("musics").document(auth.getUid());
                                                             docRefMusic.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                     if (task.isSuccessful()) {
-                                                                        if (task.getResult() != null) {
+                                                                        if (task.getResult().exists()) {
                                                                             Usuarios u = Usuarios.getInstance();
                                                                             HashMap<String, Object> document = (HashMap<String, Object>) task.getResult().getData();
                                                                             Musicas[] musics = Crud.hashMaptoArrayMusics(document);
@@ -240,14 +262,23 @@ public class Inicial extends HelperAux {
                                                                             //Toast.makeText(context, u.getMusic().toString(), Toast.LENGTH_LONG).show();
                                                                             ///////////////
                                                                             Crud.isLogin = true;
-                                                                            openActivity(MusicActivity.class, processDialog);
+                                                                            openActivityWithFlags(MusicActivity.class, processDialog);
+                                                                            finish();
                                                                         } else {
                                                                             processDialog.dismiss();
-                                                                            AlertDialog(context, null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
-                                                                        }//there is no music documents by this user
+                                                                            AlertDialogLogout(context, null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                                                                                @Override
+                                                                                public void logoutFirebase(AlertDialog dialog) {
+                                                                                    dialog.dismiss();
+                                                                                    FirebaseAuth.getInstance().signOut();
+                                                                                    startActivity(new Intent(context, MainActivity.class));
+                                                                                    finish();
+                                                                                }
+                                                                            });
+                                                                        }
                                                                     } else {
                                                                         processDialog.dismiss();
-                                                                        AlertDialog(context,null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                                                                        AlertDialog(context, null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
                                                                     }//failed complete get document of musics
                                                                 }
                                                             }).addOnFailureListener(new OnFailureListener() {
@@ -261,17 +292,25 @@ public class Inicial extends HelperAux {
                                                             });//failed to get requisition
                                                         } else {
                                                             processDialog.dismiss();
-                                                            AlertDialog(context, null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false);
-                                                        }//there is no document by this user
+                                                            AlertDialogLogout(context, null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {
+                                                                @Override
+                                                                public void logoutFirebase(AlertDialog dialog) {
+                                                                    dialog.dismiss();
+                                                                    FirebaseAuth.getInstance().signOut();
+                                                                    startActivity(new Intent(context, MainActivity.class));
+                                                                    finish();
+                                                                }
+                                                            });
+                                                        }
                                                     } else {
                                                         processDialog.dismiss();
-                                                        AlertDialog(context,null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
+                                                        AlertDialog(context, null, getString(R.string.error), getString(R.string.msg_erro_get_documento, task.getException().toString()), HelperAux.Message.msgError, false);
                                                     }//failed to get document complete on user
                                                 }
                                             });
                                         } else {
                                             processDialog.dismiss();
-                                            AlertDialog(context,null, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), HelperAux.Message.msgError, false);
+                                            AlertDialog(context, null, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), HelperAux.Message.msgError, false);
                                         }
                                     } else {
                                         exceptionLogin(processDialog, task);
@@ -299,7 +338,7 @@ public class Inicial extends HelperAux {
                     public void onClick(View view) {
                         fadeViews(mainConstraintLayout, dialogLogin, true);
                         dialogLogin.dismiss();
-                        AlertDialog(context,null, auth, mainConstraintLayout, dialogLogin);
+                        AlertDialog(context, null, auth, mainConstraintLayout, dialogLogin);
                     }
                 });
             }
@@ -316,6 +355,7 @@ public class Inicial extends HelperAux {
                 edtCadNome = (EditText) mView.findViewById(R.id.edtCadNome);
                 edtCadSobrenome = (EditText) mView.findViewById(R.id.edtCadSobrenome);
                 edtCadNascimento = (EditText) mView.findViewById(R.id.edtCadNasc);
+                edtCadNascimento.addTextChangedListener(MaskEditUtil.mask(edtCadNascimento, MaskEditUtil.FORMAT_DATE));
                 rgSexo = (RadioGroup) findViewById(R.id.rgSexo);
                 rbMasculino = (RadioButton) mView.findViewById(R.id.rbMasculino);
                 rbFeminino = (RadioButton) mView.findViewById(R.id.rbFeminino);
@@ -331,13 +371,18 @@ public class Inicial extends HelperAux {
                 btnCadastrar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (checkConnection(context)) {
+                            return;
+                        }
+
                         EditText[] edits = {edtCadConfirmarSenha, edtCadEmail, edtCadNascimento, edtCadNome, edtCadSenha, edtCadSobrenome};
                         if (isEmpty(edits, Inicial.this)) {
                             return;
                         }
 
                         if (edtCadSenha.getText().toString().equals(edtCadConfirmarSenha.getText().toString())) {
-                            final AlertDialog processDialog = AlertDialog(context,null, getString(R.string.processando), getString(R.string.msg_cadastrando_dados_do_usuario), true);
+
+                            final AlertDialog processDialog = AlertDialog(context, null, getString(R.string.processando), getString(R.string.msg_cadastrando_dados_do_usuario), true);
 
                             auth.createUserWithEmailAndPassword(edtCadEmail.getText().toString(), edtCadSenha.getText().toString()).addOnCompleteListener(Inicial.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -354,8 +399,8 @@ public class Inicial extends HelperAux {
                                         user.setBirth(edtCadNascimento.getText().toString());
                                         user.setSex(userSex);
                                         user.setMusic(null);
-                                        Crud.setUser(user);
-                                        Crud.setInitialMusics(user);
+                                        Crud.setUser(user, context);
+                                        Crud.setInitialMusics(user, context);
                                         Usuarios.setInstance(user);
 
                                         auth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -364,7 +409,7 @@ public class Inicial extends HelperAux {
                                                 if (task.isSuccessful()) {
                                                     fadeViews(mainConstraintLayout, dialogCadastro, false);
                                                     processDialog.dismiss();
-                                                    AlertDialog(context,null, getString(R.string.email_enviado_title), getString(R.string.msg_info_um_email_foi_enviado, user.getEmail()), Message.msgInfo, false);
+                                                    AlertDialog(context, null, getString(R.string.email_enviado_title), getString(R.string.msg_info_um_email_foi_enviado, user.getEmail()), Message.msgInfo, false);
                                                     dialogCadastro.dismiss();
                                                 } else {
                                                     Toast.makeText(context, R.string.msg_erro_email_nao_existente_para_autenticacao, Toast.LENGTH_SHORT).show();
@@ -388,7 +433,7 @@ public class Inicial extends HelperAux {
             @Override
             public void onClick(View v) {
                 //intent para politica de privacidade
-                AlertDialog(context,null, getString(R.string.politica_de_privacidade), getString(R.string.politica_de_privacidade_texto), mainConstraintLayout);
+                AlertDialog(context, null, getString(R.string.politica_de_privacidade), getString(R.string.politica_de_privacidade_texto), mainConstraintLayout);
             }
         });
 
@@ -396,7 +441,7 @@ public class Inicial extends HelperAux {
             @Override
             public void onClick(View v) {
                 //intent para termos de uso
-                AlertDialog(context,null, getString(R.string.termos_de_servico), getString(R.string.termos_de_uso_texto), mainConstraintLayout);
+                AlertDialog(context, null, getString(R.string.termos_de_servico), getString(R.string.termos_de_uso_texto), mainConstraintLayout);
             }
         });
 
@@ -404,6 +449,9 @@ public class Inicial extends HelperAux {
         btnAbrirLoginGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (checkConnection(context)) {
+                    return;
+                }
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(intent, SIGN_IN_CODE);
             }
@@ -420,8 +468,11 @@ public class Inicial extends HelperAux {
         if (requestCode == SIGN_IN_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
-                processGDialog = AlertDialog(context,null, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), true);
+                processGDialog = AlertDialog(context, null, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), true);
                 GoogleSignInAccount account = result.getSignInAccount();
+                if (checkConnection(context)) {
+                    return;
+                }
                 firebaseLoginGoogle(account);
             } else {
                 Toast.makeText(context, getText(R.string.msg_erro_conecte_a_internet_para_continuar), Toast.LENGTH_LONG).show();
@@ -448,7 +499,7 @@ public class Inicial extends HelperAux {
                                 u.setSex("");
                                 u.setgId(acct.getId());
                                 u.setMusic(null);
-                                Crud.setUser(u);
+                                Crud.setUser(u, context);
                                 FirebaseFirestore data = FirebaseFirestore.getInstance();
                                 final Query result = data.collection("musics").whereEqualTo("uid", auth.getUid());
                                 result.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -464,15 +515,16 @@ public class Inicial extends HelperAux {
                                                 Musicas[] musics = Crud.hashMaptoArrayMusics(document);
                                                 u.setMusic(musics);
                                                 Usuarios.setInstance(u);
-                                                Toast.makeText(context, user.getMusic().toString(), Toast.LENGTH_LONG).show();
+                                                //Toast.makeText(context, user.getMusic().toString(), Toast.LENGTH_LONG).show();
                                             } else {
-                                                Crud.setInitialMusics(u);
+                                                Crud.setInitialMusics(u, context);
                                             }
                                             Crud.isLogin = true;
-                                            openActivity(MusicActivity.class, processGDialog);
+                                            openActivityWithFlags(MusicActivity.class, processGDialog);
+                                            finish();
                                         } else {
                                             processGDialog.dismiss();
-                                            AlertDialog(context,null, getString(R.string.error), getString(R.string.msg_erro_cadastro), HelperAux.Message.msgError, false);
+                                            AlertDialog(context, null, getString(R.string.error), getString(R.string.msg_erro_cadastro), HelperAux.Message.msgError, false);
                                         }
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
@@ -512,7 +564,7 @@ public class Inicial extends HelperAux {
                                         u.setFirstName(object.getString("first_name"));
                                         u.setLastName(object.getString("last_name"));
                                         u.setMusic(null);
-                                        Crud.setUser(u);
+                                        Crud.setUser(u, context);
                                         FirebaseFirestore data = FirebaseFirestore.getInstance();
                                         final Query result = data.collection("musics").whereEqualTo("uid", auth.getUid());
                                         result.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -528,16 +580,16 @@ public class Inicial extends HelperAux {
                                                         Musicas[] musics = Crud.hashMaptoArrayMusics(document);
                                                         u.setMusic(musics);
                                                         Usuarios.setInstance(u);
-                                                        Toast.makeText(context, user.getMusic().toString(), Toast.LENGTH_LONG).show();
+                                                        //Toast.makeText(context, user.getMusic().toString(), Toast.LENGTH_LONG).show();
                                                     } else {
-                                                        Crud.setInitialMusics(u);
+                                                        Crud.setInitialMusics(u, context);
                                                     }
                                                     Crud.isLogin = true;
-                                                    openActivity(MusicActivity.class, processFbDialog);
-                                                    return;
+                                                    openActivityWithFlags(MusicActivity.class, processFbDialog);
+                                                    finish();
                                                 } else {
                                                     processFbDialog.dismiss();
-                                                    AlertDialog(context,null, getString(R.string.error), getString(R.string.msg_erro_cadastro), HelperAux.Message.msgError, false);
+                                                    AlertDialog(context, null, getString(R.string.error), getString(R.string.msg_erro_cadastro), HelperAux.Message.msgError, false);
                                                     return;
                                                 }
                                             }
@@ -584,6 +636,13 @@ public class Inicial extends HelperAux {
             stringException = getString(R.string.msg_erro_cadastro);
             e.printStackTrace();
         }
-        AlertDialog(context,null, getString(R.string.error), stringException, Message.msgError, false);
+        AlertDialog(context, null, getString(R.string.error), stringException, Message.msgError, false);
+
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        openActivity(MainActivity.class);
+//        finish();
+//    }
 }

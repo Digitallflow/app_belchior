@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -43,6 +44,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digitalflow.belchior.appbelchior.Activity.Inicial;
+import com.digitalflow.belchior.appbelchior.Activity.MainActivity;
 import com.digitalflow.belchior.appbelchior.Activity.MusicActivity;
 import com.digitalflow.belchior.appbelchior.MediaService.NotificationGenerator;
 import com.digitalflow.belchior.appbelchior.R;
@@ -52,6 +55,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ProviderQueryResult;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by MarllonS on 25/01/2018.
@@ -59,6 +67,7 @@ import java.io.File;
 
 public class HelperAux extends AppCompatActivity {
     static final android.os.Handler handler = new android.os.Handler();
+    private static final boolean[] repeat = new boolean[1];
     public static MediaPlayer mediaPlayer;
     public static View rootView;
     public static Context inContext;
@@ -66,12 +75,32 @@ public class HelperAux extends AppCompatActivity {
     static Runnable updater;
     private static volatile boolean stopUpdater;
     private static NotificationManager notification;
-    private final boolean[] repeat = new boolean[1];
     private int totalDuration;
 
-    public static void updateBigNotification(boolean songPaused) {
-        if (songPaused) {
-            notification = NotificationGenerator.customBigNotification(inContext, R.drawable.icon_belchior_notification, R.drawable.icon_belchior_laucher, titleMusic, titleMusic, titleMusic, mediaPlayer, true,
+    public boolean checkConnection(Context context){
+        Resources res = context.getResources();
+        try {
+            if (!isInternetAvailable()){
+                Toast.makeText(context, res.getString(R.string.msg_erro_conecte_a_internet_para_continuar), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(context, res.getString(R.string.msg_erro_reinicie_o_app), Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    public static boolean isInternetAvailable() throws InterruptedException, IOException {
+        String command = "ping -c 1 google.com";
+        return (Runtime.getRuntime().exec (command).waitFor() == 0);
+    }
+
+    public static void updateBigNotification(MediaPlayer mediaPlayer, boolean songRepeat) {
+        if (mediaPlayer.isPlaying()) {
+            notification = NotificationGenerator.customBigNotification(inContext, R.drawable.icon_belchior_notification, R.drawable.icon_belchior_laucher, titleMusic, titleMusic, titleMusic, mediaPlayer, false, songRepeat,
                     new NotificationGenerator.IntentNotification() {
                         @Override
                         public Intent setIntent() {
@@ -89,7 +118,7 @@ public class HelperAux extends AppCompatActivity {
                         }
                     });
         } else {
-            notification = NotificationGenerator.customBigNotification(inContext, R.drawable.icon_belchior_notification, R.drawable.icon_belchior_laucher, titleMusic, titleMusic, titleMusic, mediaPlayer, false,
+            notification = NotificationGenerator.customBigNotification(inContext, R.drawable.icon_belchior_notification, R.drawable.icon_belchior_laucher, titleMusic, titleMusic, titleMusic, mediaPlayer, true, songRepeat,
                     new NotificationGenerator.IntentNotification() {
                         @Override
                         public Intent setIntent() {
@@ -109,10 +138,6 @@ public class HelperAux extends AppCompatActivity {
         }
     }
 
-    private static void runThread(Runnable updater, final Resources res, final boolean stopUpdater, final MediaPlayer mediaPlayer, final SeekBar seekBar, final TextView textViewTimerInit, final TextView textViewTimerFinal, final TextView textViewTitleMusic, final int totalDuration) {
-
-    }
-
     private static void stopThread() {
         stopUpdater = true;
     }
@@ -121,11 +146,12 @@ public class HelperAux extends AppCompatActivity {
         stopUpdater = false;
     }
 
-    private static void updateSeekBar(final MediaPlayer mp, final SeekBar seekBar, final TextView textViewInit, final TextView textViewFinal, int totalDuration) {
+    private static void updateSeekBar(final MediaPlayer mp, final SeekBar seekBar, final TextView textViewInit, final TextView textViewFinal, final TextView textViewTitle, Resources res, int totalDuration) {
         seekBar.setProgress(mp.getCurrentPosition());
         textViewInit.setText(milliSecondsToTimer(mp.getCurrentPosition()));
         String remainDuration = milliSecondsToTimer(mp.getDuration() - mp.getCurrentPosition());
         textViewFinal.setText(remainDuration != "0:00" ? "-" + remainDuration : remainDuration);
+        setStateMusic(mediaPlayer, textViewTitle, res);
         handler.postDelayed(updater, 1000);
     }
 
@@ -155,10 +181,42 @@ public class HelperAux extends AppCompatActivity {
         return finalTimerString;
     }
 
+    private static void setStateMusic(final MediaPlayer mediaPlayer, final TextView textViewTitleMusic, final Resources res) {
+        final boolean[] play = {false};
+        final String a = res.getString(R.string.reproduzindo, titleMusic);
+        textViewTitleMusic.post(new Runnable() {
+            @Override
+            public void run() {
+                if (textViewTitleMusic.getText().toString().equals(a)) {
+                    play[0] = true;
+                }
+                if (mediaPlayer.isPlaying() && (!play[0])) {
+                    textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
+                } else if (!mediaPlayer.isPlaying() && (play[0])) {
+                    textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
+                }
+            }
+        });
+
+    }
+
     public void openActivity(Class<?> cls, AlertDialog dialog) {
-        Intent intent = new Intent(getApplicationContext(), cls);
+        Intent intent = new Intent(getBaseContext(), cls);
         startActivity(intent);
         dialog.dismiss();
+    }
+
+    public void openActivityWithFlags(Class<?> cls, AlertDialog dialog) {
+        Intent intent = new Intent(getBaseContext(), cls);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        dialog.dismiss();
+    }
+
+    public void openActivityWithFlags(Class<?> cls) {
+        Intent intent = new Intent(getBaseContext(), cls);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     public void openActivity(Class<?> cls) {
@@ -259,7 +317,10 @@ public class HelperAux extends AppCompatActivity {
         }
         progressBar2.setLayoutParams(params);
         dialog.show();
+
         return dialog;
+
+
     }
 
     public void AlertDialog(Context context, LayoutInflater inflater, String title, String subtitle, final ConstraintLayout layout) {
@@ -309,9 +370,10 @@ public class HelperAux extends AppCompatActivity {
         //return dialog;
     }
 
-    public void AlertDialogLogout(final Context context, LayoutInflater inflater, String title, String subtitle, Message msgType, boolean yesNo) {
+    public void AlertDialogLogout(final Context context, LayoutInflater inflater, String title, String subtitle, Message msgType, boolean yesNo, final LogOut logout) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
         View mView = null;
+        Resources res = context.getResources();
         if (inflater == null) {
             mView = getLayoutInflater().inflate(R.layout.aux_helper, null);
         } else {
@@ -339,7 +401,7 @@ public class HelperAux extends AppCompatActivity {
                     btnYes.setVisibility(View.INVISIBLE);
                     btnNo.setText(R.string.ok);
                 }
-                textViewTitle.setText(getString(R.string.sucesso, title));
+                textViewTitle.setText(res.getString(R.string.sucesso, title));
                 textViewSubTitle.setText(subtitle);
                 break;
             case msgInfo:
@@ -381,7 +443,7 @@ public class HelperAux extends AppCompatActivity {
                     btnYes.setVisibility(View.INVISIBLE);
                     btnNo.setText(R.string.ok);
                 }
-                textViewTitle.setText(getString(R.string.warning, title));
+                textViewTitle.setText(res.getString(R.string.warning, title));
                 textViewSubTitle.setText(subtitle);
                 break;
             case msgQuestion:
@@ -395,7 +457,7 @@ public class HelperAux extends AppCompatActivity {
                     btnYes.setVisibility(View.INVISIBLE);
                     btnNo.setText(R.string.ok);
                 }
-                textViewTitle.setText(getString(R.string.info, title));
+                textViewTitle.setText(res.getString(R.string.info, title));
                 textViewSubTitle.setText(subtitle);
                 break;
             case popUpMsg:
@@ -431,8 +493,7 @@ public class HelperAux extends AppCompatActivity {
         btnNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                FirebaseAuth.getInstance().signOut();
+                logout.logoutFirebase(dialog);
                 //startActivity(new Intent(activity, Inicial.class));
             }
         });
@@ -810,6 +871,8 @@ public class HelperAux extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
         dialog.setCancelable(true);
 
+        
+
         textViewTitleMusic.setText(res.getString(R.string.a_reproduzir, titleMusic));
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -841,6 +904,7 @@ public class HelperAux extends AppCompatActivity {
                     btnRepeat.setBackgroundResource(R.mipmap.ic_repeat);
                     repeat[0] = true;
                 }
+                updateBigNotification(mediaPlayer, repeat[0]);
             }
         });
 
@@ -851,107 +915,149 @@ public class HelperAux extends AppCompatActivity {
                 textViewTitleMusic.setText(res.getString(R.string.parado, titleMusic));
                 mediaPlayer.pause();
                 mediaPlayer.seekTo(0);
-                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
+                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, textViewTitleMusic, res, totalDuration);
                 notification.cancel(8);
+               // dialog.setCancelable(true);
             }
         });
 
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AsyncTask<String, String, String> mp3Play = new AsyncTask<String, String, String>() {
+                if (checkConnection(inContext)) {
+                    return;
+                }
+                try {
+                    AsyncTask<String, String, String> mp3Play = new AsyncTask<String, String, String>() {
 
-                    @Override
-                    protected void onPreExecute() {
-                        if (!isFirst[0]) {
-                            textViewLoadMusic.setText(R.string.carregando_musica);
-                            progressBarLoadMusic.setIndeterminate(true);
-                            constraintLoading.setVisibility(View.VISIBLE);
-                            btnPlayPause.setVisibility(View.INVISIBLE);
-                            btnStop.setVisibility(View.INVISIBLE);
-                            btnRepeat.setVisibility(View.INVISIBLE);
-                            seekBar.setEnabled(false);
+                        @Override
+                        protected void onPreExecute() {
+                            if (!isFirst[0]) {
+                                textViewLoadMusic.setText(R.string.carregando_musica);
+                                progressBarLoadMusic.setIndeterminate(true);
+                                constraintLoading.setVisibility(View.VISIBLE);
+                                btnPlayPause.setVisibility(View.INVISIBLE);
+                                btnStop.setVisibility(View.INVISIBLE);
+                                btnRepeat.setVisibility(View.INVISIBLE);
+                                seekBar.setEnabled(false);
+                            }
+                            btnStop.setEnabled(true);
                         }
-                        btnStop.setEnabled(true);
-                    }
 
-                    @Override
-                    protected String doInBackground(String... params) {
-                        try {
-                            // String path = downloadMusic(params[0], fileName[0]);
-                            mediaPlayer.setDataSource(params[0]);
-                            mediaPlayer.prepare();
-                        } catch (Exception ex) {
+                        @Override
+                        protected String doInBackground(String... params) {
+                            try {
+                                // String path = downloadMusic(params[0], fileName[0]);
+                                mediaPlayer.setDataSource(params[0]);
+                                mediaPlayer.prepare();
+                            } catch (Exception ex) {
 
+                            }
+                            return "";
                         }
-                        return "";
-                    }
 
-                    @Override
-                    protected void onPostExecute(String s) {
-                        if (!isFirst[0]) {
-                            constraintLoading.setVisibility(View.INVISIBLE);
-                            btnPlayPause.setVisibility(View.VISIBLE);
-                            btnStop.setVisibility(View.VISIBLE);
-                            btnRepeat.setVisibility(View.VISIBLE);
-                            seekBar.setEnabled(true);
-                            isFirst[0] = true;
-                            mediaPlayer.start();
-                            //textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
-                            btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
-                        } else {
-                            if (!mediaPlayer.isPlaying()) {
+                        @Override
+                        protected void onPostExecute(String s) {
+                            if (!isFirst[0]) {
+                                constraintLoading.setVisibility(View.INVISIBLE);
+                                btnPlayPause.setVisibility(View.VISIBLE);
+                                btnStop.setVisibility(View.VISIBLE);
+                                btnRepeat.setVisibility(View.VISIBLE);
+                                seekBar.setEnabled(true);
+                                isFirst[0] = true;
                                 mediaPlayer.start();
                                 //textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
                                 btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
-                                updateBigNotification(false);
-                            } else {
-                                mediaPlayer.pause();
-                                //textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
-                                btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
-                                updateBigNotification(true);
-                            }
-                        }
 
-                        updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
+                            } else {
+                                if (!mediaPlayer.isPlaying()) {
+                                    mediaPlayer.start();
+                                    //textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
+                                    btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
+                                } else {
+                                    mediaPlayer.pause();
+                                    //textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
+                                    btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
+                                }
+                            }
+                            updateBigNotification(mediaPlayer, repeat[0]);
+                            updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, textViewTitleMusic, res, totalDuration);
+                        }
+                    };
+
+                    switch (position) {
+                        case 0:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music0));
+                            break;
+                        case 1:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music1));
+                            break;
+                        case 2:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music2));
+                            break;
+                        case 3:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music3));
+                            break;
+                        case 4:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music4));
+                            break;
+                        case 5:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music5));
+                            break;
+                        case 6:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music6));
+                            break;
+                        case 7:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music7));
+                            break;
+                        case 8:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music8));
+                            break;
+                        case 9:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.music9));
+                            break;
+                        default:
+                            if (checkConnection(inContext)) {
+                                break;
+                            }
+                            mp3Play.execute(res.getString(R.string.erro));
+                            break;
                     }
-                };
-                switch (position) {
-                    case 0:
-                        mp3Play.execute(res.getString(R.string.music0));
-                        break;
-                    case 1:
-                        mp3Play.execute(res.getString(R.string.music1));
-                        break;
-                    case 2:
-                        mp3Play.execute(res.getString(R.string.music2));
-                        break;
-                    case 3:
-                        mp3Play.execute(res.getString(R.string.music3));
-                        break;
-                    case 4:
-                        mp3Play.execute(res.getString(R.string.music4));
-                        break;
-                    case 5:
-                        mp3Play.execute(res.getString(R.string.music5));
-                        break;
-                    case 6:
-                        mp3Play.execute(res.getString(R.string.music6));
-                        break;
-                    case 7:
-                        mp3Play.execute(res.getString(R.string.music7));
-                        break;
-                    case 8:
-                        mp3Play.execute(res.getString(R.string.music8));
-                        break;
-                    case 9:
-                        mp3Play.execute(res.getString(R.string.music9));
-                        break;
-                    default:
-                        mp3Play.execute(res.getString(R.string.erro));
-                        break;
+                    fileName[0] = Integer.toString(position);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                fileName[0] = Integer.toString(position);
             }
         });
 
@@ -962,7 +1068,7 @@ public class HelperAux extends AppCompatActivity {
                 seekBar.setMax(mediaPlayer.getDuration()); // 100% (0~99)
                 mediaPlayer.start();
                 totalDuration = mediaPlayer.getDuration();
-                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
+                updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, textViewTitleMusic, res, totalDuration);
                 btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
             }
         });
@@ -973,7 +1079,7 @@ public class HelperAux extends AppCompatActivity {
             public void onCompletion(MediaPlayer mp) {
                 btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
                 //textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
-                updateBigNotification(true);
+                updateBigNotification(mediaPlayer, repeat[0]);
                 if (repeat[0]) {
                     mediaPlayer.seekTo(0);
                     btnPlayPause.callOnClick();
@@ -990,20 +1096,19 @@ public class HelperAux extends AppCompatActivity {
         mediaPlayer.setLooping(false);
         repeat[0] = false;
 
-        reRunThread();
-        updater = new Runnable() {
-            @Override
-            public void run() {
-                if (!stopUpdater) {
-                    updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, totalDuration);
-                    if (mediaPlayer.isPlaying()) {
-                        textViewTitleMusic.setText(res.getString(R.string.reproduzindo, titleMusic));
-                    } else {
-                        textViewTitleMusic.setText(res.getString(R.string.pausado, titleMusic));
+        try {
+            reRunThread();
+            updater = new Runnable() {
+                @Override
+                public void run() {
+                    if (!stopUpdater) {
+                        updateSeekBar(mediaPlayer, seekBar, textViewTimerInit, textViewTimerFinal, textViewTitleMusic, res, totalDuration);
                     }
                 }
-            }
-        };
+            };
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         dialog.show();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -1011,8 +1116,9 @@ public class HelperAux extends AppCompatActivity {
             public void onDismiss(DialogInterface dialog) {
                 if (isFirst[0]) {
                     mediaPlayer.stop();
+                    stopThread();
                     if (notification != null) {
-                        updateBigNotification(true); //ativa a notificação por questoes de segurança
+                        updateBigNotification(mediaPlayer, repeat[0]); //ativa a notificação por questoes de segurança
                         notification.cancel(8);
                     }
                 }
@@ -1076,37 +1182,49 @@ public class HelperAux extends AppCompatActivity {
         void actionBtnYes(Context context);
     }
 
+    public interface LogOut{
+        void logoutFirebase(AlertDialog dialog);
+    }
     public static class NotificationBroadcast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Button btnPause = (Button)  ((Activity) c).findViewById(R.id.btnPause);
             Button btnPlayPause = (Button) rootView.findViewById(R.id.btnPlayPause);
+            Button btnRepeat = (Button) rootView.findViewById(R.id.btnRepeat);
             if (intent.getAction().equals(NotificationGenerator.NOTIFY_PLAY)) {
                 if (!mediaPlayer.isPlaying()) {
                     HelperAux.mediaPlayer.start();
                     btnPlayPause.setBackgroundResource(R.mipmap.ic_lpauses);
-                    HelperAux.updateBigNotification(false);
+                    HelperAux.updateBigNotification(HelperAux.mediaPlayer, HelperAux.repeat[0]);
                 }
             } else if (intent.getAction().equals(NotificationGenerator.NOTIFY_PAUSE)) {
                 if (mediaPlayer.isPlaying()) {
                     HelperAux.mediaPlayer.pause();
                     btnPlayPause.setBackgroundResource(R.mipmap.ic_plays);
-                    HelperAux.updateBigNotification(true);
+                    HelperAux.updateBigNotification(HelperAux.mediaPlayer, HelperAux.repeat[0]);
                 }
             } else if (intent.getAction().equals(NotificationGenerator.NOTIFY_NEXT)) {
-                //repeat
+                btnRepeat.setBackgroundResource(R.mipmap.ic_repeat);
+                HelperAux.repeat[0] = true;
+                HelperAux.updateBigNotification(HelperAux.mediaPlayer, HelperAux.repeat[0]);
+            } else if (intent.getAction().equals(NotificationGenerator.NOTIFY_NEXT2)) {
+                btnRepeat.setBackgroundResource(R.mipmap.ic_not_repeat);
+                HelperAux.repeat[0] = false;
+                HelperAux.updateBigNotification(HelperAux.mediaPlayer, HelperAux.repeat[0]);
             } else if (intent.getAction().equals(NotificationGenerator.NOTIFY_DELETE)) {
                 mediaPlayer.stop();
                 if (notification != null) {
-                    HelperAux.updateBigNotification(true); //ativa a notificação por questoes de segurança
+                    HelperAux.updateBigNotification(HelperAux.mediaPlayer, HelperAux.repeat[0]); //ativa a notificação por questoes de segurança
                     notification.cancel(8);
                 }
             } else if (intent.getAction().equals(NotificationGenerator.NOTIFY_PREVIOUS)) {
                 mediaPlayer.pause();
                 mediaPlayer.seekTo(0);
-                stopThread();
 
+                //stopThread();
+                //
             }
         }
     }
+
 }

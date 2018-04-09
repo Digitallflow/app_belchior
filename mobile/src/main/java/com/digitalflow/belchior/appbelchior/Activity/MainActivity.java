@@ -1,5 +1,6 @@
 package com.digitalflow.belchior.appbelchior.Activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
@@ -38,6 +39,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class MainActivity extends HelperAux {
@@ -62,11 +64,18 @@ public class MainActivity extends HelperAux {
             @Override
             public void onClick(View view) {
                 openActivity(Inicial.class);
+               // finish();
             }
         });
 
         if (!isVerificate) {
-            AlertDialogLogout(context, null, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), HelperAux.Message.msgError, false);
+            AlertDialogLogout(context, null, getString(R.string.error), getString(R.string.msg_erro_email_nao_verificado), HelperAux.Message.msgError, false, new LogOut() {
+                @Override
+                public void logoutFirebase(AlertDialog dialog) {
+                    dialog.dismiss();
+                    FirebaseAuth.getInstance().signOut();
+                }
+            });
         } else {
             FirebaseAuth.getInstance().signOut();
         }
@@ -89,4 +98,5 @@ public class MainActivity extends HelperAux {
         });
         videoViewbg.start();
     }
+
 }

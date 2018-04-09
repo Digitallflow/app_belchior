@@ -1,11 +1,13 @@
 package com.digitalflow.belchior.appbelchior.DAO;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.digitalflow.belchior.appbelchior.Activity.Inicial;
 import com.digitalflow.belchior.appbelchior.Entidades.Musicas;
 import com.digitalflow.belchior.appbelchior.Entidades.Usuarios;
+import com.digitalflow.belchior.appbelchior.Helper.HelperAux;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,6 +27,7 @@ import java.util.TreeMap;
 public class Crud extends Inicial {
 
     // public static Login typeLogin;
+    private static HelperAux helper = new HelperAux();
     public static final String[] titleMusics = new String[]{"Fotografia 3x4 (1976)",
                                                             "Tudo Outra Vez (1979)",
                                                             "Galos, Noites e Quintais (1977)",
@@ -37,7 +40,10 @@ public class Crud extends Inicial {
                                                             "Paralelas (1976)"};
     public static boolean isLogin = false;
 
-    public static void setUser(Usuarios user) {
+    public static void setUser(Usuarios user, Context context) {
+        if (helper.checkConnection(context)){
+            return;
+        }
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(user.getId()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -61,7 +67,7 @@ public class Crud extends Inicial {
         //HashMap<String, Object> hashMap = new HashMap<>();
         Musicas[] musics = new Musicas[11];
         for (int i = 0; i < 10; i++) {
-            musics[i] = new Musicas("Music" + i, false);
+            musics[i] = new Musicas("Music " + i, false);
             //hashMap.put("Music " + i, false);
         }
         //hashMap.put("uid", user.getId());
@@ -79,7 +85,10 @@ public class Crud extends Inicial {
         return hashMap;
     }
 
-    public static void setInitialMusics(Usuarios user) {
+    public static void setInitialMusics(Usuarios user, Context context) {
+        if (helper.checkConnection(context)){
+            return;
+        }
         Map<String, Object> music = toMap(user);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("musics").document(user.getId()).set(music).addOnSuccessListener(new OnSuccessListener<Void>() {

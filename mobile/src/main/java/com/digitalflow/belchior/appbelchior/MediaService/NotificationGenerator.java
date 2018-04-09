@@ -24,6 +24,7 @@ public class NotificationGenerator {
     public static final String NOTIFY_PAUSE = "action_pause";
     public static final String NOTIFY_PLAY = "action_play";
     public static final String NOTIFY_NEXT = "action_next";
+    public static final String NOTIFY_NEXT2 = "action_next2";
     private static final int NOTIFICATION_ID_SIMPLE = 1;
     private static final int NOTIFICATION_ID_TWO_ICONS = 2;
     private static final int NOTIFICATION_ID_BIG_PIC = 3;
@@ -254,6 +255,7 @@ public class NotificationGenerator {
                                                             String albumName,
                                                             MediaPlayer mediaPlayer,
                                                             boolean songPaused,
+                                                            boolean songRepeat,
                                                             IntentNotification in,
                                                             OnGoingNotification og) {
         //RemoteViews expandedView = new RemoteViews(context.getPackageName(), R.layout.big_notification);
@@ -314,6 +316,24 @@ public class NotificationGenerator {
                 notification.contentView.setViewVisibility(R.id.btnPlay, View.GONE);
             }
         }
+
+        if (songRepeat) {
+            if (currentVersionSupportBigNotification()) {
+                notification.bigContentView.setViewVisibility(R.id.btnNext, View.GONE);
+                notification.bigContentView.setViewVisibility(R.id.btnNext2, View.VISIBLE);
+            } else {
+                notification.contentView.setViewVisibility(R.id.btnNext, View.GONE);
+                notification.contentView.setViewVisibility(R.id.btnNext2, View.VISIBLE);
+            }
+        } else {
+            if (currentVersionSupportBigNotification()) {
+                notification.bigContentView.setViewVisibility(R.id.btnNext, View.VISIBLE);
+                notification.bigContentView.setViewVisibility(R.id.btnNext2, View.GONE);
+            } else {
+                notification.contentView.setViewVisibility(R.id.btnNext, View.VISIBLE);
+                notification.contentView.setViewVisibility(R.id.btnNext2, View.GONE);
+            }
+        }
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(NOTIFICATION_ID_CUSTOM_BIG, notification);
         return nm;
@@ -332,6 +352,7 @@ public class NotificationGenerator {
         Intent delete = new Intent(NOTIFY_DELETE);
         Intent pause = new Intent(NOTIFY_PAUSE);
         Intent next = new Intent(NOTIFY_NEXT);
+        Intent next2 = new Intent(NOTIFY_NEXT2);
         Intent play = new Intent(NOTIFY_PLAY);
 
         PendingIntent pPrevious = PendingIntent.getBroadcast(context, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -345,6 +366,9 @@ public class NotificationGenerator {
 
         PendingIntent pNext = PendingIntent.getBroadcast(context, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.btnNext, pNext);
+
+        PendingIntent pNext2 = PendingIntent.getBroadcast(context, 0, next2, PendingIntent.FLAG_UPDATE_CURRENT);
+        view.setOnClickPendingIntent(R.id.btnNext2, pNext2);
 
         PendingIntent pPlay = PendingIntent.getBroadcast(context, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.btnPlay, pPlay);

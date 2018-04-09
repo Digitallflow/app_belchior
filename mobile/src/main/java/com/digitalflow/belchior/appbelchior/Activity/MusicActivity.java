@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -31,27 +32,18 @@ import java.util.HashMap;
 
 import dyanamitechetan.vusikview.VusikView;
 
-public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletionListener, HelperAux.BtnYes {
-    //MediaPlayer.OnBufferingUpdateListener,
+public class MusicActivity extends HelperAux {
 
     private final Usuarios user = Usuarios.getInstance();
 
     private Button btnMusicas, btnCamera, btnLogout;
     private Context context = this;
     public ConstraintLayout tabConstraintLayout;
-    public static boolean str;
-    public static Runnable thrCallCamera;
 
     /* ++++ SLIDING TAB ++++ */
     private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
     /* +++++++++++++++++++++ */
-
-    @Override
-    public void actionBtnYes(Context c) {
-        FirebaseAuth.getInstance().signOut();
-        c.startActivity(new Intent(c, MainActivity.class));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,50 +113,30 @@ public class MusicActivity extends HelperAux implements MediaPlayer.OnCompletion
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BtnYes acBtn = new MusicActivity();
-                AlertDialogActivity(context,null, tabConstraintLayout, "Logout","Você tem certeza que deseja realizar logout?", Message.msgInfo, true, acBtn);
+                AlertDialogActivity(context, null, tabConstraintLayout, getString(R.string.logout), getString(R.string.certeza_que_deseja_sair), Message.msgInfo, true, new BtnYes() {
+                    @Override
+                    public void actionBtnYes(Context context) {
+                        FirebaseAuth.getInstance().signOut();
+                        openActivityWithFlags(MainActivity.class);
+                    }
+                });
             }
         });
 
     }
 
-
-//    private void updateSeekBar() {
-//        seekBar.setProgress((int)(((float)mediaPlayer.getCurrentPosition() / mediaFileLength)*100));
-//        if(mediaPlayer.isPlaying())
-//        {
-//            Runnable updater = new Runnable() {
-//                @Override
-//                public void run() {
-//                    updateSeekBar();
-//                    realtimelength-=1000; // declare 1 second
-//                    txtTimer.setText(String.format("%d:%d",TimeUnit.MILLISECONDS.toMinutes(realtimelength),
-//                            TimeUnit.MILLISECONDS.toSeconds(realtimelength) -
-//                                    TimeUnit.MILLISECONDS.toSeconds(TimeUnit.MILLISECONDS.toMinutes(realtimelength))));
-//
-//                }
-//
-//            };
-//            handler.postDelayed(updater,1000); // 1 second
-//        }
-//    }
-
-//    @Override
-//    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-//        seekBar.setSecondaryProgress(percent);
-//    }
-
-
     public void updateUserMusics() {
+        if (checkConnection(context)){
+            return;
+        }
         //Atualizar a listagem de itens do fragmento MusicFragment
         TabsAdapter newAdapter = (TabsAdapter) viewPager.getAdapter();
         MusicFragment newMusicFragment = (MusicFragment) newAdapter.getFragment(0);
-        newMusicFragment.getMusicsByUserLogged();
+        newMusicFragment.getMusicsByUserLogged(newMusicFragment.getLayoutInflater());
     }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        // btnPlayPause.setBackgroundResource(R.drawable.ic_play);
-        // musicView.stopNotesFall();
-    }
+//
+//    @Override
+//    public void onBackPressed() {
+//
+//    }
 }
