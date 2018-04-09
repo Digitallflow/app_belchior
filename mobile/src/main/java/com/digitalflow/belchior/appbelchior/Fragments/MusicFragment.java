@@ -129,7 +129,7 @@ public class MusicFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("Console Log", "Error adding document", e);
+                        //Log.w("Console Log", "Error adding document", e);
                         processUserDialog.dismiss();
                         Toast.makeText(getActivity().getApplicationContext(), R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
                         return;
@@ -253,7 +253,7 @@ public class MusicFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w("Console Log", "Error adding document", e);
+               // Log.w("Console Log", "Error adding document", e);
                 //processUserDialog.dismiss();
                 Toast.makeText(getActivity().getApplicationContext(), R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
             }

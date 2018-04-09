@@ -238,7 +238,7 @@ public class Inicial extends HelperAux {
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    Log.w("Console Log", "Error adding document", e);
+                                                    //Log.w("Console Log", "Error adding document", e);
                                                     processDialog.dismiss();
                                                     Toast.makeText(context, R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
                                                     return;
@@ -285,7 +285,7 @@ public class Inicial extends HelperAux {
                                                                 @Override
                                                                 public void onFailure
                                                                         (@NonNull Exception e) {
-                                                                    Log.w("Console Log", "Error adding document", e);
+                                                                    //Log.w("Console Log", "Error adding document", e);
                                                                     processDialog.dismiss();
                                                                     Toast.makeText(context, R.string.msg_erro_requisicao_falhada, Toast.LENGTH_SHORT).show();
                                                                 }

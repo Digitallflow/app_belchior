@@ -146,6 +146,7 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case RequestCameraPermissionID: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -154,6 +155,8 @@ public class CameraFragment extends Fragment {
                     }
                     try {
                         cameraSource.start(cameraPreview.getHolder());
+                        cameraRunning = true;
+                        progressBarCamera.setVisibility(View.GONE);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -408,10 +411,11 @@ public class CameraFragment extends Fragment {
         try {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
-                return;
+                requestPermissions(new String[] {Manifest.permission.CAMERA}, RequestCameraPermissionID);
+                //onRequestPermissionsResult(RequestCameraPermissionID, new String[]{Manifest.permission.CAMERA},new int[]{PackageManager.PERMISSION_GRANTED});
             } else if (!cameraRunning && cameraSource != null && surfaceView != null) {
                 cameraSource.start(surfaceView.getHolder());
-                Log.e("start", "started camera");
+                //Log.e("start", "started camera");
                 cameraRunning = true;
                 progressBarCamera.setVisibility(View.GONE);
             }
@@ -433,7 +437,7 @@ public class CameraFragment extends Fragment {
                 cameraSource.stop();
                 cameraRunning = false;
             }
-            Log.e("rem", "removed callback");
+            //Log.e("rem", "removed callback");
         } catch (Exception ie) {
             //Log.e(TAG, ie.getMessage());
             ie.printStackTrace();
@@ -475,13 +479,13 @@ public class CameraFragment extends Fragment {
         db.collection("musics").document(user.getId()).update(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("CRUD", "++++++++++++++++++++++++++++++++saved++++++++++++++++++++++++++++++++++++++++++++++++++");
+                //Log.d("CRUD", "++++++++++++++++++++++++++++++++saved++++++++++++++++++++++++++++++++++++++++++++++++++");
             }
 
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("CRUD", "+++++++++++++++++++++++++++++++++++++++++++not saved+++++++++++++++++++++++++++++++++++", e);
+               // Log.d("CRUD", "+++++++++++++++++++++++++++++++++++++++++++not saved+++++++++++++++++++++++++++++++++++", e);
             }
 
         }).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -494,7 +498,7 @@ public class CameraFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
                 alert.dismiss();
-                helper.AlertDialog(getActivity(), inflater, res.getString(R.string.erro), res.getString(R.string.msg_erro_atualizar_musica_no_firebase), HelperAux.Message.msgError, false);
+                helper.AlertDialog(getActivity(), inflater, res.getString(R.string.error), res.getString(R.string.msg_erro_atualizar_musica_no_firebase), HelperAux.Message.msgError, false);
                 //fazer excecoes com toast
             }
         });
