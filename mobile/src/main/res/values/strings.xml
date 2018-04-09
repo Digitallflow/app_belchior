@@ -13,7 +13,6 @@
 
     <!-- Legendas -->
     <string name="textoTelaInicial">Suas músicas estão grafitadas nas paredes. Encontre e ouça. </string>
-    <string name="textoTelaInicial2"> nas paredes. Encontre e ouça.</string>
     <string name="ao_clicar_login_voce_concorda_com_os_nossos">Ao fazer login, você concorda com os nossos</string>
     <string name="e">e a nossa </string>
     <string name="termos_de_servico">termos de uso</string>
@@ -78,8 +77,8 @@
     <string name="msg_erro_email_nao_verificado">Seu email não foi verificado! Verifique seu email e confirme o cadastro.</string>
     <string name="msg_erro_get_documento">Ocorreu um erro ao fazer a requisição para recuperar todos os dados. Tente novamente. Erro %1$s.</string>
     <string name="processando">Processando</string>
-    <string name="msg_autenticando_dados_do_usuario">Autenticando dados do usuário...</string>
-    <string name="msg_cadastrando_dados_do_usuario">Cadastrando dados do usuário...</string>
+    <string name="msg_autenticando_dados_do_usuario">Autenticando dados do usuário…</string>
+    <string name="msg_cadastrando_dados_do_usuario">Cadastrando dados do usuário…</string>
     <string name="msg_erro_preencha_email_e_senha">Preencha os campos de email e senha!</string>
     <string name="msg_erro_preencha_todos_os_campos">Preencha todos os campos para continuar o cadastro!</string>
     <string name="insira_email_para_recuperar_senha">Insira o email cadastrado anteriomente para recuperar a senha</string>
@@ -87,7 +86,7 @@
     <string name="email_enviado_title">Email enviado</string>
     <string name="msg_erro_email_nao_existente_para_autenticacao">Email não existente para autenticação</string>
     <string name="politica_de_privacidad_texto">Todas as suas informações pessoais coletadas serão usadas para ajudar a tornar a sua visita no nosso aplicativo tão produtiva e agradável quanto possível. Garantir a confidencialidade dos dados pessoais dos usuários do nosso aplicativo é importante para o AppBelchior. Todas as informações pessoais relativas a membros, assinantes, clientes ou visitantes que utilizem o aplicativo AppBelchior serão tratadas de acordo com a Lei de Proteção de Dados Pessoais de 26 de outubro de 1998 (Lei nº 67/98). As informações pessoais coletadas podem incluir seu nome, endereço de e-mail, número de telefone e / ou telefone celular, data de nascimento e / ou outro. O uso do aplicativo AppBelchior assume aceitação deste contrato de privacidade, bem como os Termos de Uso. O pessoal da AppBelchior reserva-se o direito de alterar este contrato sem aviso prévio. Portanto, recomendamos que você revise nossa política de privacidade e termos de uso regularmente para que você esteja sempre atualizado.</string>
-    <string name="verificando_usuario_na_database">Verificando usuario na base de dados</string>
+    <string name="verificando_usuario_na_database">Verificando usuário na base de dados</string>
     <string name="de_dados">de dados</string>
     <string name="msg_erro_conecte_a_internet_para_continuar">Conecte-se a internet para continuar</string>
     <string name="msg_erro_nenhum_doc_encontrado_para_esse_usuario">Não foi encontrado nenhum documento na base de dados para esse usuário.</string>
@@ -108,10 +107,9 @@
 
     <string name="procure_a_proxima">Procure a próxima!</string>
     <string name="parabens">Parabéns</string>
-    <string name="pausado"><b>EM PAUSA:</b> %1$s</string>
-    <string name="reproduzindo"><b>REPRODUZINDO:</b> %1$s</string>
-    <string name="a_reproduzir"><b>A REPRODUZIR:</b> %1$s</string>
-    <string name="parado">PARADO: %1$s</string>
+    <string name="pausado">EM PAUSA: %1$s</string>
+    <string name="reproduzindo">REPRODUZINDO: %1$s</string>
+    <string name="a_reproduzir">A REPRODUZIR: %1$s</string>
 
     <!-- LINK MUSICAS -->
     <string name="music0"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/0.mp3?alt=media&token=f9b0268b-01b3-4243-9d88-62449b733a31]]></string>
@@ -126,13 +124,15 @@
     <string name="music9"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/9.mp3?alt=media&token=a245e250-3e93-4ddf-897b-d6adff1feea1]]></string>
     <string name="erro"><![CDATA[https://firebasestorage.googleapis.com/v0/b/appbelchior-df.appspot.com/o/erro.mp3?alt=media&token=15b03f7b-119f-42f0-8e51-d7b2d231c2b9]]></string>
     <string name="esta_musica_nao_esta_registrada_na_base_de_dados">Esta musica não está registrada em nossa base de dados! Tente com outro qrcode válido.</string>
-    <string name="carregando_musica">Carregando musica...</string>
-    <string name="identificando_codigo">Identificando código...</string>
+    <string name="carregando_musica">Carregando musica…</string>
+    <string name="identificando_codigo">Identificando código…</string>
     <string name="msg_erro_reinicie_o_app">Um erro aconteceu. Reinicie a aplicação.</string>
     <string name="certeza_que_deseja_sair">Você tem certeza que deseja realizar logout?</string>
     <string name="logout">Logout</string>
     <string name="erro_timeout_reconhecer_codigo">Erro de timeout ao reconhecer o código! Tente novamente.</string>
     <string name="msg_erro_atualizar_musica_no_firebase">Erro ao atualizar musica no banco de dados</string>
+    <string name="textoTelaInicial2">nas paredes. Encontre e ouça.</string>
+    <string name="parado">PARADO: %1$s</string>
 
 
 </resources>
