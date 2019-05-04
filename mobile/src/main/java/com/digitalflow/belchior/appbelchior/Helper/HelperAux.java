@@ -11,6 +11,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -33,6 +36,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -57,6 +62,8 @@ import com.google.firebase.auth.ProviderQueryResult;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -870,8 +877,8 @@ public class HelperAux extends AppCompatActivity {
         final AlertDialog dialog = mBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(0, 0, 0, 0)));
         dialog.setCancelable(true);
+        seekBar.setEnabled(false);
 
-        
 
         textViewTitleMusic.setText(res.getString(R.string.a_reproduzir, titleMusic));
 
@@ -939,7 +946,7 @@ public class HelperAux extends AppCompatActivity {
                                 btnPlayPause.setVisibility(View.INVISIBLE);
                                 btnStop.setVisibility(View.INVISIBLE);
                                 btnRepeat.setVisibility(View.INVISIBLE);
-                                seekBar.setEnabled(false);
+                               // seekBar.setEnabled(false);
                             }
                             btnStop.setEnabled(true);
                         }
@@ -1126,6 +1133,22 @@ public class HelperAux extends AppCompatActivity {
         });
 
         return dialog;
+    }
+
+    public void printHashKey(Context pContext) {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String hashKey = new String(Base64.encode(md.digest(), 0));
+                Log.i("====================>", "printHashKey() Hash Key: " + hashKey);
+            }
+        } catch (NoSuchAlgorithmException e) {
+           // Log.e(TAG, "printHashKey()", e);
+        } catch (Exception e) {
+           // Log.e(TAG, "printHashKey()", e);
+        }
     }
 
     public boolean isEmpty(EditText[] editTextList, Context context) {

@@ -151,12 +151,12 @@ public class Inicial extends HelperAux {
             }
         });
         /* ++++++++++++++++++++++++++++++++++++++++++++++ */
-
+        printHashKey(context);
         LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                firebaseLoginFacebook(loginResult.getAccessToken());
                 processFbDialog = AlertDialog(context, null, getString(R.string.processando), getString(R.string.msg_autenticando_dados_do_usuario), true);
+                firebaseLoginFacebook(loginResult.getAccessToken());
             }
 
             @Override
@@ -166,7 +166,7 @@ public class Inicial extends HelperAux {
 
             @Override
             public void onError(FacebookException error) {
-                processFbDialog.dismiss();
+                Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -221,7 +221,7 @@ public class Inicial extends HelperAux {
                                                 @Override
                                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                     // Usuarios user = Usuarios.getInstance();
-                                                    if(documentSnapshot.exists()) {
+                                                    if (documentSnapshot.exists()) {
                                                         Usuarios.setInstance(documentSnapshot.toObject(Usuarios.class));
                                                     } else {
                                                         AlertDialogLogout(context, null, getString(R.string.error), getString(R.string.msg_erro_nenhum_doc_encontrado_para_esse_usuario), HelperAux.Message.msgError, false, new HelperAux.LogOut() {

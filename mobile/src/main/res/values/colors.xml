@@ -4,10 +4,11 @@
     <color name="colorPrimaryDark">#386288</color>
     <color name="colorAccent">#4578A7</color>
     <color name="backgroundVideo">#80000000</color>
-    <color name="patternWhite">#ffffff</color>
+    <color name="patternWhite">#FFFFFF</color>
     <color name="patternBlack">#000</color>
     <color name="hiperlinkColor">#186bfa</color>
     <color name="patternHint">#d5d5d5</color>
     <color name="transparent">#00000000</color>
     <color name="patternHintDark">#b5b3b3</color>
+    <color name="statusBarColor">#4578A7</color>
 </resources>

@@ -1,0 +1,12 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/inicialAnimation" android:oneshot="false" >
+    <item android:drawable="@drawable/belc1" android:duration="200" />
+    <item android:drawable="@drawable/belc2" android:duration="200" />
+    <item android:drawable="@drawable/belc3" android:duration="200" />
+    <item android:drawable="@drawable/belc4" android:duration="200" />
+    <item android:drawable="@drawable/belc5" android:duration="200" />
+    <item android:drawable="@drawable/belc6" android:duration="200" />
+    <item android:drawable="@drawable/belc7" android:duration="200" />
+    <item android:drawable="@drawable/belc8" android:duration="200" />
+    <item android:drawable="@drawable/belc9" android:duration="200" />
+</animation-list>

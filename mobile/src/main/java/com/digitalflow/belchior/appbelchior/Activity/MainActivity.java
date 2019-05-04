@@ -3,6 +3,7 @@ package com.digitalflow.belchior.appbelchior.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -58,6 +60,12 @@ public class MainActivity extends HelperAux {
         setContentView(R.layout.activity_main);
 
         AbrirTelaInicial = (Button) findViewById(R.id.btnConectar);
+        ImageView imageViewLock = (ImageView) findViewById(R.id.iconImg);
+        imageViewLock.setBackgroundResource(R.drawable.inicial_animation);
+        imageViewLock.setPadding(40,40,40,40);
+
+        AnimationDrawable mAnimation = (AnimationDrawable) imageViewLock.getBackground();
+        mAnimation.start();
 
 
         findViewById(R.id.btnConectar).setOnClickListener(new View.OnClickListener() {
@@ -84,19 +92,6 @@ public class MainActivity extends HelperAux {
     @Override
     protected void onStart() {
         super.onStart();
-        VideoView videoViewbg = findViewById(R.id.videoViewBg);
-
-//        Uri uri = Uri.parse();
-
-        videoViewbg.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.bg_video));
-        videoViewbg.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-                mp.setVolume(0, 0);
-            }
-        });
-        videoViewbg.start();
     }
 
 }
